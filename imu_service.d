@@ -32,4 +32,4 @@
   FreeRTOS\Include\deprecated_definitions.h \
   FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h \
   FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\task.h \
-  FreeRTOS\Include\list.h
+  FreeRTOS\Include\list.h User\Inc\app_config.h

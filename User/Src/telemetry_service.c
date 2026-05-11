@@ -1,4 +1,5 @@
 #include "telemetry_service.h"     // 引入遥测服务模块接口声明
+#include "app_config.h"            // 引入全局配置，例如 MQTT topic
 
 
 void Telemetry_BuildMqttMsg(const AttitudeData_t *att,const GnssData_t *gnss,MqttPublishMsg_t *msg) // 将姿态数据和 GNSS 数据打包成 MQTT 消息
@@ -8,7 +9,7 @@ void Telemetry_BuildMqttMsg(const AttitudeData_t *att,const GnssData_t *gnss,Mqt
 
         memset(msg,0,sizeof(MqttPublishMsg_t));  // 清空 MQTT 消息结构体，避免残留旧数据
 
-        strcpy(msg->topic,"aeropush/telemetry"); // 设置 MQTT 发布主题
+        strcpy(msg->topic,APP_MQTT_TOPIC);       // 使用全局配置中的 MQTT topic
 
         snprintf(msg->payload,                   // 将遥测数据格式化为 JSON 字符串并写入 payload
                 MQTT_PAYLOAD_MAX_LEN,            // 限制写入长度，避免 payload 缓冲区溢出

@@ -1,4 +1,5 @@
 #include "app_tasks.h"
+#include "app_config.h"
 
 /*任务句柄*/
 /*
@@ -42,28 +43,26 @@ void APP_TasksCreate(void)
      */
     xTaskCreate(InitTask,           //创建 InitTask 初始化任务
                 "InitTask",         //任务名称
-                256,                //任务栈大小，单位是word
+                APP_TASK_INIT_STACK_SIZE, //任务栈大小，单位是word
                 NULL,               //不向任务函数传递参数
-                4,                  //任务优先级为4，当前最高，启动阶段优先执行。
+                APP_TASK_INIT_PRIORITY, //任务优先级为4，当前最高，启动阶段优先执行。
                 &InitTaskHandle);   //保存任务句柄到 InitTaskHandle
 
     xTaskCreate(ImuTask,           //创建 ImuTask 姿态任务
                 "ImuTask",          //任务名称
-                256,                //栈大小，单位是word
+                APP_TASK_IMU_STACK_SIZE, //栈大小，单位是word
                 NULL,               //不向任务函数传递参数
-                3,                  //任务优先级为3，IMU需要高频执行，所以优先级较高。
+                APP_TASK_IMU_PRIORITY, //任务优先级为3，IMU需要高频执行，所以优先级较高。
                 &IMUTaskHandle);    //保存任务句柄到 IMUTaskHandle
 
     xTaskCreate(ModemTask,      //创建 ModemTask 通信任务
                 "ModemTask",    //任务名称
-                768,            //任务栈大小，单位是word
+                APP_TASK_MODEM_STACK_SIZE, //任务栈大小，单位是word
                 NULL,           //不向任务函数传递参数
-                2,              //任务优先级为2，负责A7670E、GNSS、MQTT
+                APP_TASK_MODEM_PRIORITY, //任务优先级为2，负责A7670E、GNSS、MQTT
                 &ModemTaskHandle);    //保存任务句柄到 ModemTask
-git config --global http.proxy http://127.0.0.1:7890
-git config --global https.proxy http://127.0.0.1:7890
-    xTaskCreate(TelemetryTask,"TelemetryTask",768,NULL,2,&TelemetryTaskHandle); //创建 TelemetryTask 任务
-    xTaskCreate(LedTask,"LedTask",128,NULL,1,&LedTaskHandle); //创建 LedTask 任务
+    xTaskCreate(TelemetryTask,"TelemetryTask",APP_TASK_TELEMETRY_STACK_SIZE,NULL,APP_TASK_TELEMETRY_PRIORITY,&TelemetryTaskHandle); //创建 TelemetryTask 任务
+    xTaskCreate(LedTask,"LedTask",APP_TASK_LED_STACK_SIZE,NULL,APP_TASK_LED_PRIORITY,&LedTaskHandle); //创建 LedTask 任务
 }
 
 /**
@@ -126,10 +125,10 @@ static void ImuTask(void *argument)
     *   vTaskDelay() 是从“当前时刻”开始延时
     *   vTaskDelayUntil() 是按照“固定时间点”周期执行
     *   
-    *   pdMS_TO_TICKS(5) 表示把 5ms 转换成 FreeRTOS tick 数
-    *   所以这里表示 ImuTask 每 5ms 执行一次*/
+    *   APP_IMU_TASK_PERIOD_MS 在 app_config.h 中统一配置
+    *   所以这里表示 ImuTask 按配置周期执行一次*/
     vTaskDelayUntil(&lastWakeTime,//传入上一次唤醒时间的地址，函数内部会自动更新它
-                    pdMS_TO_TICKS(5));//延时到下一个 5ms 周期点，实现 200HZ 周期任务
+                    pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS));//延时到下一个 5ms 周期点，实现 200HZ 周期任务
    }
 }
 
@@ -143,8 +142,6 @@ static void ModemTask(void *argument)
 {
     GnssData_t gnss;        //定义 GNSS 数据变量,用于保存模拟数据
     MqttPublishMsg_t mqtt_msg;  //定义 MQTT 消息变量,用于接收待发布消息
-    uint32_t gnss_count = 0;    //定义 GNSS 计数变量,用于模拟经纬度逐渐变化
-
     (void)argument;     //显示表示argument参数暂时不用，避免编译器警告
 
     while(1)            //通信任务主循环
@@ -165,9 +162,9 @@ static void ModemTask(void *argument)
         }
         /*
         *   vTaskDelay() 用于让当前任务主动阻塞一段时间
-        *   这里延时20ms，避免通信任务一直占用CPU
+        *   周期在 app_config.h 中统一配置，避免通信任务一直占用CPU
         */
-        vTaskDelay(pdMS_TO_TICKS(20));  //当前任务延时20ms，让出 CPU 给其他任务执行
+        vTaskDelay(pdMS_TO_TICKS(APP_MODEM_TASK_PERIOD_MS));  //当前任务按配置周期延时，让出 CPU 给其他任务执行
     }
 }
 
@@ -220,9 +217,9 @@ static void TelemetryTask(void *argument)
         
         /*
         *   遥测任务不需要像 IMU 那样高频运行。
-        *   这里暂定 200ms 执行一次，也就是5HZ
+        *   周期在 app_config.h 中统一配置
         */
-       vTaskDelay(pdMS_TO_TICKS(200));  //当前任务延时 200ms，控制遥测组包频率
+       vTaskDelay(pdMS_TO_TICKS(APP_TELEMETRY_TASK_PERIOD_MS));  //当前任务按配置周期延时，控制遥测组包频率
     }
 }
 
@@ -235,7 +232,6 @@ static void TelemetryTask(void *argument)
 static void LedTask(void *argument)
 {
     (void)argument; //显示表示 argument 参数暂时不用，避免编译器警告
-    uint32_t print_count = 0; 
     while(1)
     {
         BSP_LED_Toggle();   //LED 翻转
@@ -243,7 +239,7 @@ static void LedTask(void *argument)
         Debug_Print("ledtask\n");
          /*
          *  LED 状态指示不需要很高频率。
-         *  这里暂定 500ms 执行一次*/
-        vTaskDelay(pdMS_TO_TICKS(500));     //当前任务延时 500ms，后续用于实现 LED 心跳闪烁
+         *  周期在 app_config.h 中统一配置*/
+        vTaskDelay(pdMS_TO_TICKS(APP_LED_TASK_PERIOD_MS));     //当前任务按配置周期延时，后续用于实现 LED 心跳闪烁
     }
 }

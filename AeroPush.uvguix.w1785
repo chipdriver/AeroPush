@@ -1874,9 +1874,9 @@
       </Doc>
       <Doc>
         <Name>.\User\Src\modem_service.c</Name>
-        <ColumnNumber>87</ColumnNumber>
+        <ColumnNumber>82</ColumnNumber>
         <TopLine>1</TopLine>
-        <CurrentLine>30</CurrentLine>
+        <CurrentLine>31</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>

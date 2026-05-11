@@ -2133,7 +2133,7 @@ Image Symbol Table
     [Anonymous Symbol]                       0x08001dbc   Section        0  port.o(.text.SVC_Handler)
     [Anonymous Symbol]                       0x08001ddc   Section        0  port.o(.text.SysTick_Handler)
     [Anonymous Symbol]                       0x08001e0c   Section        0  system_stm32f4xx.o(.text.SystemInit)
-    TelemetryTask                            0x08001ed9   Thumb Code   210  app_tasks.o(.text.TelemetryTask)
+    TelemetryTask                            0x08001ed9   Thumb Code   212  app_tasks.o(.text.TelemetryTask)
     [Anonymous Symbol]                       0x08001ed8   Section        0  app_tasks.o(.text.TelemetryTask)
     [Anonymous Symbol]                       0x08001fac   Section        0  telemetry_service.o(.text.Telemetry_BuildMqttMsg)
     [Anonymous Symbol]                       0x08002084   Section        0  stm32f4xx_usart.o(.text.USART_Cmd)
@@ -2917,8 +2917,7 @@ Memory Map of the image
     0x08001ddc   0x08001ddc   0x0000002e   Code   RO          751    .text.SysTick_Handler  port.o
     0x08001e0a   0x08001e0a   0x00000002   PAD
     0x08001e0c   0x08001e0c   0x000000cc   Code   RO           11    .text.SystemInit    system_stm32f4xx.o
-    0x08001ed8   0x08001ed8   0x000000d2   Code   RO          287    .text.TelemetryTask  app_tasks.o
-    0x08001faa   0x08001faa   0x00000002   PAD
+    0x08001ed8   0x08001ed8   0x000000d4   Code   RO          287    .text.TelemetryTask  app_tasks.o
     0x08001fac   0x08001fac   0x000000d8   Code   RO          374    .text.Telemetry_BuildMqttMsg  telemetry_service.o
     0x08002084   0x08002084   0x00000014   Code   RO          177    .text.USART_Cmd     stm32f4xx_usart.o
     0x08002098   0x08002098   0x0000000a   Code   RO          217    .text.USART_GetFlagStatus  stm32f4xx_usart.o
@@ -3122,7 +3121,7 @@ Image component sizes
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
         14          0          0          0          0        339   app_main.o
-       712        136         66          0         20       2823   app_tasks.o
+       714        136         66          0         20       2761   app_tasks.o
        160          0          0          0          0       3021   bsp_debug_uart.o
         92          0          0          0          0       2279   bsp_led.o
        132          0          0          0          0       1508   debug_log.o
@@ -3146,9 +3145,9 @@ Image component sizes
        902         26          0          0         60      11113   timers.o
 
     ----------------------------------------------------------------------
-     10488        364        528          8      22472     114219   Object Totals
+     10488        364        528          8      22472     114157   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-        92          0          2          0          0          0   (incl. Padding)
+        90          0          2          0          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -3269,8 +3268,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     19464        674       1084          8      22568     116499   Grand Totals
-     19464        674       1084          8      22568     116499   ELF Image Totals
+     19464        674       1084          8      22568     116437   Grand Totals
+     19464        674       1084          8      22568     116437   ELF Image Totals
      19464        674       1084          8          0          0   ROM Totals
 
 ==============================================================================

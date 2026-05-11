@@ -1,4 +1,5 @@
 #include "imu_service.h"
+#include "app_config.h"
 
 void ImuService_BuildSimAttitude(AttitudeData_t *attitude)
 {
@@ -7,9 +8,9 @@ void ImuService_BuildSimAttitude(AttitudeData_t *attitude)
     if(attitude == NULL)
         return;
 
-    angle += 1.0f;
+    angle += APP_SIM_ATTITUDE_STEP_DEG;
 
-    if(angle >= 360.0f)
+    if(angle >= APP_SIM_ATTITUDE_MAX_DEG)
     {
         angle = 0.0f;
     }
