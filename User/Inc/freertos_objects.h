@@ -5,12 +5,14 @@
 #include "queue.h"  //队列
 #include "semphr.h" //互斥锁
 #include "app_types.h"  //类型文件
+#include "event_groups.h" //事件组
 
 /* macro definition */
 extern QueueHandle_t qAttitude;
 extern QueueHandle_t qGnss;
 extern QueueHandle_t qMqttPublish;
 extern SemaphoreHandle_t mutexUart6log;
+extern EventGroupHandle_t gSystemEventGroup;
 /* function declaration */
  void FreeRTOS_ObjectsCreate(void);
 #endif /* __FREERTOS_OBJECTS_H__ */

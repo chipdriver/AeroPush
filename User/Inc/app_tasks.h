@@ -12,7 +12,8 @@
 #include "telemetry_service.h"
 #include "modem_service.h"
 #include "imu_service.h"
-
+#include "app_config.h"
+#include "app_status.h"
 /*function declaration*/
 void APP_TasksCreate(void);  //创建所有RTOS任务
 #endif  /* app_tasks_h */

@@ -33,4 +33,5 @@
   FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\semphr.h \
   FreeRTOS\Include\queue.h FreeRTOS\Include\task.h \
   FreeRTOS\Include\list.h User\Inc\bsp_debug_uart.h \
-  User\Inc\freertos_objects.h User\Inc\app_types.h
+  User\Inc\freertos_objects.h User\Inc\app_types.h \
+  FreeRTOS\Include\event_groups.h FreeRTOS\Include\timers.h

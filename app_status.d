@@ -1,4 +1,4 @@
-./main.o: User\Src\main.c User\Inc\app_main.h User\Inc\freertos_objects.h \
+./app_status.o: User\Src\app_status.c User\Inc\app_status.h \
   FreeRTOS\Include\FreeRTOS.h FreeRTOS\Config\FreeRTOSConfig.h \
   Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h \
   Lib\Libraries\CMSIS\Include\core_cm4.h \
@@ -30,8 +30,8 @@
   FreeRTOS\Include\projdefs.h FreeRTOS\Include\portable.h \
   FreeRTOS\Include\deprecated_definitions.h \
   FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h \
-  FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\queue.h \
-  FreeRTOS\Include\task.h FreeRTOS\Include\list.h \
-  FreeRTOS\Include\semphr.h User\Inc\app_types.h \
-  FreeRTOS\Include\event_groups.h FreeRTOS\Include\timers.h \
-  User\Inc\main.h
+  FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\event_groups.h \
+  FreeRTOS\Include\timers.h FreeRTOS\Include\task.h \
+  FreeRTOS\Include\list.h User\Inc\freertos_objects.h \
+  FreeRTOS\Include\queue.h FreeRTOS\Include\semphr.h \
+  User\Inc\app_types.h

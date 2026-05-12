@@ -34,6 +34,8 @@
   FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h \
   FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\queue.h \
   FreeRTOS\Include\task.h FreeRTOS\Include\list.h \
-  FreeRTOS\Include\semphr.h User\Inc\app_types.h User\Inc\debug_log.h \
-  User\Inc\telemetry_service.h User\Inc\modem_service.h \
-  User\Inc\imu_service.h User\Inc\app_config.h
+  FreeRTOS\Include\semphr.h User\Inc\app_types.h \
+  FreeRTOS\Include\event_groups.h FreeRTOS\Include\timers.h \
+  User\Inc\debug_log.h User\Inc\telemetry_service.h \
+  User\Inc\modem_service.h User\Inc\imu_service.h User\Inc\app_config.h \
+  User\Inc\app_status.h

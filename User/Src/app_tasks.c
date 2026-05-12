@@ -1,5 +1,5 @@
 #include "app_tasks.h"
-#include "app_config.h"
+
 
 /*任务句柄*/
 /*
@@ -83,6 +83,11 @@ static void InitTask(void * argument)
     Debug_Print("\r\n[AeroPush] RTOS start\r\n"); // 打印系统启动信息
     Debug_Print("[InitTask] start\r\n");       // 打印 InitTask 开始运行信息
 
+    AppStatus_Set(APP_STATUS_IMU_READY); // 设置 IMU 就绪状态位，表示 IMU 初始化完成，姿态服务可用
+    AppStatus_Set(APP_STATUS_GNSS_READY); // 设置 GNSS 就绪状态位，表示 GNSS 功能已打开
+    AppStatus_Set(APP_STATUS_MQTT_READY); // 设置 MQTT 就绪状态位，表示 MQTT 功能已打开
+    AppStatus_Set(APP_STATUS_NET_READY);            // 当前阶段先模拟 4G 网络已就绪
+
     Debug_Print("[InitTask] done\r\n");        // 打印 InitTask 初始化完成信息
     /*
     *   初始化任务通常只需要运行一次。
@@ -114,6 +119,12 @@ static void ImuTask(void *argument)
    while(1)         //任务主循环，FreeRTOS 任务一般都是while(1) 死循环结构
    {
 
+    if(AppStatus_IsSet(APP_STATUS_IMU_READY) == 0) //如果 IMU 就绪状态位未设置，说明 IMU 初始化未完成
+    {
+        vTaskDelay(pdMS_TO_TICKS(100));  //每100ms检查一次状态位，等待 IMU 初始化完成
+        continue;   //跳过本次循环，继续等待
+    }
+
     /*模拟姿态数据*/
     ImuService_BuildSimAttitude(&attitude);
 
@@ -144,11 +155,21 @@ static void ModemTask(void *argument)
     MqttPublishMsg_t mqtt_msg;  //定义 MQTT 消息变量,用于接收待发布消息
     (void)argument;     //显示表示argument参数暂时不用，避免编译器警告
 
+    memset(&gnss,0,sizeof(gnss));   //将 GNSS 数据变量清零，避免初始值随机
+    memset(&mqtt_msg,0,sizeof(mqtt_msg));   //将 MQTT 消息变量清零，避免字符串缓冲区残留脏数据
+
     while(1)            //通信任务主循环
     {
 
         /*模拟GNSS数据*/
         ModemService_BuildSimGnss(&gnss);
+
+        if(gnss.fix_valid) //如果模拟的 GNSS 定位有效
+            AppStatus_Set(APP_STATUS_GNSS_FIX); //设置 GNSS 已定位状态位
+        else
+            AppStatus_Clear(APP_STATUS_GNSS_FIX); //清除 GNSS 已定位状态位
+
+        
 
         xQueueOverwrite(qGnss, &gnss);           // 将最新 GNSS 数据写入 qGnss 队列，如果已有旧数据则覆盖
 
@@ -236,10 +257,13 @@ static void LedTask(void *argument)
     {
         BSP_LED_Toggle();   //LED 翻转
 
-        Debug_Print("ledtask\n");
-         /*
-         *  LED 状态指示不需要很高频率。
-         *  周期在 app_config.h 中统一配置*/
-        vTaskDelay(pdMS_TO_TICKS(APP_LED_TASK_PERIOD_MS));     //当前任务按配置周期延时，后续用于实现 LED 心跳闪烁
+       if( AppStatus_IsSet(APP_STATUS_GNSS_FIX) && AppStatus_IsSet(APP_STATUS_MQTT_READY) ) //如果 GNSS 已定位且 MQTT 已就绪，说明系统状态良好，LED 正常
+        {
+            vTaskDelay(pdMS_TO_TICKS(APP_LED_TASK_PERIOD_MS)); // LED 正常
+        }
+        else
+        {
+            vTaskDelay(pdMS_TO_TICKS(100)); //LED 快闪，提示用户系统状态异常
+        }
     }
 }

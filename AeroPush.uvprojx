@@ -422,37 +422,17 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>User</GroupName>
+          <GroupName>App_Main</GroupName>
           <Files>
-            <File>
-              <FileName>stm32f4xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\User\Src\stm32f4xx_it.c</FilePath>
-            </File>
-            <File>
-              <FileName>delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\User\Src\delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>freertos_hook.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\User\Src\freertos_hook.c</FilePath>
-            </File>
-            <File>
-              <FileName>app_tasks.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\User\Src\app_tasks.c</FilePath>
-            </File>
             <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\User\Src\main.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\User\Src\bsp_led.c</FilePath>
+              <FileName>main.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\main.h</FilePath>
             </File>
             <File>
               <FileName>app_main.c</FileName>
@@ -460,24 +440,49 @@
               <FilePath>.\User\Src\app_main.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_debug_uart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\User\Src\bsp_debug_uart.c</FilePath>
+              <FileName>app_main.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\app_main.h</FilePath>
             </File>
             <File>
-              <FileName>freertos_objects.c</FileName>
+              <FileName>stm32f4xx_it.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\User\Src\freertos_objects.c</FilePath>
+              <FilePath>.\User\Src\stm32f4xx_it.c</FilePath>
             </File>
             <File>
-              <FileName>debug_log.c</FileName>
+              <FileName>stm32f4xx_it.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\stm32f4xx_it.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>App_Task</GroupName>
+          <Files>
+            <File>
+              <FileName>app_tasks.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\User\Src\debug_log.c</FilePath>
+              <FilePath>.\User\Src\app_tasks.c</FilePath>
             </File>
             <File>
-              <FileName>telemetry_service.c</FileName>
+              <FileName>app_tasks.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\app_tasks.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>App_Service</GroupName>
+          <Files>
+            <File>
+              <FileName>imu_service.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\User\Src\telemetry_service.c</FilePath>
+              <FilePath>.\User\Src\imu_service.c</FilePath>
+            </File>
+            <File>
+              <FileName>imu_service.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\imu_service.h</FilePath>
             </File>
             <File>
               <FileName>modem_service.c</FileName>
@@ -485,9 +490,124 @@
               <FilePath>.\User\Src\modem_service.c</FilePath>
             </File>
             <File>
-              <FileName>imu_service.c</FileName>
+              <FileName>modem_service.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\modem_service.h</FilePath>
+            </File>
+            <File>
+              <FileName>telemetry_service.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\User\Src\imu_service.c</FilePath>
+              <FilePath>.\User\Src\telemetry_service.c</FilePath>
+            </File>
+            <File>
+              <FileName>telemetry_service.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\telemetry_service.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>App_RTOS</GroupName>
+          <Files>
+            <File>
+              <FileName>freertos_objects.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Src\freertos_objects.c</FilePath>
+            </File>
+            <File>
+              <FileName>freertos_objects.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\freertos_objects.h</FilePath>
+            </File>
+            <File>
+              <FileName>freertos_hook.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Src\freertos_hook.c</FilePath>
+            </File>
+            <File>
+              <FileName>freertos_hook.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\freertos_hook.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>App_Status</GroupName>
+          <Files>
+            <File>
+              <FileName>app_status.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Src\app_status.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_status.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\app_status.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>App_Config</GroupName>
+          <Files>
+            <File>
+              <FileName>app_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\app_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_types.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\app_types.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\stm32f4xx_conf.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BSP</GroupName>
+          <Files>
+            <File>
+              <FileName>bsp_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Src\bsp_led.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_led.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\bsp_led.h</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_debug_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Src\bsp_debug_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_debug_uart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\bsp_debug_uart.h</FilePath>
+            </File>
+            <File>
+              <FileName>debug_log.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Src\debug_log.c</FilePath>
+            </File>
+            <File>
+              <FileName>debug_log.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\debug_log.h</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Src\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\delay.h</FilePath>
             </File>
           </Files>
         </Group>
