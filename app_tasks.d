@@ -1,5 +1,5 @@
 ./app_tasks.o: User\Src\app_tasks.c User\Inc\app_tasks.h \
-  User\Inc\bsp_led.h \
+  FreeRTOS\Include\FreeRTOS.h FreeRTOS\Config\FreeRTOSConfig.h \
   Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h \
   Lib\Libraries\CMSIS\Include\core_cm4.h \
   Lib\Libraries\CMSIS\Include\core_cmInstr.h \
@@ -27,16 +27,15 @@
   Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h \
   Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h \
   Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h \
-  User\Inc\bsp_debug_uart.h User\Inc\freertos_objects.h \
-  FreeRTOS\Include\FreeRTOS.h FreeRTOS\Config\FreeRTOSConfig.h \
   FreeRTOS\Include\projdefs.h FreeRTOS\Include\portable.h \
   FreeRTOS\Include\deprecated_definitions.h \
   FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h \
-  FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\queue.h \
-  FreeRTOS\Include\task.h FreeRTOS\Include\list.h \
-  FreeRTOS\Include\semphr.h User\Inc\app_types.h \
+  FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\task.h \
+  FreeRTOS\Include\list.h User\Inc\app_config.h User\Inc\app_status.h \
   FreeRTOS\Include\event_groups.h FreeRTOS\Include\timers.h \
-  User\Inc\debug_log.h User\Inc\telemetry_service.h \
-  User\Inc\modem_service.h User\Inc\imu_service.h \
-  User\Inc\mpu9250_driver.h User\Inc\bsp_i2c_soft.h \
-  User\Inc\app_config.h User\Inc\app_status.h
+  User\Inc\freertos_objects.h User\Inc\app_types.h \
+  FreeRTOS\Include\queue.h FreeRTOS\Include\semphr.h \
+  User\Inc\bsp_debug_uart.h User\Inc\bsp_led.h User\Inc\debug_log.h \
+  User\Inc\imu_service.h User\Inc\mpu9250_driver.h \
+  User\Inc\bsp_i2c_soft.h User\Inc\modem_service.h \
+  User\Inc\telemetry_service.h

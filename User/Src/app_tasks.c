@@ -110,8 +110,8 @@ static void InitTask(void * argument)       // 定义初始化任务函数
 
 
     /*打印调试任务*/
-    Debug_Print("\r\n[AeroPush] RTOS start\r\n"); // 打印系统启动信息
-    Debug_Print("[InitTask] start\r\n");       // 打印 InitTask 开始运行信息
+    // Debug_Print("\r\n[AeroPush] RTOS start\r\n"); // 打印系统启动信息
+    // Debug_Print("[InitTask] start\r\n");       // 打印 InitTask 开始运行信息
 
     imu_ret = ImuService_Init(); //调用 IMU 服务初始化，为后续接入真实 MPU9250 预留入口
     if(imu_ret == 1)
@@ -127,8 +127,8 @@ static void InitTask(void * argument)       // 定义初始化任务函数
     AppStatus_Set(APP_STATUS_MQTT_READY); // 设置 MQTT 就绪状态位，表示 MQTT 功能已打开
     AppStatus_Set(APP_STATUS_NET_READY);            // 当前阶段先模拟 4G 网络已就绪
 
-    Debug_Print("[InitTask] status ready\r\n");  // 打印系统状态初始化完成信息
-    Debug_Print("[InitTask] done\r\n");        // 打印 InitTask 初始化完成信息
+    // Debug_Print("[InitTask] status ready\r\n");  // 打印系统状态初始化完成信息
+    // Debug_Print("[InitTask] done\r\n");        // 打印 InitTask 初始化完成信息
     /*
     *   初始化任务通常只需要运行一次。
     *   初始化完成后，调用vTaskDelete(NULL) 删除自己。
@@ -150,7 +150,9 @@ static void ImuTask(void *argument)         // 定义 IMU 任务函数
     (void)argument;             //显示表示 argument 参数暂时不用，避免编译器警告
     AttitudeData_t attitude;    //定义姿态数据变量,用于保存模拟姿态数据
     uint32_t print_count = 0;        //定义一个计数器变量，用于控制串口打印频率
-    MPU9250_Physical_Data phys;
+    MPU9250_Physical_Data phys = {0};
+    AK8963_Physical_Data mag_physical = {0};
+    uint8_t imu_read_ok = 0;
     /*
     *   xTaskGetTickCount() 用于获取当前 FreeRTOS 系统 tick 计数值。
     *   这里把当前时间保存下来，作为vTaskDelayUntil()   的基准时间
@@ -166,7 +168,12 @@ static void ImuTask(void *argument)         // 定义 IMU 任务函数
         continue;   //跳过本次循环，继续等待
     }
 
-    ImuService_ReadPhys(&phys); //调用 IMU 服务读取物理量数据函数，获取最新姿态数据
+    imu_read_ok = ImuService_ReadPhys(&phys, &mag_physical); //调用 IMU 服务读取物理量数据函数，获取最新姿态数据
+    if (imu_read_ok == 0U)
+    {
+        vTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS));
+        continue;
+    }
 
     print_count++; //读取成功，增加计数器
 
@@ -174,13 +181,17 @@ static void ImuTask(void *argument)         // 定义 IMU 任务函数
     {
         print_count = 0;                                 // 清零打印计数器
 
-        Debug_Printf("[ImuTask] phys ax=%.2f ay=%.2f az=%.2f gx=%.2f gy=%.2f gz=%.2f\r\n", // 打印 MPU9250 物理量六轴数据
+        Debug_Printf("[ImuTask] phys ax=%.2f ay=%.2f az=%.2f gx=%.2f gy=%.2f gz=%.2f mag_x=%.2f mag_y=%.2f mag_z=%.2f\r\n", // 打印 MPU9250 物理量六轴数据
                         phys.accel_x_g,                   // 打印加速度计 X 轴物理量
                         phys.accel_y_g,                   // 打印加速度计 Y 轴物理量
                         phys.accel_z_g,                   // 打印加速度计 Z 轴物理量
                         phys.gyro_x_dps,                    // 打印陀螺仪 X 轴物理量
                         phys.gyro_y_dps,                    // 打印陀螺仪 Y 轴物理量
-                        phys.gyro_z_dps);                   // 打印陀螺仪 Z 轴物理量
+                        phys.gyro_z_dps,                    // 打印陀螺仪 Z 轴物理量
+                        mag_physical.mag_x_ut,              // 打印磁力计 X 轴物理量
+                        mag_physical.mag_y_ut,              // 打印磁力计 Y 轴物理量
+                        mag_physical.mag_z_ut);               // 打印磁力计 Z 轴物理量
+
     }
     
     /*
@@ -286,7 +297,7 @@ static void TelemetryTask(void *argument)   // 定义遥测任务函数
             gnss.latitude,                  // 写入纬度数据
             gnss.longitude);                // 写入经度数据
 
-        Debug_Print(log_buf);  //通过调试串口打印遥测状态日志
+        // Debug_Print(log_buf);  //通过调试串口打印遥测状态日志
         
         /*
         *   遥测任务不需要像 IMU 那样高频运行。

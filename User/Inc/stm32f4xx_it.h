@@ -1,87 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    Project/STM32F4xx_StdPeriph_Templates/stm32f4xx_it.h 
-  * @author  MCD Application Team
-  * @version V1.8.1
-  * @date    27-January-2022
-  * @brief   This file contains the headers of the interrupt handlers.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+#ifndef __STM32F4xx_IT_H                         /* 防止 stm32f4xx_it.h 被重复包含 */
+#define __STM32F4xx_IT_H                         /* 定义中断处理头文件保护宏 */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32F4xx_IT_H
-#define __STM32F4xx_IT_H
+#ifdef __cplusplus                               /* 判断是否为 C++ 编译环境 */
+extern "C" {                                     /* 使用 C 链接方式导出接口 */
+#endif                                           /* 结束 C++ 编译环境判断 */
 
-#ifdef __cplusplus
- extern "C" {
-#endif 
+#include "stm32f4xx.h"                           /* 引入 STM32F4 基础定义 */
 
-/* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx.h"
+void NMI_Handler(void);                          /* 声明 NMI 异常中断处理函数 */
+void HardFault_Handler(void);                    /* 声明 HardFault 异常中断处理函数 */
+void MemManage_Handler(void);                    /* 声明 MemManage 异常中断处理函数 */
+void BusFault_Handler(void);                     /* 声明 BusFault 异常中断处理函数 */
+void UsageFault_Handler(void);                   /* 声明 UsageFault 异常中断处理函数 */
+void DebugMon_Handler(void);                     /* 声明 DebugMon 异常中断处理函数 */
 
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+#ifdef __cplusplus                               /* 判断是否为 C++ 编译环境 */
+}                                                /* 结束 C 链接导出区域 */
+#endif                                           /* 结束 C++ 编译环境判断 */
 
-/**
-  * @brief  NMI 异常中断处理函数。
-  * @param  None
-  * @retval None
-  */
-void NMI_Handler(void);
-
-/**
-  * @brief  HardFault 异常中断处理函数。
-  * @param  None
-  * @retval None
-  */
-void HardFault_Handler(void);
-
-/**
-  * @brief  MemManage 异常中断处理函数。
-  * @param  None
-  * @retval None
-  */
-void MemManage_Handler(void);
-
-/**
-  * @brief  BusFault 异常中断处理函数。
-  * @param  None
-  * @retval None
-  */
-void BusFault_Handler(void);
-
-/**
-  * @brief  UsageFault 异常中断处理函数。
-  * @param  None
-  * @retval None
-  */
-void UsageFault_Handler(void);
-//void SVC_Handler(void);
-
-/**
-  * @brief  DebugMon 异常中断处理函数。
-  * @param  None
-  * @retval None
-  */
-void DebugMon_Handler(void);
-//void PendSV_Handler(void);
-//void SysTick_Handler(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __STM32F4xx_IT_H */
-
+#endif                                           /* 结束中断处理头文件保护宏 */

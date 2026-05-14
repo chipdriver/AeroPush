@@ -30,8 +30,8 @@
   FreeRTOS\Include\projdefs.h FreeRTOS\Include\portable.h \
   FreeRTOS\Include\deprecated_definitions.h \
   FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h \
-  FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\semphr.h \
-  FreeRTOS\Include\queue.h FreeRTOS\Include\task.h \
-  FreeRTOS\Include\list.h User\Inc\bsp_debug_uart.h \
+  FreeRTOS\Include\mpu_wrappers.h User\Inc\bsp_debug_uart.h \
   User\Inc\freertos_objects.h User\Inc\app_types.h \
-  FreeRTOS\Include\event_groups.h FreeRTOS\Include\timers.h
+  FreeRTOS\Include\event_groups.h FreeRTOS\Include\timers.h \
+  FreeRTOS\Include\task.h FreeRTOS\Include\list.h \
+  FreeRTOS\Include\queue.h FreeRTOS\Include\semphr.h

@@ -1,6 +1,5 @@
 ./imu_service.o: User\Src\imu_service.c User\Inc\imu_service.h \
-  User\Inc\app_types.h FreeRTOS\Include\FreeRTOS.h \
-  FreeRTOS\Config\FreeRTOSConfig.h \
+  FreeRTOS\Include\FreeRTOS.h FreeRTOS\Config\FreeRTOSConfig.h \
   Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h \
   Lib\Libraries\CMSIS\Include\core_cm4.h \
   Lib\Libraries\CMSIS\Include\core_cmInstr.h \
@@ -32,8 +31,8 @@
   FreeRTOS\Include\deprecated_definitions.h \
   FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h \
   FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\task.h \
-  FreeRTOS\Include\list.h User\Inc\mpu9250_driver.h \
-  User\Inc\bsp_i2c_soft.h User\Inc\debug_log.h FreeRTOS\Include\semphr.h \
-  FreeRTOS\Include\queue.h User\Inc\bsp_debug_uart.h \
+  FreeRTOS\Include\list.h User\Inc\app_types.h User\Inc\mpu9250_driver.h \
+  User\Inc\bsp_i2c_soft.h User\Inc\debug_log.h User\Inc\bsp_debug_uart.h \
   User\Inc\freertos_objects.h FreeRTOS\Include\event_groups.h \
-  FreeRTOS\Include\timers.h User\Inc\app_config.h
+  FreeRTOS\Include\timers.h FreeRTOS\Include\queue.h \
+  FreeRTOS\Include\semphr.h User\Inc\app_config.h

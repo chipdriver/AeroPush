@@ -1,20 +1,10 @@
-#ifndef __TELEMETRY_SERVICE_H__        // 防止 telemetry_service.h 被重复包含
-#define __TELEMETRY_SERVICE_H__        // 定义头文件保护宏
+#ifndef __TELEMETRY_SERVICE_H__                  /* 防止 telemetry_service.h 被重复包含 */
+#define __TELEMETRY_SERVICE_H__                  /* 定义遥测服务头文件保护宏 */
 
-/* header file inclusion */            // 头文件包含区域
-#include "app_types.h"                 // 引入姿态、GNSS、MQTT 消息等项目数据类型
-#include <stdio.h>                     // 引入 snprintf 等格式化输出函数声明
-#include <string.h>                    // 引入 memset、strcpy、strlen 等字符串处理函数声明
-/* macro definitions */                // 宏定义区域，当前暂无本模块专用宏
+#include <stdio.h>                               /* 引入 snprintf 等格式化接口 */
+#include <string.h>                              /* 引入 memset 等字符串处理接口 */
+#include "app_types.h"                           /* 引入姿态、GNSS、MQTT 消息类型 */
 
-/* function declaration */             // 函数声明区域
+void Telemetry_BuildMqttMsg(const AttitudeData_t *att, const GnssData_t *gnss, MqttPublishMsg_t *msg); /* 声明 MQTT 遥测消息组装函数 */
 
-/**
- * @brief  根据姿态数据和 GNSS 数据组装 MQTT 遥测消息。
- * @param  att 指向姿态数据的结构体指针。
- * @param  gnss 指向 GNSS 数据的结构体指针。
- * @param  msg 用于保存 MQTT 发布消息的结构体指针。
- * @retval None
- */
-void Telemetry_BuildMqttMsg(const AttitudeData_t *att,const GnssData_t *gnss,MqttPublishMsg_t *msg); // 根据姿态和 GNSS 数据组装 MQTT 发布消息
-#endif /* __TELEMETRY_SERVICE_H__ */   // 结束头文件保护宏
+#endif                                           /* 结束遥测服务头文件保护宏 */

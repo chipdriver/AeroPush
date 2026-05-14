@@ -1,6 +1,5 @@
 ./modem_service.o: User\Src\modem_service.c User\Inc\modem_service.h \
-  User\Inc\app_types.h User\Inc\debug_log.h FreeRTOS\Include\FreeRTOS.h \
-  FreeRTOS\Config\FreeRTOSConfig.h \
+  FreeRTOS\Include\FreeRTOS.h FreeRTOS\Config\FreeRTOSConfig.h \
   Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h \
   Lib\Libraries\CMSIS\Include\core_cm4.h \
   Lib\Libraries\CMSIS\Include\core_cmInstr.h \
@@ -31,8 +30,9 @@
   FreeRTOS\Include\projdefs.h FreeRTOS\Include\portable.h \
   FreeRTOS\Include\deprecated_definitions.h \
   FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h \
-  FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\semphr.h \
-  FreeRTOS\Include\queue.h FreeRTOS\Include\task.h \
-  FreeRTOS\Include\list.h User\Inc\bsp_debug_uart.h \
+  FreeRTOS\Include\mpu_wrappers.h User\Inc\app_types.h \
+  User\Inc\debug_log.h User\Inc\bsp_debug_uart.h \
   User\Inc\freertos_objects.h FreeRTOS\Include\event_groups.h \
-  FreeRTOS\Include\timers.h User\Inc\app_config.h
+  FreeRTOS\Include\timers.h FreeRTOS\Include\task.h \
+  FreeRTOS\Include\list.h FreeRTOS\Include\queue.h \
+  FreeRTOS\Include\semphr.h User\Inc\app_config.h
