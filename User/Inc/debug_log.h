@@ -12,7 +12,20 @@
 #include "freertos_objects.h"                   // 提供串口日志互斥锁声明
 
 /* function declaration */                      // 函数声明区域
+
+/**
+ * @brief  通过调试串口发送普通字符串日志。
+ * @param  str 指向待发送字符串的指针。
+ * @retval None
+ */
 void Debug_Print(const char *str);              // 声明普通字符串日志输出函数
+
+/**
+ * @brief  通过调试串口发送格式化日志。
+ * @param  fmt 格式化字符串。
+ * @param  ... 与格式化字符串匹配的可变参数。
+ * @retval None
+ */
 void Debug_Printf(const char *fmt, ...);        // 声明格式化日志输出函数
 
 #endif /* __DEBUG_LOG_H__ */                    // 结束头文件保护宏

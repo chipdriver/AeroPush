@@ -2,8 +2,15 @@
 #include "app_config.h"            // 引入全局配置，例如 MQTT topic
 
 
+/**
+ * @brief  根据姿态数据和 GNSS 数据组装 MQTT 遥测消息。
+ * @param  att 指向姿态数据的结构体指针。
+ * @param  gnss 指向 GNSS 数据的结构体指针。
+ * @param  msg 用于保存 MQTT 发布消息的结构体指针。
+ * @retval None
+ */
 void Telemetry_BuildMqttMsg(const AttitudeData_t *att,const GnssData_t *gnss,MqttPublishMsg_t *msg) // 将姿态数据和 GNSS 数据打包成 MQTT 消息
-{
+{                                               // Telemetry_BuildMqttMsg 函数体开始
     if( att == 0 || gnss == 0 || msg == 0)       // 检查输入指针是否为空，避免访问非法地址
         return;                                  // 任意输入为空时直接返回，不继续组包
 

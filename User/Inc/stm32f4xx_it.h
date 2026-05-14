@@ -34,12 +34,47 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 
+/**
+  * @brief  NMI 异常中断处理函数。
+  * @param  None
+  * @retval None
+  */
 void NMI_Handler(void);
+
+/**
+  * @brief  HardFault 异常中断处理函数。
+  * @param  None
+  * @retval None
+  */
 void HardFault_Handler(void);
+
+/**
+  * @brief  MemManage 异常中断处理函数。
+  * @param  None
+  * @retval None
+  */
 void MemManage_Handler(void);
+
+/**
+  * @brief  BusFault 异常中断处理函数。
+  * @param  None
+  * @retval None
+  */
 void BusFault_Handler(void);
+
+/**
+  * @brief  UsageFault 异常中断处理函数。
+  * @param  None
+  * @retval None
+  */
 void UsageFault_Handler(void);
 //void SVC_Handler(void);
+
+/**
+  * @brief  DebugMon 异常中断处理函数。
+  * @param  None
+  * @retval None
+  */
 void DebugMon_Handler(void);
 //void PendSV_Handler(void);
 //void SysTick_Handler(void);

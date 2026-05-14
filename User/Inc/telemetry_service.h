@@ -8,5 +8,13 @@
 /* macro definitions */                // 宏定义区域，当前暂无本模块专用宏
 
 /* function declaration */             // 函数声明区域
+
+/**
+ * @brief  根据姿态数据和 GNSS 数据组装 MQTT 遥测消息。
+ * @param  att 指向姿态数据的结构体指针。
+ * @param  gnss 指向 GNSS 数据的结构体指针。
+ * @param  msg 用于保存 MQTT 发布消息的结构体指针。
+ * @retval None
+ */
 void Telemetry_BuildMqttMsg(const AttitudeData_t *att,const GnssData_t *gnss,MqttPublishMsg_t *msg); // 根据姿态和 GNSS 数据组装 MQTT 发布消息
 #endif /* __TELEMETRY_SERVICE_H__ */   // 结束头文件保护宏

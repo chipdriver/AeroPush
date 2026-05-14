@@ -2,6 +2,11 @@
 
 #define DEBUG_LOG_BUF_SIZE 256                  // 定义格式化日志临时缓冲区大小
 
+/**
+ * @brief  通过调试串口发送普通字符串日志。
+ * @param  str 指向待发送字符串的指针。
+ * @retval None
+ */
 void Debug_Print(const char *str)               // 发送普通字符串日志
 {                                               // Debug_Print 函数开始
     if(str == NULL)                             // 判断输入字符串指针是否为空
@@ -23,6 +28,12 @@ void Debug_Print(const char *str)               // 发送普通字符串日志
     }                                           // 互斥锁释放保护结束
 }                                               // Debug_Print 函数结束
 
+/**
+ * @brief  通过调试串口发送格式化日志。
+ * @param  fmt 格式化字符串。
+ * @param  ... 与格式化字符串匹配的可变参数。
+ * @retval None
+ */
 void Debug_Printf(const char *fmt, ...)         // 格式化并发送日志字符串
 {                                               // Debug_Printf 函数开始
     if(fmt == NULL)                             // 判断格式化字符串指针是否为空

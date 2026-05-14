@@ -155,6 +155,12 @@
   */
   #define assert_param(expr) ((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))
 /* Exported functions ------------------------------------------------------- */
+/**
+  * @brief  断言失败处理函数。
+  * @param  file 触发断言失败的源文件名。
+  * @param  line 触发断言失败的源代码行号。
+  * @retval None
+  */
   void assert_failed(uint8_t* file, uint32_t line);
 #else
   #define assert_param(expr) ((void)0)
