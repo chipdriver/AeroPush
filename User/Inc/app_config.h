@@ -13,7 +13,7 @@
 #define APP_TASK_TELEMETRY_PRIORITY       2                   // TelemetryTask 优先级
 #define APP_TASK_LED_PRIORITY             1                   // LedTask 优先级
 
-#define APP_IMU_TASK_PERIOD_MS            5                   // ImuTask 周期，单位 ms
+#define APP_IMU_TASK_PERIOD_MS            20                   // ImuTask 周期，单位 ms
 #define APP_MODEM_TASK_PERIOD_MS          20                  // ModemTask 周期，单位 ms
 #define APP_TELEMETRY_TASK_PERIOD_MS      1000                // TelemetryTask 周期，单位 ms
 #define APP_LED_TASK_PERIOD_MS            500                 // LedTask 周期，单位 ms

@@ -32,8 +32,8 @@
   FreeRTOS\Include\deprecated_definitions.h \
   FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h \
   FreeRTOS\Include\mpu_wrappers.h FreeRTOS\Include\task.h \
-  FreeRTOS\Include\list.h User\Inc\app_config.h \
-  User\Inc\mpu9250_driver.h User\Inc\bsp_i2c_soft.h User\Inc\debug_log.h \
-  FreeRTOS\Include\semphr.h FreeRTOS\Include\queue.h \
-  User\Inc\bsp_debug_uart.h User\Inc\freertos_objects.h \
-  FreeRTOS\Include\event_groups.h FreeRTOS\Include\timers.h
+  FreeRTOS\Include\list.h User\Inc\mpu9250_driver.h \
+  User\Inc\bsp_i2c_soft.h User\Inc\debug_log.h FreeRTOS\Include\semphr.h \
+  FreeRTOS\Include\queue.h User\Inc\bsp_debug_uart.h \
+  User\Inc\freertos_objects.h FreeRTOS\Include\event_groups.h \
+  FreeRTOS\Include\timers.h User\Inc\app_config.h

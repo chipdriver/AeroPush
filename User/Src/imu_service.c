@@ -52,3 +52,32 @@ void ImuService_BuildSimAttitude(AttitudeData_t *attitude) // 定义模拟姿态
     attitude->timestamp_ms = xTaskGetTickCount();          // 写入当前系统 tick 作为时间戳
     attitude->valid = 1;                                   // 设置姿态数据有效标志
 }                                                          // ImuService_BuildSimAttitude 函数体结束
+
+void ImuService_ReadRaw(MPU9250_raw_Data *raw)
+{
+    if(raw == NULL)                                   // 判断输出参数是否为空
+        return;                                            // 参数为空时直接返回
+
+    MPU9250_ReadAxis(raw);                           // 调用 MPU9250 读取六轴原始数据函数
+
+    return;                                              // 返回 1 表示读取成功
+}
+
+/**
+ * @brief 读取 MPU9250 物理量数据。
+ * @param phys 用于保存物理量数据的结构体指针。
+ * @retval 1 表示读取成功，0 表示读取失败。
+ */
+uint8_t ImuService_ReadPhys(MPU9250_Physical_Data *phys)
+{
+    MPU9250_raw_Data raw;                         // 定义一个 MPU9250 原始数据变量
+
+    if(phys == NULL)                                   // 判断输出参数是否为空
+        return 0;                                            // 参数为空时直接返回读取失败
+
+    MPU9250_ReadAxis(&raw);                           // 调用 MPU9250 读取六轴原始数据函数
+
+    MPU9250_ConvertToPhysical(&raw,phys);            // 将原始数据转换成物理量并保存到输出参数指向的结构体中
+
+    return 1;                                              // 返回 1 表示读取成功
+}

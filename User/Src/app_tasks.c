@@ -149,7 +149,8 @@ static void ImuTask(void *argument)         // 定义 IMU 任务函数
     TickType_t lastWakeTime;    //定义一个变量，用于保存上一次任务唤醒的系统 tick 时间
     (void)argument;             //显示表示 argument 参数暂时不用，避免编译器警告
     AttitudeData_t attitude;    //定义姿态数据变量,用于保存模拟姿态数据
-
+    uint32_t print_count = 0;        //定义一个计数器变量，用于控制串口打印频率
+    MPU9250_Physical_Data phys;
     /*
     *   xTaskGetTickCount() 用于获取当前 FreeRTOS 系统 tick 计数值。
     *   这里把当前时间保存下来，作为vTaskDelayUntil()   的基准时间
@@ -165,12 +166,23 @@ static void ImuTask(void *argument)         // 定义 IMU 任务函数
         continue;   //跳过本次循环，继续等待
     }
 
-    /*模拟姿态数据*/
-    ImuService_BuildSimAttitude(&attitude);
+    ImuService_ReadPhys(&phys); //调用 IMU 服务读取物理量数据函数，获取最新姿态数据
 
-    /*队列长度为 1,使用 xQueueOverwrite 保存最新姿态*/
-    xQueueOverwrite(qAttitude,&attitude);   //将最新姿态数据写入 qAttitude 队列,如果已有旧数据则覆盖
+    print_count++; //读取成功，增加计数器
 
+    if (print_count >= 200)                              // ImuTask 周期为 5ms，200 次约等于 1 秒
+    {
+        print_count = 0;                                 // 清零打印计数器
+
+        Debug_Printf("[ImuTask] phys ax=%.2f ay=%.2f az=%.2f gx=%.2f gy=%.2f gz=%.2f\r\n", // 打印 MPU9250 物理量六轴数据
+                        phys.accel_x_g,                   // 打印加速度计 X 轴物理量
+                        phys.accel_y_g,                   // 打印加速度计 Y 轴物理量
+                        phys.accel_z_g,                   // 打印加速度计 Z 轴物理量
+                        phys.gyro_x_dps,                    // 打印陀螺仪 X 轴物理量
+                        phys.gyro_y_dps,                    // 打印陀螺仪 Y 轴物理量
+                        phys.gyro_z_dps);                   // 打印陀螺仪 Z 轴物理量
+    }
+    
     /*
     *   vTaskDelayUntil()   用于实现严格周期延时，它与 vTaskDelay() 不一样；
     *   vTaskDelay() 是从“当前时刻”开始延时
