@@ -8,8 +8,10 @@
 #include "task.h"
 
 #include <string.h>
+#include <stdint.h>
 
 /* function declaration */
+uint8_t ImuService_Init(void);
 void ImuService_BuildSimAttitude(AttitudeData_t *attitude);
 
 #endif /* __IMU_SERVICE_H__ */

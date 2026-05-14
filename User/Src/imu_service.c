@@ -1,5 +1,24 @@
 #include "imu_service.h"
 #include "app_config.h"
+#include "mpu9250_driver.h"
+#include "debug_log.h"
+
+uint8_t ImuService_Init(void)
+{
+    uint8_t ret;
+
+    Debug_Print("[ImuService] init start\r\n");
+
+    ret = MPU9250_Driver_Init();
+    if(ret == 0)
+    {
+        Debug_Print("[ImuService] init failed\r\n");
+        return 0;
+    }
+
+    Debug_Print("[ImuService] init ok\r\n");
+    return 1;
+}
 
 void ImuService_BuildSimAttitude(AttitudeData_t *attitude)
 {

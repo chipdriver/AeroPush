@@ -73,6 +73,7 @@ void APP_TasksCreate(void)
  */
 static void InitTask(void * argument)
 {
+    uint8_t imu_ret; //保存 IMU 服务初始化结果，1 表示成功，0 表示失败
     (void)argument; //显示表示argument参数暂时不用，避免编译器警告
 
     BSP_LED_Init(); // LED 初始化
@@ -83,11 +84,21 @@ static void InitTask(void * argument)
     Debug_Print("\r\n[AeroPush] RTOS start\r\n"); // 打印系统启动信息
     Debug_Print("[InitTask] start\r\n");       // 打印 InitTask 开始运行信息
 
-    AppStatus_Set(APP_STATUS_IMU_READY); // 设置 IMU 就绪状态位，表示 IMU 初始化完成，姿态服务可用
+    imu_ret = ImuService_Init(); //调用 IMU 服务初始化，为后续接入真实 MPU9250 预留入口
+    if(imu_ret == 1)
+    {
+        AppStatus_Set(APP_STATUS_IMU_READY); //初始化成功后设置 IMU 就绪状态位
+    }
+    else
+    {
+        AppStatus_Set(APP_STATUS_IMU_ERROR); //初始化失败时设置 IMU 错误状态位
+    }
+
     AppStatus_Set(APP_STATUS_GNSS_READY); // 设置 GNSS 就绪状态位，表示 GNSS 功能已打开
     AppStatus_Set(APP_STATUS_MQTT_READY); // 设置 MQTT 就绪状态位，表示 MQTT 功能已打开
     AppStatus_Set(APP_STATUS_NET_READY);            // 当前阶段先模拟 4G 网络已就绪
 
+    Debug_Print("[InitTask] status ready\r\n");  // 打印系统状态初始化完成信息
     Debug_Print("[InitTask] done\r\n");        // 打印 InitTask 初始化完成信息
     /*
     *   初始化任务通常只需要运行一次。

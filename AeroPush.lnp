@@ -18,6 +18,8 @@
 ".\bsp_debug_uart.o"
 ".\debug_log.o"
 ".\delay.o"
+".\bsp_i2c_soft.o"
+".\mpu9250_driver.o"
 ".\event_groups.o"
 ".\list.o"
 ".\queue.o"
