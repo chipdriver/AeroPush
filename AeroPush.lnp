@@ -11,6 +11,8 @@
 ".\imu_service.o"
 ".\modem_service.o"
 ".\telemetry_service.o"
+".\led_service.o"
+".\debug_service.o"
 ".\freertos_objects.o"
 ".\freertos_hook.o"
 ".\app_status.o"

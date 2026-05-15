@@ -7,11 +7,11 @@
 #include "task.h"              /* 引入 FreeRTOS 任务接口 */
 #include "app_config.h"        /* 引入应用配置参数 */
 #include "app_status.h"        /* 引入系统状态管理接口 */
-#include "bsp_debug_uart.h"    /* 引入调试串口 BSP 接口 */
-#include "bsp_led.h"           /* 引入 LED BSP 接口 */
+#include "debug_service.h"     /* 引入调试服务接口 */
 #include "debug_log.h"         /* 引入调试日志接口 */
 #include "freertos_objects.h"  /* 引入 FreeRTOS 对象和队列声明 */
 #include "imu_service.h"       /* 引入 IMU 服务接口 */
+#include "led_service.h"       /* 引入 LED 服务接口 */
 #include "modem_service.h"     /* 引入通信服务接口 */
 #include "telemetry_service.h" /* 引入遥测服务接口 */
 

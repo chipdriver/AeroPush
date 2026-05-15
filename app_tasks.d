@@ -35,7 +35,7 @@
   FreeRTOS\Include\event_groups.h FreeRTOS\Include\timers.h \
   User\Inc\freertos_objects.h User\Inc\app_types.h \
   FreeRTOS\Include\queue.h FreeRTOS\Include\semphr.h \
-  User\Inc\bsp_debug_uart.h User\Inc\bsp_led.h User\Inc\debug_log.h \
-  User\Inc\imu_service.h User\Inc\mpu9250_driver.h \
-  User\Inc\bsp_i2c_soft.h User\Inc\modem_service.h \
-  User\Inc\telemetry_service.h
+  User\Inc\debug_service.h User\Inc\bsp_debug_uart.h \
+  User\Inc\debug_log.h User\Inc\imu_service.h User\Inc\mpu9250_driver.h \
+  User\Inc\bsp_i2c_soft.h User\Inc\led_service.h User\Inc\bsp_led.h \
+  User\Inc\modem_service.h User\Inc\telemetry_service.h

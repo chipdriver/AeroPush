@@ -104,22 +104,22 @@ static void InitTask(void *argument) // 定义初始化任务函数
     uint8_t imu_ret;                 // 保存 IMU 服务初始化结果，1 表示成功，0 表示失败
     (void)argument;                  // 显示表示argument参数暂时不用，避免编译器警告
 
-    BSP_LED_Init();       // LED 初始化
-    BSP_DebugUart_Init(); // 串口初始化
+    LedService_Init();   // 调用 LED 服务完成板载 LED 初始化
+    DebugService_Init(); // 调用调试服务完成调试串口初始化
 
     /*打印调试任务*/
     // Debug_Print("\r\n[AeroPush] RTOS start\r\n"); // 打印系统启动信息
     // Debug_Print("[InitTask] start\r\n");       // 打印 InitTask 开始运行信息
 
-    imu_ret = ImuService_Init(); // 调用 IMU 服务初始化，为后续接入真实 MPU9250 预留入口
-    if (imu_ret == 1)                                                                     // 判断条件是否成立
-    {                                                                                     // 进入代码块
+    imu_ret = ImuService_Init();             // 调用 IMU 服务初始化，为后续接入真实 MPU9250 预留入口
+    if (imu_ret == 1)                        // 判断条件是否成立
+    {                                        // 进入代码块
         AppStatus_Set(APP_STATUS_IMU_READY); // 初始化成功后设置 IMU 就绪状态位
-    }                                                                                     // 结束代码块
-    else                                                                                  // 处理条件不成立的分支
-    {                                                                                     // 进入代码块
+    } // 结束代码块
+    else                                     // 处理条件不成立的分支
+    {                                        // 进入代码块
         AppStatus_Set(APP_STATUS_IMU_ERROR); // 初始化失败时设置 IMU 错误状态位
-    }                                                                                     // 结束代码块
+    } // 结束代码块
 
     AppStatus_Set(APP_STATUS_GNSS_READY); // 设置 GNSS 就绪状态位，表示 GNSS 功能已打开
     AppStatus_Set(APP_STATUS_MQTT_READY); // 设置 MQTT 就绪状态位，表示 MQTT 功能已打开
@@ -141,15 +141,15 @@ static void InitTask(void *argument) // 定义初始化任务函数
  * @retval None
  * @note   当前读取 MPU9250 六轴和 AK8963 磁力计物理量，后续姿态融合也建议接在这里。
  */
-static void ImuTask(void *argument) // 定义 IMU 任务函数
-{                                   // ImuTask 函数体开始
-    TickType_t lastWakeTime;        // 定义一个变量，用于保存上一次任务唤醒的系统 tick 时间
-    (void)argument;                 // 显示表示 argument 参数暂时不用，避免编译器警告
-    AttitudeData_t attitude;        // 定义姿态数据变量,用于保存模拟姿态数据
-    uint32_t print_count = 0;       // 定义一个计数器变量，用于控制串口打印频率
-    MPU9250_Physical_Data phys = {0};                                                     // 定义局部变量
-    AK8963_Physical_Data mag_physical = {0};                                              // 定义局部变量
-    uint8_t imu_read_ok = 0;                                                              // 定义局部变量
+static void ImuTask(void *argument)          // 定义 IMU 任务函数
+{                                            // ImuTask 函数体开始
+    TickType_t lastWakeTime;                 // 定义一个变量，用于保存上一次任务唤醒的系统 tick 时间
+    (void)argument;                          // 显示表示 argument 参数暂时不用，避免编译器警告
+    AttitudeData_t attitude;                 // 定义姿态数据变量,用于保存模拟姿态数据
+    uint32_t print_count = 0;                // 定义一个计数器变量，用于控制串口打印频率
+    MPU9250_Physical_Data phys = {0};        // 定义局部变量
+    AK8963_Physical_Data mag_physical = {0}; // 定义局部变量
+    uint8_t imu_read_ok = 0;                 // 定义局部变量
     /*
      *   xTaskGetTickCount() 用于获取当前 FreeRTOS 系统 tick 计数值。
      *   这里把当前时间保存下来，作为vTaskDelayUntil()   的基准时间
@@ -157,26 +157,26 @@ static void ImuTask(void *argument) // 定义 IMU 任务函数
     lastWakeTime = xTaskGetTickCount(); // 获取当前系统tick，作为周期任务的起始时间
 
     while (1) // 任务主循环，FreeRTOS 任务一般都是while(1) 死循环结构
-    {                                                                                     // 进入代码块
+    {         // 进入代码块
 
         if (AppStatus_IsSet(APP_STATUS_IMU_READY) == 0) // 如果 IMU 就绪状态位未设置，说明 IMU 初始化未完成
-        {                                                                                 // 进入代码块
-            vTaskDelay(pdMS_TO_TICKS(100)); // 每100ms检查一次状态位，等待 IMU 初始化完成
-            continue;                       // 跳过本次循环，继续等待
-        }                                                                                 // 结束代码块
+        {                                               // 进入代码块
+            vTaskDelay(pdMS_TO_TICKS(100));             // 每100ms检查一次状态位，等待 IMU 初始化完成
+            continue;                                   // 跳过本次循环，继续等待
+        } // 结束代码块
 
-        imu_read_ok = ImuService_ReadPhys(&phys, &mag_physical); // 调用 IMU 服务读取物理量数据函数，获取最新姿态数据
-        if (imu_read_ok == 0U)                                                            // 判断条件是否成立
-        {                                                                                 // 进入代码块
-            vTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS));        // 按固定周期延时到下一次执行
-            continue;                                                                     // 跳过本次循环后续逻辑
-        }                                                                                 // 结束代码块
+        imu_read_ok = ImuService_ReadPhys(&phys, &mag_physical);                   // 调用 IMU 服务读取物理量数据函数，获取最新姿态数据
+        if (imu_read_ok == 0U)                                                     // 判断条件是否成立
+        {                                                                          // 进入代码块
+            vTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 按固定周期延时到下一次执行
+            continue;                                                              // 跳过本次循环后续逻辑
+        } // 结束代码块
 
         print_count++; // 读取成功，增加计数器
 
-        if (print_count >= 200) // ImuTask 周期为 5ms，200 次约等于 1 秒
-        {                                                                                 // 进入代码块
-            print_count = 0; // 清零打印计数器
+        if (print_count >= 200) // ImuTask 周期为 20ms，200 次约等于 4 秒
+        {                       // 进入代码块
+            print_count = 0;    // 清零打印计数器
 
             Debug_Printf("[ImuTask] phys ax=%.2f ay=%.2f az=%.2f gx=%.2f gy=%.2f gz=%.2f mag_x=%.2f mag_y=%.2f mag_z=%.2f\r\n", // 打印 MPU9250 物理量六轴数据
                          phys.accel_x_g,                                                                                        // 打印加速度计 X 轴物理量
@@ -188,7 +188,7 @@ static void ImuTask(void *argument) // 定义 IMU 任务函数
                          mag_physical.mag_x_ut,                                                                                 // 打印磁力计 X 轴物理量
                          mag_physical.mag_y_ut,                                                                                 // 打印磁力计 Y 轴物理量
                          mag_physical.mag_z_ut);                                                                                // 打印磁力计 Z 轴物理量
-        }                                                                                 // 结束代码块
+        } // 结束代码块
 
         /*
          *   vTaskDelayUntil()   用于实现严格周期延时，它与 vTaskDelay() 不一样；
@@ -199,7 +199,7 @@ static void ImuTask(void *argument) // 定义 IMU 任务函数
          *   所以这里表示 ImuTask 按配置周期执行一次*/
         vTaskDelayUntil(&lastWakeTime,                          // 传入上一次唤醒时间的地址，函数内部会自动更新它
                         pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 延时到下一个 5ms 周期点，实现 200HZ 周期任务
-    }                                                                                     // 结束代码块
+    } // 结束代码块
 } // ImuTask 函数体结束
 
 /**
@@ -218,14 +218,14 @@ static void ModemTask(void *argument) // 定义通信任务函数
     memset(&mqtt_msg, 0, sizeof(mqtt_msg)); // 将 MQTT 消息变量清零，避免字符串缓冲区残留脏数据
 
     while (1) // 通信任务主循环
-    {                                                                                     // 进入代码块
+    {         // 进入代码块
 
         /*模拟GNSS数据*/
-        ModemService_BuildSimGnss(&gnss);                                                 // 调用通信服务层接口
+        ModemService_BuildSimGnss(&gnss); // 调用通信服务层接口
 
-        if (gnss.fix_valid)                     // 如果模拟的 GNSS 定位有效
-            AppStatus_Set(APP_STATUS_GNSS_FIX); // 设置 GNSS 已定位状态位
-        else                                                                              // 处理条件不成立的分支
+        if (gnss.fix_valid)                       // 如果模拟的 GNSS 定位有效
+            AppStatus_Set(APP_STATUS_GNSS_FIX);   // 设置 GNSS 已定位状态位
+        else                                      // 处理条件不成立的分支
             AppStatus_Clear(APP_STATUS_GNSS_FIX); // 清除 GNSS 已定位状态位
 
         xQueueOverwrite(qGnss, &gnss); // 将最新 GNSS 数据写入 qGnss 队列，如果已有旧数据则覆盖
@@ -235,15 +235,15 @@ static void ModemTask(void *argument) // 定义通信任务函数
          * 后续这里会替换成真正的 MQTT_Publish。
          */
         if (xQueueReceive(qMqttPublish, &mqtt_msg, 0) == pdPASS) // 尝试从 MQTT 队列中取出一条发布消息，不等待
-        {                                                                                 // 进入代码块
-            ModemService_Publish(&mqtt_msg);                                              // 调用通信服务层接口
-        }                                                                                 // 结束代码块
+        {                                                        // 进入代码块
+            ModemService_Publish(&mqtt_msg);                     // 调用通信服务层接口
+        } // 结束代码块
         /*
          *   vTaskDelay() 用于让当前任务主动阻塞一段时间
          *   周期在 app_config.h 中统一配置，避免通信任务一直占用CPU
          */
         vTaskDelay(pdMS_TO_TICKS(APP_MODEM_TASK_PERIOD_MS)); // 当前任务按配置周期延时，让出 CPU 给其他任务执行
-    }                                                                                     // 结束代码块
+    } // 结束代码块
 } // ModemTask 函数体结束
 
 /**
@@ -266,8 +266,8 @@ static void TelemetryTask(void *argument) // 定义遥测任务函数
     memset(&gnss, 0, sizeof(gnss));         // 将 GNSS 数据变量清零，避免初始值随机
     memset(&mqtt_msg, 0, sizeof(mqtt_msg)); // 将 MQTT 消息变量清零，避免字符串缓冲区残留脏数据
 
-    while (1)                                                                             // 开始循环执行
-    {                                                                                     // 进入代码块
+    while (1) // 开始循环执行
+    {         // 进入代码块
 
         /* 1.获取最新姿态数据 */
         xQueuePeek(qAttitude, &attitude, 0); // 从姿态队列读取最新数据，但不把数据从队列中删除
@@ -276,7 +276,7 @@ static void TelemetryTask(void *argument) // 定义遥测任务函数
         xQueuePeek(qGnss, &gnss, 0); // 从 GNSS 队列读取最新数据，但不把数据从队列中删除
 
         /* 3. 组装JSON数据*/
-        Telemetry_BuildMqttMsg(&attitude, &gnss, &mqtt_msg);                              // 调用遥测组包接口
+        Telemetry_BuildMqttMsg(&attitude, &gnss, &mqtt_msg); // 调用遥测组包接口
 
         /* 4.发送给ModemTask */
         xQueueSend(qMqttPublish, &mqtt_msg, 0); // 将 MQTT 发布消息发送到 qMqttPublish 队列，不等待
@@ -298,7 +298,7 @@ static void TelemetryTask(void *argument) // 定义遥测任务函数
          *   周期在 app_config.h 中统一配置
          */
         vTaskDelay(pdMS_TO_TICKS(APP_TELEMETRY_TASK_PERIOD_MS)); // 当前任务按配置周期延时，控制遥测组包频率
-    }                                                                                     // 结束代码块
+    } // 结束代码块
 } // TelemetryTask 函数体结束
 
 /**
@@ -310,17 +310,17 @@ static void TelemetryTask(void *argument) // 定义遥测任务函数
 static void LedTask(void *argument) // 定义 LED 任务函数
 {                                   // LedTask 函数体开始
     (void)argument;                 // 显示表示 argument 参数暂时不用，避免编译器警告
-    while (1)                                                                             // 开始循环执行
-    {                                                                                     // 进入代码块
-        BSP_LED_Toggle(); // LED 翻转
+    while (1)                       // 开始循环执行
+    {                               // 进入代码块
+        LedService_Toggle();        // 调用 LED 服务翻转板载 LED 状态
 
         if (AppStatus_IsSet(APP_STATUS_GNSS_FIX) && AppStatus_IsSet(APP_STATUS_MQTT_READY)) // 如果 GNSS 已定位且 MQTT 已就绪，说明系统状态良好，LED 正常
-        {                                                                                 // 进入代码块
-            vTaskDelay(pdMS_TO_TICKS(APP_LED_TASK_PERIOD_MS)); // LED 正常
-        }                                                                                 // 结束代码块
-        else                                                                              // 处理条件不成立的分支
-        {                                                                                 // 进入代码块
+        {                                                                                   // 进入代码块
+            vTaskDelay(pdMS_TO_TICKS(APP_LED_TASK_PERIOD_MS));                              // LED 正常
+        } // 结束代码块
+        else                                // 处理条件不成立的分支
+        {                                   // 进入代码块
             vTaskDelay(pdMS_TO_TICKS(100)); // LED 快闪，提示用户系统状态异常
-        }                                                                                 // 结束代码块
-    }                                                                                     // 结束代码块
+        } // 结束代码块
+    } // 结束代码块
 } // LedTask 函数体结束
