@@ -1,43 +1,43 @@
 /**
  * @file    mpu9250_driver.c
- * @brief   MPU9250 鍏酱涓?AK8963 纾佸姏璁￠┍鍔ㄥ疄鐜般€?
+ * @brief   MPU9250 六轴与 AK8963 磁力计驱动实现。
  */
 #include "mpu9250_driver.h"
 #include "app_config.h"
 #include <math.h>
 
-#define MPU9250_PWR_MGMT_1_REG 0x6BU                                                      // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_PWR_MGMT_2_REG 0x6CU                                                      // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_USER_CTRL_REG 0x6AU                                                       // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_INT_PIN_CFG_REG 0x37U                                                     // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_CONFIG_REG 0x1AU                                                          // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_SMPLRT_DIV_REG 0x19U                                                      // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_ACCEL_CONFIG_REG 0x1CU                                                    // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_ACCEL_CONFIG2_REG 0x1DU                                                   // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_GYRO_CONFIG_REG 0x1BU                                                     // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_ACCEL_XOUT_H_REG 0x3BU                                                    // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_ACCEL_YOUT_H_REG 0x3DU                                                    // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_ACCEL_ZOUT_H_REG 0x3FU                                                    // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_TEMP_OUT_H_REG 0x41U                                                      // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_GYRO_XOUT_H_REG 0x43U                                                     // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_GYRO_YOUT_H_REG 0x45U                                                     // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_GYRO_ZOUT_H_REG 0x47U                                                     // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
+#define MPU9250_PWR_MGMT_1_REG 0x6BU                                                      // 定义本文件使用的宏
+#define MPU9250_PWR_MGMT_2_REG 0x6CU                                                      // 定义本文件使用的宏
+#define MPU9250_USER_CTRL_REG 0x6AU                                                       // 定义本文件使用的宏
+#define MPU9250_INT_PIN_CFG_REG 0x37U                                                     // 定义本文件使用的宏
+#define MPU9250_CONFIG_REG 0x1AU                                                          // 定义本文件使用的宏
+#define MPU9250_SMPLRT_DIV_REG 0x19U                                                      // 定义本文件使用的宏
+#define MPU9250_ACCEL_CONFIG_REG 0x1CU                                                    // 定义本文件使用的宏
+#define MPU9250_ACCEL_CONFIG2_REG 0x1DU                                                   // 定义本文件使用的宏
+#define MPU9250_GYRO_CONFIG_REG 0x1BU                                                     // 定义本文件使用的宏
+#define MPU9250_ACCEL_XOUT_H_REG 0x3BU                                                    // 定义本文件使用的宏
+#define MPU9250_ACCEL_YOUT_H_REG 0x3DU                                                    // 定义本文件使用的宏
+#define MPU9250_ACCEL_ZOUT_H_REG 0x3FU                                                    // 定义本文件使用的宏
+#define MPU9250_TEMP_OUT_H_REG 0x41U                                                      // 定义本文件使用的宏
+#define MPU9250_GYRO_XOUT_H_REG 0x43U                                                     // 定义本文件使用的宏
+#define MPU9250_GYRO_YOUT_H_REG 0x45U                                                     // 定义本文件使用的宏
+#define MPU9250_GYRO_ZOUT_H_REG 0x47U                                                     // 定义本文件使用的宏
 
-#define AK8963_REG_WIA 0x00U                                                              // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_REG_ST1 0x02U                                                              // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_REG_HXL 0x03U                                                              // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_REG_HYL 0x05U                                                              // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_REG_HZL 0x07U                                                              // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_REG_ST2 0x09U                                                              // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_REG_CNTL1 0x0AU                                                            // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_REG_ASAX 0x10U                                                             // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_REG_ASAY 0x11U                                                             // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_REG_ASAZ 0x12U                                                             // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_WHO_AM_I_VALUE 0x48U                                                       // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
+#define AK8963_REG_WIA 0x00U                                                              // 定义本文件使用的宏
+#define AK8963_REG_ST1 0x02U                                                              // 定义本文件使用的宏
+#define AK8963_REG_HXL 0x03U                                                              // 定义本文件使用的宏
+#define AK8963_REG_HYL 0x05U                                                              // 定义本文件使用的宏
+#define AK8963_REG_HZL 0x07U                                                              // 定义本文件使用的宏
+#define AK8963_REG_ST2 0x09U                                                              // 定义本文件使用的宏
+#define AK8963_REG_CNTL1 0x0AU                                                            // 定义本文件使用的宏
+#define AK8963_REG_ASAX 0x10U                                                             // 定义本文件使用的宏
+#define AK8963_REG_ASAY 0x11U                                                             // 定义本文件使用的宏
+#define AK8963_REG_ASAZ 0x12U                                                             // 定义本文件使用的宏
+#define AK8963_WHO_AM_I_VALUE 0x48U                                                       // 定义本文件使用的宏
 
-#define MPU9250_ACCEL_LSB_PER_G 4096.0f                                                   // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define MPU9250_GYRO_LSB_PER_DPS 32.8f                                                    // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
-#define AK8963_16BIT_UT_PER_LSB 0.15f                                                     // 瀹氫箟鏈枃浠朵娇鐢ㄧ殑瀹?
+#define MPU9250_ACCEL_LSB_PER_G 4096.0f                                                   // 定义本文件使用的宏
+#define MPU9250_GYRO_LSB_PER_DPS 32.8f                                                    // 定义本文件使用的宏
+#define AK8963_16BIT_UT_PER_LSB 0.15f                                                     // 定义本文件使用的宏
 #define AK8963_MAG_RADIUS_MIN_UT 5.0f                                                   // 定义本文件使用的宏
 #define AK8963_MAG_CAL_MAX_SAMPLES 500U
 #define AK8963_MAG_FIT_PARAM_COUNT 9U
@@ -47,12 +47,12 @@
 #define AK8963_MAG_FIT_MIN_EIGENVALUE 1.0e-8f
 #define AK8963_MAG_FIT_MAX_EIGENVALUE 1.0f
 
-static uint8_t g_ak8963_asa[3] = {0U, 0U, 0U};                                            // 瀹氫箟鏈枃浠跺唴閮ㄩ潤鎬佸彉閲?
-static float g_ak8963_sensitivity[3] = {1.0f, 1.0f, 1.0f};                                // 瀹氫箟鏈枃浠跺唴閮ㄩ潤鎬佸彉閲?
+static uint8_t g_ak8963_asa[3] = {0U, 0U, 0U};                                            // 定义本文件内部静态变量
+static float g_ak8963_sensitivity[3] = {1.0f, 1.0f, 1.0f};                                // 定义本文件内部静态变量
 
-static float g_gyro_bias_dps[3] = {0.0f, 0.0f, 0.0f};                                     // 瀹氫箟鏈枃浠跺唴閮ㄩ潤鎬佸彉閲?
-static float g_accel_bias_g[3] = {0.0f, 0.0f, 0.0f};                                      // 瀹氫箟鏈枃浠跺唴閮ㄩ潤鎬佸彉閲?
-static float g_mag_offset_ut[3] = {0.0f, 0.0f, 0.0f};                                     // 瀹氫箟鏈枃浠跺唴閮ㄩ潤鎬佸彉閲?
+static float g_gyro_bias_dps[3] = {0.0f, 0.0f, 0.0f};                                     // 定义本文件内部静态变量
+static float g_accel_bias_g[3] = {0.0f, 0.0f, 0.0f};                                      // 定义本文件内部静态变量
+static float g_mag_offset_ut[3] = {0.0f, 0.0f, 0.0f};                                     // 定义本文件内部静态变量
 static float g_mag_correction[3][3] = {{1.0f, 0.0f, 0.0f},
                                        {0.0f, 1.0f, 0.0f},
                                        {0.0f, 0.0f, 1.0f}};
@@ -63,52 +63,52 @@ static float g_mag_fit_delta[AK8963_MAG_FIT_PARAM_COUNT];
 static float g_mag_fit_candidate[AK8963_MAG_FIT_PARAM_COUNT];
 
 /**
- * @brief  璇诲彇 MPU9250 鐨?16 浣嶅ぇ绔湁绗﹀彿瀵勫瓨鍣ㄥ€笺€?
- * @param  reg 楂樺瓧鑺傚瘎瀛樺櫒鍦板潃銆?
- * @return 缁勫悎鍚庣殑 16 浣嶆湁绗﹀彿鍊笺€?
+ * @brief  读取 MPU9250 的 16 位大端有符号寄存器值。
+ * @param  reg 高字节寄存器地址。
+ * @return 组合后的 16 位有符号值。
  */
-static int16_t mpu9250_read_word(uint8_t reg)                                             // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t high_byte = I2C_ReadReg(MPU9250_I2C_ADDR7, reg);                              // 瀹氫箟灞€閮ㄥ彉閲?
-    uint8_t low_byte = I2C_ReadReg(MPU9250_I2C_ADDR7, (uint8_t)(reg + 1U));               // 瀹氫箟灞€閮ㄥ彉閲?
+static int16_t mpu9250_read_word(uint8_t reg)                                             // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t high_byte = I2C_ReadReg(MPU9250_I2C_ADDR7, reg);                              // 定义局部变量
+    uint8_t low_byte = I2C_ReadReg(MPU9250_I2C_ADDR7, (uint8_t)(reg + 1U));               // 定义局部变量
 
-    return (int16_t)(((uint16_t)high_byte << 8U) | (uint16_t)low_byte);                   // 杩斿洖鍑芥暟鎵ц缁撴灉
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    return (int16_t)(((uint16_t)high_byte << 8U) | (uint16_t)low_byte);                   // 返回函数执行结果
+}                                                                                         // 结束代码块
 
 /**
- * @brief  璇诲彇 AK8963 鐨?16 浣嶅皬绔湁绗﹀彿瀵勫瓨鍣ㄥ€笺€?
- * @param  low_reg 浣庡瓧鑺傚瘎瀛樺櫒鍦板潃銆?
- * @return 缁勫悎鍚庣殑 16 浣嶆湁绗﹀彿鍊笺€?
+ * @brief  读取 AK8963 的 16 位小端有符号寄存器值。
+ * @param  low_reg 低字节寄存器地址。
+ * @return 组合后的 16 位有符号值。
  */
-static int16_t ak8963_read_word(uint8_t low_reg)                                          // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t low_byte = I2C_ReadReg(AK8963_I2C_ADDR7, low_reg);                            // 瀹氫箟灞€閮ㄥ彉閲?
-    uint8_t high_byte = I2C_ReadReg(AK8963_I2C_ADDR7, (uint8_t)(low_reg + 1U));           // 瀹氫箟灞€閮ㄥ彉閲?
+static int16_t ak8963_read_word(uint8_t low_reg)                                          // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t low_byte = I2C_ReadReg(AK8963_I2C_ADDR7, low_reg);                            // 定义局部变量
+    uint8_t high_byte = I2C_ReadReg(AK8963_I2C_ADDR7, (uint8_t)(low_reg + 1U));           // 定义局部变量
 
-    return (int16_t)(((uint16_t)high_byte << 8U) | (uint16_t)low_byte);                   // 杩斿洖鍑芥暟鎵ц缁撴灉
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    return (int16_t)(((uint16_t)high_byte << 8U) | (uint16_t)low_byte);                   // 返回函数执行结果
+}                                                                                         // 结束代码块
 
 /**
- * @brief  灏?AK8963 鍘熷鍊艰浆鎹负鍙粡杩?ASA 鐏垫晱搴﹁ˉ鍋跨殑 uT 鏁版嵁銆?
- * @param  raw 纾佸姏璁″師濮嬫暟鎹€?
- * @param  mag_out 杈撳嚭鐨勫熀纭€纾佸満鐗╃悊閲忋€?
+ * @brief  将 AK8963 原始值转换为只经过 ASA 灵敏度补偿的 uT 数据。
+ * @param  raw 磁力计原始数据。
+ * @param  mag_out 输出的基础磁场物理量。
  * @retval None
  */
-static void ak8963_convert_raw_to_ut(const AK8963_raw_Data *raw, AK8963_Physical_Data *mag_out) // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    if ((raw == 0) || (mag_out == 0))                                                     // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        return;                                                                           // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
+static void ak8963_convert_raw_to_ut(const AK8963_raw_Data *raw, AK8963_Physical_Data *mag_out) // 说明当前代码行
+{                                                                                         // 进入代码块
+    if ((raw == 0) || (mag_out == 0))                                                     // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        return;                                                                           // 返回函数执行结果
+    }                                                                                     // 结束代码块
 
-    mag_out->mag_x_ut = (float)raw->mag_x * g_ak8963_sensitivity[0] * AK8963_16BIT_UT_PER_LSB; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    mag_out->mag_y_ut = (float)raw->mag_y * g_ak8963_sensitivity[1] * AK8963_16BIT_UT_PER_LSB; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    mag_out->mag_z_ut = (float)raw->mag_z * g_ak8963_sensitivity[2] * AK8963_16BIT_UT_PER_LSB; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    mag_out->mag_x_ut = (float)raw->mag_x * g_ak8963_sensitivity[0] * AK8963_16BIT_UT_PER_LSB; // 给变量或寄存器写入新值
+    mag_out->mag_y_ut = (float)raw->mag_y * g_ak8963_sensitivity[1] * AK8963_16BIT_UT_PER_LSB; // 给变量或寄存器写入新值
+    mag_out->mag_z_ut = (float)raw->mag_z * g_ak8963_sensitivity[2] * AK8963_16BIT_UT_PER_LSB; // 给变量或寄存器写入新值
+}                                                                                         // 结束代码块
 
 /**
- * @brief  搴旂敤纾佸姏璁＄‖閾佸亸绉诲拰杞搧缂╂斁鏍″噯銆?
- * @param  mag 寰呮牎鍑嗙殑纾佸満鐗╃悊閲忥紝鍑芥暟浼氬師鍦版洿鏂般€?
+ * @brief  应用磁力计硬铁偏移和软铁缩放校准。
+ * @param  mag 待校准的磁场物理量，函数会原地更新。
  * @retval None
  */
 static void ak8963_apply_mag_calibration(AK8963_Physical_Data *mag)                       // 说明当前代码行
@@ -557,360 +557,360 @@ static uint8_t ak8963_fit_ellipsoid(uint16_t sample_count,
     return 1U;
 }
 /**
- * @brief  璇诲彇骞舵牎楠?MPU9250 璁惧 ID銆?
+ * @brief  读取并校验 MPU9250 设备 ID。
  * @param  None
- * @return 0 琛ㄧず ID 姝ｇ‘锛岃礋鏁拌〃绀鸿鍙栧け璐ユ垨 ID 閿欒銆?
+ * @return 0 表示 ID 正确，负数表示读取失败或 ID 错误。
  */
-static int mpu9250_check_device(void)                                                     // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t id = 0U;                                                                      // 瀹氫箟灞€閮ㄥ彉閲?
+static int mpu9250_check_device(void)                                                     // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t id = 0U;                                                                      // 定义局部变量
 
-    if (MPU9250_Driver_ReadWhoAmI(&id) == 0U)                                             // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        Debug_Print("[MPU9250] WHO_AM_I read failed\r\n");                                // 杈撳嚭璋冭瘯鏃ュ織
-        return -1;                                                                        // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
+    if (MPU9250_Driver_ReadWhoAmI(&id) == 0U)                                             // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        Debug_Print("[MPU9250] WHO_AM_I read failed\r\n");                                // 输出调试日志
+        return -1;                                                                        // 返回函数执行结果
+    }                                                                                     // 结束代码块
 
-    Debug_Printf("[MPU9250] WHO_AM_I = 0x%02X\r\n", id);                                  // 杈撳嚭璋冭瘯鏃ュ織
+    Debug_Printf("[MPU9250] WHO_AM_I = 0x%02X\r\n", id);                                  // 输出调试日志
 
-    if (id != MPU9250_WHO_AM_I_VALUE)                                                     // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        Debug_Print("[MPU9250] WHO_AM_I value error\r\n");                                // 杈撳嚭璋冭瘯鏃ュ織
-        return -2;                                                                        // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
+    if (id != MPU9250_WHO_AM_I_VALUE)                                                     // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        Debug_Print("[MPU9250] WHO_AM_I value error\r\n");                                // 输出调试日志
+        return -2;                                                                        // 返回函数执行结果
+    }                                                                                     // 结束代码块
 
-    Debug_Print("[MPU9250] WHO_AM_I check ok\r\n");                                       // 杈撳嚭璋冭瘯鏃ュ織
-    return 0;                                                                             // 杩斿洖鍑芥暟鎵ц缁撴灉
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    Debug_Print("[MPU9250] WHO_AM_I check ok\r\n");                                       // 输出调试日志
+    return 0;                                                                             // 返回函数执行结果
+}                                                                                         // 结束代码块
 
 /**
- * @brief  閰嶇疆 MPU9250 鍏酱浼犳劅鍣ㄧ殑鍩虹瀵勫瓨鍣ㄣ€?
- * @param  None
- * @retval None
- */
-static void mpu9250_config_six_axis(void)                                                 // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    MPU9250_SoftReset();                                                                  // 璋冪敤 MPU9250 椹卞姩鎺ュ彛
-    mpu_set_clock_to_auto();                                                              // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
-    mpu_enable_six_axis();                                                                // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
-    mpu_set_dlpf_cfg_3();                                                                 // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
-    mpu_set_sample_rate_200hz();                                                          // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
-    mpu_set_accel_dlpf();                                                                 // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
-    mpu_set_gyro_config();                                                                // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
-    mpu_set_accel_range();                                                                // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
-    MPU9250_Read_PowerMgmt();                                                             // 璋冪敤 MPU9250 椹卞姩鎺ュ彛
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
-
-/**
- * @brief  鍒濆鍖?AK8963 纾佸姏璁″苟杩涘叆杩炵画娴嬮噺妯″紡銆?
- * @param  None
- * @return 1 琛ㄧず鍒濆鍖栨垚鍔燂紝0 琛ㄧず鍒濆鍖栧け璐ャ€?
- */
-static uint8_t ak8963_init(void)                                                          // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    mpu_set_ak8963_by_mcu();                                                              // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
-
-    if (AK8963_CheckDeviceID() != 0)                                                      // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        Debug_Print("[AK8963] device ID check failed\r\n");                               // 杈撳嚭璋冭瘯鏃ュ織
-        return 0U;                                                                        // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
-
-    Debug_Print("[AK8963] device ID check ok\r\n");                                       // 杈撳嚭璋冭瘯鏃ュ織
-
-    AK8963_EnterPowerDownMode();                                                          // 璋冪敤 AK8963 纾佸姏璁℃帴鍙?
-    AK8963_EnterFuseROMMode();                                                            // 璋冪敤 AK8963 纾佸姏璁℃帴鍙?
-    AK8963_AdjustSensitivity();                                                           // 璋冪敤 AK8963 纾佸姏璁℃帴鍙?
-    AK8963_EnterPowerDownMode();                                                          // 璋冪敤 AK8963 纾佸姏璁℃帴鍙?
-    AK8963_EnterContinuousMeasurementMode();                                              // 璋冪敤 AK8963 纾佸姏璁℃帴鍙?
-
-    if (AK8963_CheckDataReady() == 0)                                                     // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        Debug_Print("[AK8963] data not ready\r\n");                                       // 杈撳嚭璋冭瘯鏃ュ織
-        return 0U;                                                                        // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
-
-    Debug_Print("[AK8963] data ready\r\n");                                               // 杈撳嚭璋冭瘯鏃ュ織
-    return 1U;                                                                            // 杩斿洖鍑芥暟鎵ц缁撴灉
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
-
-/**
- * @brief  璇诲彇 MPU9250 WHO_AM_I 瀵勫瓨鍣ㄣ€?
- * @param  id 淇濆瓨璇诲彇缁撴灉鐨勬寚閽堛€?
- * @return 1 琛ㄧず璇诲彇鎴愬姛锛? 琛ㄧず璇诲彇澶辫触銆?
- */
-uint8_t MPU9250_Driver_ReadWhoAmI(uint8_t *id)                                            // 瀹氫箟灞€閮ㄥ彉閲?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    int ret;                                                                              // 瀹氫箟灞€閮ㄥ彉閲?
-
-    if (id == 0)                                                                          // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        return 0U;                                                                        // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
-
-    ret = I2C_ReadRegData(MPU9250_I2C_ADDR7, MPU9250_REG_WHO_AM_I, id);                   // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    return (ret == 0) ? 1U : 0U;                                                          // 杩斿洖鍑芥暟鎵ц缁撴灉
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
-
-/**
- * @brief  杞浣?MPU9250銆?
+ * @brief  配置 MPU9250 六轴传感器的基础寄存器。
  * @param  None
  * @retval None
  */
-void MPU9250_SoftReset(void)                                                              // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_1_REG);                 // 瀹氫箟灞€閮ㄥ彉閲?
-
-    val &= (uint8_t)~(1U << 7U);                                                          // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    val |= (uint8_t)(1U << 7U);                                                           // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_1_REG, val);                         // 鎵ц杞欢 I2C 鎿嶄綔
-
-    vTaskDelay(pdMS_TO_TICKS(100));                                                       // 璁╁綋鍓嶄换鍔″欢鏃剁瓑寰?
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+static void mpu9250_config_six_axis(void)                                                 // 说明当前代码行
+{                                                                                         // 进入代码块
+    MPU9250_SoftReset();                                                                  // 调用 MPU9250 驱动接口
+    mpu_set_clock_to_auto();                                                              // 调用函数执行对应操作
+    mpu_enable_six_axis();                                                                // 调用函数执行对应操作
+    mpu_set_dlpf_cfg_3();                                                                 // 调用函数执行对应操作
+    mpu_set_sample_rate_200hz();                                                          // 调用函数执行对应操作
+    mpu_set_accel_dlpf();                                                                 // 调用函数执行对应操作
+    mpu_set_gyro_config();                                                                // 调用函数执行对应操作
+    mpu_set_accel_range();                                                                // 调用函数执行对应操作
+    MPU9250_Read_PowerMgmt();                                                             // 调用 MPU9250 驱动接口
+}                                                                                         // 结束代码块
 
 /**
- * @brief  璇诲彇骞舵墦鍗?MPU9250 鐢垫簮绠＄悊瀵勫瓨鍣ㄣ€?
+ * @brief  初始化 AK8963 磁力计并进入连续测量模式。
+ * @param  None
+ * @return 1 表示初始化成功，0 表示初始化失败。
+ */
+static uint8_t ak8963_init(void)                                                          // 说明当前代码行
+{                                                                                         // 进入代码块
+    mpu_set_ak8963_by_mcu();                                                              // 调用函数执行对应操作
+
+    if (AK8963_CheckDeviceID() != 0)                                                      // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        Debug_Print("[AK8963] device ID check failed\r\n");                               // 输出调试日志
+        return 0U;                                                                        // 返回函数执行结果
+    }                                                                                     // 结束代码块
+
+    Debug_Print("[AK8963] device ID check ok\r\n");                                       // 输出调试日志
+
+    AK8963_EnterPowerDownMode();                                                          // 调用 AK8963 磁力计接口
+    AK8963_EnterFuseROMMode();                                                            // 调用 AK8963 磁力计接口
+    AK8963_AdjustSensitivity();                                                           // 调用 AK8963 磁力计接口
+    AK8963_EnterPowerDownMode();                                                          // 调用 AK8963 磁力计接口
+    AK8963_EnterContinuousMeasurementMode();                                              // 调用 AK8963 磁力计接口
+
+    if (AK8963_CheckDataReady() == 0)                                                     // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        Debug_Print("[AK8963] data not ready\r\n");                                       // 输出调试日志
+        return 0U;                                                                        // 返回函数执行结果
+    }                                                                                     // 结束代码块
+
+    Debug_Print("[AK8963] data ready\r\n");                                               // 输出调试日志
+    return 1U;                                                                            // 返回函数执行结果
+}                                                                                         // 结束代码块
+
+/**
+ * @brief  读取 MPU9250 WHO_AM_I 寄存器。
+ * @param  id 保存读取结果的指针。
+ * @return 1 表示读取成功，0 表示读取失败。
+ */
+uint8_t MPU9250_Driver_ReadWhoAmI(uint8_t *id)                                            // 定义局部变量
+{                                                                                         // 进入代码块
+    int ret;                                                                              // 定义局部变量
+
+    if (id == 0)                                                                          // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        return 0U;                                                                        // 返回函数执行结果
+    }                                                                                     // 结束代码块
+
+    ret = I2C_ReadRegData(MPU9250_I2C_ADDR7, MPU9250_REG_WHO_AM_I, id);                   // 给变量或寄存器写入新值
+    return (ret == 0) ? 1U : 0U;                                                          // 返回函数执行结果
+}                                                                                         // 结束代码块
+
+/**
+ * @brief  软复位 MPU9250。
  * @param  None
  * @retval None
  */
-void MPU9250_Read_PowerMgmt(void)                                                         // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_1_REG);                 // 瀹氫箟灞€閮ㄥ彉閲?
+void MPU9250_SoftReset(void)                                                              // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_1_REG);                 // 定义局部变量
 
-    Debug_Printf("[MPU9250] PWR_MGMT_1 = 0x%02X\r\n", val);                               // 杈撳嚭璋冭瘯鏃ュ織
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    val &= (uint8_t)~(1U << 7U);                                                          // 给变量或寄存器写入新值
+    val |= (uint8_t)(1U << 7U);                                                           // 给变量或寄存器写入新值
+    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_1_REG, val);                         // 执行软件 I2C 操作
+
+    vTaskDelay(pdMS_TO_TICKS(100));                                                       // 让当前任务延时等待
+}                                                                                         // 结束代码块
 
 /**
- * @brief  鍞ら啋 MPU9250 骞惰缃?PLL 鏃堕挓婧愩€?
+ * @brief  读取并打印 MPU9250 电源管理寄存器。
  * @param  None
  * @retval None
  */
-void mpu_set_clock_to_auto(void)                                                          // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_1_REG);                 // 瀹氫箟灞€閮ㄥ彉閲?
+void MPU9250_Read_PowerMgmt(void)                                                         // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_1_REG);                 // 定义局部变量
 
-    val &= (uint8_t)~((1U << 6U) | 0x07U);                                                // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    val |= 0x01U;                                                                         // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_1_REG, val);                         // 鎵ц杞欢 I2C 鎿嶄綔
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    Debug_Printf("[MPU9250] PWR_MGMT_1 = 0x%02X\r\n", val);                               // 输出调试日志
+}                                                                                         // 结束代码块
 
 /**
- * @brief  鍚敤 MPU9250 鍔犻€熷害璁″拰闄€铻轰华鍏酱銆?
+ * @brief  唤醒 MPU9250 并设置 PLL 时钟源。
  * @param  None
  * @retval None
  */
-void mpu_enable_six_axis(void)                                                            // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_2_REG);                 // 瀹氫箟灞€閮ㄥ彉閲?
+void mpu_set_clock_to_auto(void)                                                          // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_1_REG);                 // 定义局部变量
 
-    val &= (uint8_t)~0x3FU;                                                               // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_2_REG, val);                         // 鎵ц杞欢 I2C 鎿嶄綔
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    val &= (uint8_t)~((1U << 6U) | 0x07U);                                                // 给变量或寄存器写入新值
+    val |= 0x01U;                                                                         // 给变量或寄存器写入新值
+    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_1_REG, val);                         // 执行软件 I2C 操作
+}                                                                                         // 结束代码块
 
 /**
- * @brief  閰嶇疆闄€铻轰华浣庨€氭护娉负 DLPF_CFG=3銆?
+ * @brief  启用 MPU9250 加速度计和陀螺仪六轴。
  * @param  None
  * @retval None
  */
-void mpu_set_dlpf_cfg_3(void)                                                             // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_CONFIG_REG);                     // 瀹氫箟灞€閮ㄥ彉閲?
+void mpu_enable_six_axis(void)                                                            // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_2_REG);                 // 定义局部变量
 
-    val = (uint8_t)((val & (uint8_t)~0x07U) | 0x03U);                                     // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_CONFIG_REG, val);                             // 鎵ц杞欢 I2C 鎿嶄綔
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    val &= (uint8_t)~0x3FU;                                                               // 给变量或寄存器写入新值
+    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_PWR_MGMT_2_REG, val);                         // 执行软件 I2C 操作
+}                                                                                         // 结束代码块
 
 /**
- * @brief  閰嶇疆 MPU9250 閲囨牱鐜囦负 200Hz銆?
+ * @brief  配置陀螺仪低通滤波为 DLPF_CFG=3。
  * @param  None
  * @retval None
  */
-void mpu_set_sample_rate_200hz(void)                                                      // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_SMPLRT_DIV_REG, 0x04U);                       // 鎵ц杞欢 I2C 鎿嶄綔
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+void mpu_set_dlpf_cfg_3(void)                                                             // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_CONFIG_REG);                     // 定义局部变量
+
+    val = (uint8_t)((val & (uint8_t)~0x07U) | 0x03U);                                     // 给变量或寄存器写入新值
+    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_CONFIG_REG, val);                             // 执行软件 I2C 操作
+}                                                                                         // 结束代码块
 
 /**
- * @brief  閰嶇疆鍔犻€熷害璁′綆閫氭护娉€?
+ * @brief  配置 MPU9250 采样率为 200Hz。
  * @param  None
  * @retval None
  */
-void mpu_set_accel_dlpf(void)                                                             // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_ACCEL_CONFIG2_REG);              // 瀹氫箟灞€閮ㄥ彉閲?
-
-    val &= (uint8_t)~0x07U;                                                               // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    val |= 0x03U;                                                                         // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    val &= (uint8_t)~(1U << 3U);                                                          // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_ACCEL_CONFIG2_REG, val);                      // 鎵ц杞欢 I2C 鎿嶄綔
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+void mpu_set_sample_rate_200hz(void)                                                      // 说明当前代码行
+{                                                                                         // 进入代码块
+    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_SMPLRT_DIV_REG, 0x04U);                       // 执行软件 I2C 操作
+}                                                                                         // 结束代码块
 
 /**
- * @brief  閰嶇疆闄€铻轰华閲忕▼涓?+/-1000 dps銆?
+ * @brief  配置加速度计低通滤波。
  * @param  None
  * @retval None
  */
-void mpu_set_gyro_config(void)                                                            // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_GYRO_CONFIG_REG);                // 瀹氫箟灞€閮ㄥ彉閲?
+void mpu_set_accel_dlpf(void)                                                             // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_ACCEL_CONFIG2_REG);              // 定义局部变量
 
-    val &= (uint8_t)~0x03U;                                                               // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    val &= (uint8_t)~(3U << 3U);                                                          // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    val |= (uint8_t)(2U << 3U);                                                           // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_GYRO_CONFIG_REG, val);                        // 鎵ц杞欢 I2C 鎿嶄綔
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    val &= (uint8_t)~0x07U;                                                               // 给变量或寄存器写入新值
+    val |= 0x03U;                                                                         // 给变量或寄存器写入新值
+    val &= (uint8_t)~(1U << 3U);                                                          // 给变量或寄存器写入新值
+    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_ACCEL_CONFIG2_REG, val);                      // 执行软件 I2C 操作
+}                                                                                         // 结束代码块
 
 /**
- * @brief  閰嶇疆鍔犻€熷害璁￠噺绋嬩负 +/-8g銆?
+ * @brief  配置陀螺仪量程为 +/-1000 dps。
  * @param  None
  * @retval None
  */
-void mpu_set_accel_range(void)                                                            // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_ACCEL_CONFIG_REG);               // 瀹氫箟灞€閮ㄥ彉閲?
+void mpu_set_gyro_config(void)                                                            // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_GYRO_CONFIG_REG);                // 定义局部变量
 
-    val &= (uint8_t)~(3U << 3U);                                                          // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    val |= (uint8_t)(2U << 3U);                                                           // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_ACCEL_CONFIG_REG, val);                       // 鎵ц杞欢 I2C 鎿嶄綔
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
-
-/**
- * @brief  璇诲彇 MPU9250 鍏酱鍘熷鏁版嵁銆?
- * @param  raw 淇濆瓨鍏酱鍘熷鏁版嵁鐨勬寚閽堛€?
- * @retval None
- */
-void MPU9250_ReadAxis(MPU9250_raw_Data *raw)                                              // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    if (raw == 0)                                                                         // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        return;                                                                           // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
-
-    raw->accel_x = mpu9250_read_word(MPU9250_ACCEL_XOUT_H_REG);                           // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    raw->accel_y = mpu9250_read_word(MPU9250_ACCEL_YOUT_H_REG);                           // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    raw->accel_z = mpu9250_read_word(MPU9250_ACCEL_ZOUT_H_REG);                           // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    raw->gyro_x = mpu9250_read_word(MPU9250_GYRO_XOUT_H_REG);                             // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    raw->gyro_y = mpu9250_read_word(MPU9250_GYRO_YOUT_H_REG);                             // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    raw->gyro_z = mpu9250_read_word(MPU9250_GYRO_ZOUT_H_REG);                             // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    raw->temp = mpu9250_read_word(MPU9250_TEMP_OUT_H_REG);                                // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    val &= (uint8_t)~0x03U;                                                               // 给变量或寄存器写入新值
+    val &= (uint8_t)~(3U << 3U);                                                          // 给变量或寄存器写入新值
+    val |= (uint8_t)(2U << 3U);                                                           // 给变量或寄存器写入新值
+    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_GYRO_CONFIG_REG, val);                        // 执行软件 I2C 操作
+}                                                                                         // 结束代码块
 
 /**
- * @brief  灏?MPU9250 鍘熷鍏酱鏁版嵁杞崲涓虹墿鐞嗛噺骞跺簲鐢ㄩ浂鍋忋€?
- * @param  raw 鍘熷鍏酱鏁版嵁銆?
- * @param  physical 杈撳嚭鐨勫叚杞寸墿鐞嗛噺銆?
- * @retval None
- */
-void MPU9250_ConvertToPhysical(const MPU9250_raw_Data *raw, MPU9250_Physical_Data *physical) // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    if ((raw == 0) || (physical == 0))                                                    // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        return;                                                                           // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
-
-    physical->accel_x_g = (float)raw->accel_x / MPU9250_ACCEL_LSB_PER_G - g_accel_bias_g[0]; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    physical->accel_y_g = (float)raw->accel_y / MPU9250_ACCEL_LSB_PER_G - g_accel_bias_g[1]; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    physical->accel_z_g = (float)raw->accel_z / MPU9250_ACCEL_LSB_PER_G - g_accel_bias_g[2]; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    physical->gyro_x_dps = (float)raw->gyro_x / MPU9250_GYRO_LSB_PER_DPS - g_gyro_bias_dps[0]; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    physical->gyro_y_dps = (float)raw->gyro_y / MPU9250_GYRO_LSB_PER_DPS - g_gyro_bias_dps[1]; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    physical->gyro_z_dps = (float)raw->gyro_z / MPU9250_GYRO_LSB_PER_DPS - g_gyro_bias_dps[2]; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    physical->temp_c = ((float)raw->temp / 333.87f) + 21.0f;                              // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
-
-/**
- * @brief  閰嶇疆 MPU9250 BYPASS锛岃 MCU 鐩存帴璁块棶 AK8963銆?
+ * @brief  配置加速度计量程为 +/-8g。
  * @param  None
  * @retval None
  */
-void mpu_set_ak8963_by_mcu(void)                                                          // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_USER_CTRL_REG);                  // 瀹氫箟灞€閮ㄥ彉閲?
+void mpu_set_accel_range(void)                                                            // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_ACCEL_CONFIG_REG);               // 定义局部变量
 
-    val &= (uint8_t)~(1U << 5U);                                                          // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_USER_CTRL_REG, val);                          // 鎵ц杞欢 I2C 鎿嶄綔
-
-    val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_INT_PIN_CFG_REG);                        // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    val |= (uint8_t)(1U << 1U);                                                           // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_INT_PIN_CFG_REG, val);                        // 鎵ц杞欢 I2C 鎿嶄綔
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    val &= (uint8_t)~(3U << 3U);                                                          // 给变量或寄存器写入新值
+    val |= (uint8_t)(2U << 3U);                                                           // 给变量或寄存器写入新值
+    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_ACCEL_CONFIG_REG, val);                       // 执行软件 I2C 操作
+}                                                                                         // 结束代码块
 
 /**
- * @brief  妫€鏌?AK8963 璁惧 ID銆?
- * @param  None
- * @return 0 琛ㄧず ID 姝ｇ‘锛?1 琛ㄧず ID 閿欒銆?
+ * @brief  读取 MPU9250 六轴原始数据。
+ * @param  raw 保存六轴原始数据的指针。
+ * @retval None
  */
-int AK8963_CheckDeviceID(void)                                                            // 瀹氫箟灞€閮ㄥ彉閲?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t device_id = I2C_ReadReg(AK8963_I2C_ADDR7, AK8963_REG_WIA);                    // 瀹氫箟灞€閮ㄥ彉閲?
+void MPU9250_ReadAxis(MPU9250_raw_Data *raw)                                              // 说明当前代码行
+{                                                                                         // 进入代码块
+    if (raw == 0)                                                                         // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        return;                                                                           // 返回函数执行结果
+    }                                                                                     // 结束代码块
 
-    return (device_id == AK8963_WHO_AM_I_VALUE) ? 0 : -1;                                 // 杩斿洖鍑芥暟鎵ц缁撴灉
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    raw->accel_x = mpu9250_read_word(MPU9250_ACCEL_XOUT_H_REG);                           // 给变量或寄存器写入新值
+    raw->accel_y = mpu9250_read_word(MPU9250_ACCEL_YOUT_H_REG);                           // 给变量或寄存器写入新值
+    raw->accel_z = mpu9250_read_word(MPU9250_ACCEL_ZOUT_H_REG);                           // 给变量或寄存器写入新值
+    raw->gyro_x = mpu9250_read_word(MPU9250_GYRO_XOUT_H_REG);                             // 给变量或寄存器写入新值
+    raw->gyro_y = mpu9250_read_word(MPU9250_GYRO_YOUT_H_REG);                             // 给变量或寄存器写入新值
+    raw->gyro_z = mpu9250_read_word(MPU9250_GYRO_ZOUT_H_REG);                             // 给变量或寄存器写入新值
+    raw->temp = mpu9250_read_word(MPU9250_TEMP_OUT_H_REG);                                // 给变量或寄存器写入新值
+}                                                                                         // 结束代码块
 
 /**
- * @brief  浣?AK8963 杩涘叆 Power-down 妯″紡銆?
+ * @brief  将 MPU9250 原始六轴数据转换为物理量并应用零偏。
+ * @param  raw 原始六轴数据。
+ * @param  physical 输出的六轴物理量。
+ * @retval None
+ */
+void MPU9250_ConvertToPhysical(const MPU9250_raw_Data *raw, MPU9250_Physical_Data *physical) // 说明当前代码行
+{                                                                                         // 进入代码块
+    if ((raw == 0) || (physical == 0))                                                    // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        return;                                                                           // 返回函数执行结果
+    }                                                                                     // 结束代码块
+
+    physical->accel_x_g = (float)raw->accel_x / MPU9250_ACCEL_LSB_PER_G - g_accel_bias_g[0]; // 给变量或寄存器写入新值
+    physical->accel_y_g = (float)raw->accel_y / MPU9250_ACCEL_LSB_PER_G - g_accel_bias_g[1]; // 给变量或寄存器写入新值
+    physical->accel_z_g = (float)raw->accel_z / MPU9250_ACCEL_LSB_PER_G - g_accel_bias_g[2]; // 给变量或寄存器写入新值
+    physical->gyro_x_dps = (float)raw->gyro_x / MPU9250_GYRO_LSB_PER_DPS - g_gyro_bias_dps[0]; // 给变量或寄存器写入新值
+    physical->gyro_y_dps = (float)raw->gyro_y / MPU9250_GYRO_LSB_PER_DPS - g_gyro_bias_dps[1]; // 给变量或寄存器写入新值
+    physical->gyro_z_dps = (float)raw->gyro_z / MPU9250_GYRO_LSB_PER_DPS - g_gyro_bias_dps[2]; // 给变量或寄存器写入新值
+    physical->temp_c = ((float)raw->temp / 333.87f) + 21.0f;                              // 给变量或寄存器写入新值
+}                                                                                         // 结束代码块
+
+/**
+ * @brief  配置 MPU9250 BYPASS，让 MCU 直接访问 AK8963。
  * @param  None
  * @retval None
  */
-void AK8963_EnterPowerDownMode(void)                                                      // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    I2C_WriteReg(AK8963_I2C_ADDR7, AK8963_REG_CNTL1, 0x00U);                              // 鎵ц杞欢 I2C 鎿嶄綔
-    vTaskDelay(pdMS_TO_TICKS(10));                                                        // 璁╁綋鍓嶄换鍔″欢鏃剁瓑寰?
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+void mpu_set_ak8963_by_mcu(void)                                                          // 说明当前代码行
+{                                                                                         // 进入代码块
+    uint8_t val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_USER_CTRL_REG);                  // 定义局部变量
+
+    val &= (uint8_t)~(1U << 5U);                                                          // 给变量或寄存器写入新值
+    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_USER_CTRL_REG, val);                          // 执行软件 I2C 操作
+
+    val = I2C_ReadReg(MPU9250_I2C_ADDR7, MPU9250_INT_PIN_CFG_REG);                        // 给变量或寄存器写入新值
+    val |= (uint8_t)(1U << 1U);                                                           // 给变量或寄存器写入新值
+    I2C_WriteReg(MPU9250_I2C_ADDR7, MPU9250_INT_PIN_CFG_REG, val);                        // 执行软件 I2C 操作
+}                                                                                         // 结束代码块
 
 /**
- * @brief  浣?AK8963 杩涘叆 Fuse ROM 妯″紡銆?
+ * @brief  检查 AK8963 设备 ID。
+ * @param  None
+ * @return 0 表示 ID 正确，-1 表示 ID 错误。
+ */
+int AK8963_CheckDeviceID(void)                                                            // 定义局部变量
+{                                                                                         // 进入代码块
+    uint8_t device_id = I2C_ReadReg(AK8963_I2C_ADDR7, AK8963_REG_WIA);                    // 定义局部变量
+
+    return (device_id == AK8963_WHO_AM_I_VALUE) ? 0 : -1;                                 // 返回函数执行结果
+}                                                                                         // 结束代码块
+
+/**
+ * @brief  使 AK8963 进入 Power-down 模式。
+ * @param  None
+ * @retval None
+ */
+void AK8963_EnterPowerDownMode(void)                                                      // 说明当前代码行
+{                                                                                         // 进入代码块
+    I2C_WriteReg(AK8963_I2C_ADDR7, AK8963_REG_CNTL1, 0x00U);                              // 执行软件 I2C 操作
+    vTaskDelay(pdMS_TO_TICKS(10));                                                        // 让当前任务延时等待
+}                                                                                         // 结束代码块
+
+/**
+ * @brief  使 AK8963 进入 Fuse ROM 模式。
  * @param  None
  * @retval None
  */
 void AK8963_EnterFuseROMMode(void)
 {
-    I2C_WriteReg(AK8963_I2C_ADDR7, AK8963_REG_CNTL1, 0x0FU);                              // 鎵ц杞欢 I2C 鎿嶄綔
-    vTaskDelay(pdMS_TO_TICKS(10));                                                        // 璁╁綋鍓嶄换鍔″欢鏃剁瓑寰?
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    I2C_WriteReg(AK8963_I2C_ADDR7, AK8963_REG_CNTL1, 0x0FU);                              // 执行软件 I2C 操作
+    vTaskDelay(pdMS_TO_TICKS(10));                                                        // 让当前任务延时等待
+}                                                                                         // 结束代码块
 
 /**
- * @brief  璇诲彇 AK8963 Fuse ROM 涓殑 ASA 鐏垫晱搴﹁ˉ鍋跨郴鏁般€?
+ * @brief  读取 AK8963 Fuse ROM 中的 ASA 灵敏度补偿系数。
  * @param  None
  * @retval None
  */
-void AK8963_AdjustSensitivity(void)                                                       // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    g_ak8963_asa[0] = I2C_ReadReg(AK8963_I2C_ADDR7, AK8963_REG_ASAX);                     // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    g_ak8963_asa[1] = I2C_ReadReg(AK8963_I2C_ADDR7, AK8963_REG_ASAY);                     // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    g_ak8963_asa[2] = I2C_ReadReg(AK8963_I2C_ADDR7, AK8963_REG_ASAZ);                     // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
+void AK8963_AdjustSensitivity(void)                                                       // 说明当前代码行
+{                                                                                         // 进入代码块
+    g_ak8963_asa[0] = I2C_ReadReg(AK8963_I2C_ADDR7, AK8963_REG_ASAX);                     // 给变量或寄存器写入新值
+    g_ak8963_asa[1] = I2C_ReadReg(AK8963_I2C_ADDR7, AK8963_REG_ASAY);                     // 给变量或寄存器写入新值
+    g_ak8963_asa[2] = I2C_ReadReg(AK8963_I2C_ADDR7, AK8963_REG_ASAZ);                     // 给变量或寄存器写入新值
 
-    g_ak8963_sensitivity[0] = (((float)g_ak8963_asa[0] - 128.0f) * 0.5f / 128.0f) + 1.0f; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    g_ak8963_sensitivity[1] = (((float)g_ak8963_asa[1] - 128.0f) * 0.5f / 128.0f) + 1.0f; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    g_ak8963_sensitivity[2] = (((float)g_ak8963_asa[2] - 128.0f) * 0.5f / 128.0f) + 1.0f; // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    g_ak8963_sensitivity[0] = (((float)g_ak8963_asa[0] - 128.0f) * 0.5f / 128.0f) + 1.0f; // 给变量或寄存器写入新值
+    g_ak8963_sensitivity[1] = (((float)g_ak8963_asa[1] - 128.0f) * 0.5f / 128.0f) + 1.0f; // 给变量或寄存器写入新值
+    g_ak8963_sensitivity[2] = (((float)g_ak8963_asa[2] - 128.0f) * 0.5f / 128.0f) + 1.0f; // 给变量或寄存器写入新值
+}                                                                                         // 结束代码块
 
 /**
- * @brief  浣?AK8963 杩涘叆 16-bit 100Hz 杩炵画娴嬮噺妯″紡銆?
+ * @brief  使 AK8963 进入 16-bit 100Hz 连续测量模式。
  * @param  None
  * @retval None
  */
-void AK8963_EnterContinuousMeasurementMode(void)                                          // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    I2C_WriteReg(AK8963_I2C_ADDR7, AK8963_REG_CNTL1, 0x16U);                              // 鎵ц杞欢 I2C 鎿嶄綔
-    vTaskDelay(pdMS_TO_TICKS(10));                                                        // 璁╁綋鍓嶄换鍔″欢鏃剁瓑寰?
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+void AK8963_EnterContinuousMeasurementMode(void)                                          // 说明当前代码行
+{                                                                                         // 进入代码块
+    I2C_WriteReg(AK8963_I2C_ADDR7, AK8963_REG_CNTL1, 0x16U);                              // 执行软件 I2C 操作
+    vTaskDelay(pdMS_TO_TICKS(10));                                                        // 让当前任务延时等待
+}                                                                                         // 结束代码块
 
 /**
- * @brief  妫€鏌?AK8963 鏁版嵁鍑嗗鏍囧織銆?
+ * @brief  检查 AK8963 数据准备标志。
  * @param  None
- * @return 1 琛ㄧず鏁版嵁宸插噯澶囧ソ锛? 琛ㄧず鏈噯澶囧ソ銆?
+ * @return 1 表示数据已准备好，0 表示未准备好。
  */
-int AK8963_CheckDataReady(void)                                                           // 瀹氫箟灞€閮ㄥ彉閲?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    uint8_t status = I2C_ReadReg(AK8963_I2C_ADDR7, AK8963_REG_ST1);                       // 瀹氫箟灞€閮ㄥ彉閲?
+int AK8963_CheckDataReady(void)                                                           // 定义局部变量
+{                                                                                         // 进入代码块
+    uint8_t status = I2C_ReadReg(AK8963_I2C_ADDR7, AK8963_REG_ST1);                       // 定义局部变量
 
-    return ((status & 0x01U) != 0U) ? 1 : 0;                                              // 杩斿洖鍑芥暟鎵ц缁撴灉
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    return ((status & 0x01U) != 0U) ? 1 : 0;                                              // 返回函数执行结果
+}                                                                                         // 结束代码块
 
 /**
- * @brief  璇诲彇 AK8963 涓夎酱鍘熷纾佸姏璁℃暟鎹€?
- * @param  raw 淇濆瓨纾佸姏璁″師濮嬫暟鎹殑鎸囬拡銆?
- * @return 0 琛ㄧず鎴愬姛锛?1 琛ㄧず鏈氨缁紝-2 琛ㄧず璇诲彇澶辫触锛?3 琛ㄧず纾佸満婧㈠嚭銆?
+ * @brief  读取 AK8963 三轴原始磁力计数据。
+ * @param  raw 保存磁力计原始数据的指针。
+ * @return 0 表示成功，-1 表示未就绪，-2 表示读取失败，-3 表示磁场溢出。
  */
 int AK8963_Read_Axis(AK8963_raw_Data *raw)
 {
@@ -945,46 +945,46 @@ int AK8963_Read_Axis(AK8963_raw_Data *raw)
 }
 
 /**
- * @brief  灏?AK8963 鍘熷鏁版嵁杞崲涓烘渶缁堟牎鍑嗗悗鐨?uT 鏁版嵁銆?
- * @param  raw 鍘熷纾佸姏璁℃暟鎹€?
- * @param  physical 杈撳嚭鐨勬牎鍑嗗悗纾佸満鐗╃悊閲忋€?
+ * @brief  将 AK8963 原始数据转换为最终校准后的 uT 数据。
+ * @param  raw 原始磁力计数据。
+ * @param  physical 输出的校准后磁场物理量。
  * @retval None
  */
-void AK8963_Calibrate(const AK8963_raw_Data *raw, AK8963_Physical_Data *physical)         // 璇存槑褰撳墠浠ｇ爜琛?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    ak8963_convert_raw_to_ut(raw, physical);                                              // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
-    ak8963_apply_mag_calibration(physical);                                               // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+void AK8963_Calibrate(const AK8963_raw_Data *raw, AK8963_Physical_Data *physical)         // 说明当前代码行
+{                                                                                         // 进入代码块
+    ak8963_convert_raw_to_ut(raw, physical);                                              // 调用函数执行对应操作
+    ak8963_apply_mag_calibration(physical);                                               // 调用函数执行对应操作
+}                                                                                         // 结束代码块
 
 /**
- * @brief  璇诲彇涓€甯?AK8963 纾佸姏璁℃暟鎹苟杈撳嚭鏍″噯鍚庣殑 uT 鏁版嵁銆?
- * @param  mag_out 淇濆瓨纾佸姏璁＄墿鐞嗛噺鐨勬寚閽堛€?
- * @return 0 琛ㄧず鎴愬姛锛屽叾浠栧€兼部鐢?AK8963_Read_Axis 鐨勯敊璇爜銆?
+ * @brief  读取一帧 AK8963 磁力计数据并输出校准后的 uT 数据。
+ * @param  mag_out 保存磁力计物理量的指针。
+ * @return 0 表示成功，其他值沿用 AK8963_Read_Axis 的错误码。
  */
-int AK8963_Read_Mag_UT(AK8963_Physical_Data *mag_out)                                     // 瀹氫箟灞€閮ㄥ彉閲?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    AK8963_raw_Data raw;                                                                  // 瀹氫箟灞€閮ㄥ彉閲?
-    int ret;                                                                              // 瀹氫箟灞€閮ㄥ彉閲?
+int AK8963_Read_Mag_UT(AK8963_Physical_Data *mag_out)                                     // 定义局部变量
+{                                                                                         // 进入代码块
+    AK8963_raw_Data raw;                                                                  // 定义局部变量
+    int ret;                                                                              // 定义局部变量
 
-    if (mag_out == 0)                                                                     // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        return -2;                                                                        // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
+    if (mag_out == 0)                                                                     // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        return -2;                                                                        // 返回函数执行结果
+    }                                                                                     // 结束代码块
 
-    ret = AK8963_Read_Axis(&raw);                                                         // 缁欏彉閲忔垨瀵勫瓨鍣ㄥ啓鍏ユ柊鍊?
-    if (ret != 0)                                                                         // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        return ret;                                                                       // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
+    ret = AK8963_Read_Axis(&raw);                                                         // 给变量或寄存器写入新值
+    if (ret != 0)                                                                         // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        return ret;                                                                       // 返回函数执行结果
+    }                                                                                     // 结束代码块
 
-    AK8963_Calibrate(&raw, mag_out);                                                      // 璋冪敤 AK8963 纾佸姏璁℃帴鍙?
-    return 0;                                                                             // 杩斿洖鍑芥暟鎵ц缁撴灉
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    AK8963_Calibrate(&raw, mag_out);                                                      // 调用 AK8963 磁力计接口
+    return 0;                                                                             // 返回函数执行结果
+}                                                                                         // 结束代码块
 
 /**
- * @brief  鏍″噯闄€铻轰华闆跺亸銆?
- * @param  samples 閲囨牱娆℃暟銆?
- * @param  delay_ms 姣忔閲囨牱涔嬮棿鐨勫欢鏃讹紝鍗曚綅 ms銆?
+ * @brief  校准陀螺仪零偏。
+ * @param  samples 采样次数。
+ * @param  delay_ms 每次采样之间的延时，单位 ms。
  * @retval None
  */
 void MPU9250_CalibrateGyro(uint16_t samples, uint16_t delay_ms)
@@ -1276,34 +1276,34 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms)
     Debug_Print("[AK8963] mag calibration done\r\n");
 }
 
-uint8_t MPU9250_Driver_Init(void)                                                         // 瀹氫箟灞€閮ㄥ彉閲?
-{                                                                                         // 杩涘叆浠ｇ爜鍧?
-    Debug_Print("[MPU9250] driver init start\r\n");                                       // 杈撳嚭璋冭瘯鏃ュ織
+uint8_t MPU9250_Driver_Init(void)                                                         // 定义局部变量
+{                                                                                         // 进入代码块
+    Debug_Print("[MPU9250] driver init start\r\n");                                       // 输出调试日志
 
-    BSP_I2C_Soft_Init();                                                                  // 璋冪敤 BSP 搴曞眰鎺ュ彛
-    Debug_Print("[MPU9250] soft i2c init ok\r\n");                                        // 杈撳嚭璋冭瘯鏃ュ織
+    BSP_I2C_Soft_Init();                                                                  // 调用 BSP 底层接口
+    Debug_Print("[MPU9250] soft i2c init ok\r\n");                                        // 输出调试日志
 
-    if (mpu9250_check_device() != 0)                                                      // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        Debug_Print("[MPU9250] driver init failed\r\n");                                  // 杈撳嚭璋冭瘯鏃ュ織
-        return 0U;                                                                        // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
+    if (mpu9250_check_device() != 0)                                                      // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        Debug_Print("[MPU9250] driver init failed\r\n");                                  // 输出调试日志
+        return 0U;                                                                        // 返回函数执行结果
+    }                                                                                     // 结束代码块
 
-    mpu9250_config_six_axis();                                                            // 璋冪敤鍑芥暟鎵ц瀵瑰簲鎿嶄綔
+    mpu9250_config_six_axis();                                                            // 调用函数执行对应操作
 
-    if (ak8963_init() == 0U)                                                              // 鍒ゆ柇鏉′欢鏄惁鎴愮珛
-    {                                                                                     // 杩涘叆浠ｇ爜鍧?
-        return 0U;                                                                        // 杩斿洖鍑芥暟鎵ц缁撴灉
-    }                                                                                     // 缁撴潫浠ｇ爜鍧?
+    if (ak8963_init() == 0U)                                                              // 判断条件是否成立
+    {                                                                                     // 进入代码块
+        return 0U;                                                                        // 返回函数执行结果
+    }                                                                                     // 结束代码块
 
-    MPU9250_CalibrateGyro(1000U, 10U);                                                    // 璋冪敤 MPU9250 椹卞姩鎺ュ彛
-    MPU9250_CalibrateAccel(1000U, 10U);                                                   // 璋冪敤 MPU9250 椹卞姩鎺ュ彛
-    AK8963_CalibrateMag(500U, 20U);                                                       // 璋冪敤 AK8963 纾佸姏璁℃帴鍙?
-    Debug_Print("[MPU9250] driver init ok\r\n");                                          // 杈撳嚭璋冭瘯鏃ュ織
-    return 1U;                                                                            // 杩斿洖鍑芥暟鎵ц缁撴灉
-}                                                                                         // 缁撴潫浠ｇ爜鍧?
+    MPU9250_CalibrateGyro(1000U, 10U);                                                    // 调用 MPU9250 驱动接口
+    MPU9250_CalibrateAccel(1000U, 10U);                                                   // 调用 MPU9250 驱动接口
+    AK8963_CalibrateMag(500U, 20U);                                                       // 调用 AK8963 磁力计接口
+    Debug_Print("[MPU9250] driver init ok\r\n");                                          // 输出调试日志
+    return 1U;                                                                            // 返回函数执行结果
+}                                                                                         // 结束代码块
 
-/*=================================================================================濮挎€佽В绠椾笌铻嶅悎=================================================================================*/
+/*=================================================================================姿态解算与融合=================================================================================*/
 
 EulerAngle_t g_euler_acc_mag = {0.0f, 0.0f, 0.0f};
 EulerAngle_t g_euler_fused = {0.0f, 0.0f, 0.0f};

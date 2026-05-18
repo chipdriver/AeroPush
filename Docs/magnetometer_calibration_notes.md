@@ -21,9 +21,11 @@ corrected_z = (raw_z - offset_z) * scale_z;
 这类方法本质上做两件事：
 
 - 用 `offset` 消除硬铁偏移；
-- 用每个轴独立的 `scale` 把三个轴拉到相近幅值。
+- 用每个轴独立的 `scale` 把三个轴拉到相近幅值（软铁校准）。
 
 这对“轴向仍然和坐标轴对齐”的椭球是够用的。
+
+![image-20260518204038908](C:\Users\w1785\AppData\Roaming\Typora\typora-user-images\image-20260518204038908.png)
 
 但真实磁场畸变常常不是这么简单。软铁干扰可能让点云：
 
@@ -44,6 +46,7 @@ corrected = M * (raw - center)
 
 - `center`：椭球中心，解决硬铁偏移；
 - `M`：3×3 软铁校正矩阵，解决缩放不一致、轴间耦合和旋转问题。
+- `raw` ：磁力计自己的原始三轴测量数据
 
 这就是这次升级最重要的工程意义：
 
@@ -236,7 +239,7 @@ fused yaw 和 mag_yaw 基本贴合
 当前工程中的磁力计数据流可以写成：
 
 ```text
-AK8963 raw data
+AK8963 raw data   AK8963的原始数据
     ->
 AK8963_Read_Axis()
     ->
