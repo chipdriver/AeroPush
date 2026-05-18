@@ -71,7 +71,7 @@ uint8_t ImuService_ReadPhys(MPU9250_Physical_Data *phys, AK8963_Physical_Data *m
 
     if ((phys == 0) || (mag == 0))                                                        // 判断条件是否成立
     {                                                                                     // 进入代码块
-        return 0U;                                                                        // 返回函数执行结果
+        return IMU_SERVICE_READ_FAIL;                                                                        // 返回函数执行结果
     }                                                                                     // 结束代码块
 
     MPU9250_ReadAxis(&raw);                                                               // 调用 MPU9250 驱动接口
@@ -79,8 +79,8 @@ uint8_t ImuService_ReadPhys(MPU9250_Physical_Data *phys, AK8963_Physical_Data *m
 
     if (AK8963_Read_Mag_UT(mag) != 0)                                                     // 判断条件是否成立
     {                                                                                     // 进入代码块
-        return 0U;                                                                        // 返回函数执行结果
+        return IMU_SERVICE_READ_6AXIS_OK;                                                                        // 返回函数执行结果
     }                                                                                     // 结束代码块
 
-    return 1U;                                                                            // 返回函数执行结果
+    return IMU_SERVICE_READ_9AXIS_OK;                                                                            // 返回函数执行结果
 }                                                                                         // 结束代码块

@@ -115,6 +115,7 @@ static void InitTask(void *argument) // 定义初始化任务函数
     if (imu_ret == 1)                        // 判断条件是否成立
     {                                        // 进入代码块
         AppStatus_Set(APP_STATUS_IMU_READY); // 初始化成功后设置 IMU 就绪状态位
+        MPU9250_MahonyInit(0.3f, 0.0f);
     } // 结束代码块
     else                                     // 处理条件不成立的分支
     {                                        // 进入代码块
@@ -150,6 +151,13 @@ static void ImuTask(void *argument)          // 定义 IMU 任务函数
     MPU9250_Physical_Data phys = {0};        // 定义局部变量
     AK8963_Physical_Data mag_physical = {0}; // 定义局部变量
     uint8_t imu_read_ok = 0;                 // 定义局部变量
+    const float imu_dt = (float)APP_IMU_TASK_PERIOD_MS * 0.001f;
+    float roll_deg = 0.0f;
+    float pitch_deg = 0.0f;
+    float yaw_deg = 0.0f;
+    float mag_roll_deg = 0.0f;
+    float mag_pitch_deg = 0.0f;
+    float mag_yaw_deg = 0.0f;
     /*
      *   xTaskGetTickCount() 用于获取当前 FreeRTOS 系统 tick 计数值。
      *   这里把当前时间保存下来，作为vTaskDelayUntil()   的基准时间
@@ -166,28 +174,42 @@ static void ImuTask(void *argument)          // 定义 IMU 任务函数
         } // 结束代码块
 
         imu_read_ok = ImuService_ReadPhys(&phys, &mag_physical);                   // 调用 IMU 服务读取物理量数据函数，获取最新姿态数据
-        if (imu_read_ok == 0U)                                                     // 判断条件是否成立
+        if (imu_read_ok == IMU_SERVICE_READ_FAIL)                                                     // 判断条件是否成立
         {                                                                          // 进入代码块
             vTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 按固定周期延时到下一次执行
             continue;                                                              // 跳过本次循环后续逻辑
         } // 结束代码块
 
+        if (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK)
+        {
+            MPU9250_ComputeEuler_FromAccMag(&phys, &mag_physical);
+            MPU9250_GetEulerDeg(&mag_roll_deg, &mag_pitch_deg, &mag_yaw_deg);
+            MPU9250_MahonyUpdate(&phys, &mag_physical, imu_dt);
+        }
+        else
+        {
+            MPU9250_MahonyUpdateIMU(&phys, imu_dt);
+        }
+
+        MPU9250_GetEulerFusedDeg(&roll_deg, &pitch_deg, &yaw_deg);
+        attitude.roll_deg = roll_deg;
+        attitude.pitch_deg = pitch_deg;
+        attitude.yaw_deg = yaw_deg;
+        attitude.timestamp_ms = xTaskGetTickCount();
+        attitude.valid = 1U;
+        xQueueOverwrite(qAttitude, &attitude);
         print_count++; // 读取成功，增加计数器
 
         if (print_count >= 200) // ImuTask 周期为 20ms，200 次约等于 4 秒
         {                       // 进入代码块
             print_count = 0;    // 清零打印计数器
 
-            Debug_Printf("[ImuTask] phys ax=%.2f ay=%.2f az=%.2f gx=%.2f gy=%.2f gz=%.2f mag_x=%.2f mag_y=%.2f mag_z=%.2f\r\n", // 打印 MPU9250 物理量六轴数据
-                         phys.accel_x_g,                                                                                        // 打印加速度计 X 轴物理量
-                         phys.accel_y_g,                                                                                        // 打印加速度计 Y 轴物理量
-                         phys.accel_z_g,                                                                                        // 打印加速度计 Z 轴物理量
-                         phys.gyro_x_dps,                                                                                       // 打印陀螺仪 X 轴物理量
-                         phys.gyro_y_dps,                                                                                       // 打印陀螺仪 Y 轴物理量
-                         phys.gyro_z_dps,                                                                                       // 打印陀螺仪 Z 轴物理量
-                         mag_physical.mag_x_ut,                                                                                 // 打印磁力计 X 轴物理量
-                         mag_physical.mag_y_ut,                                                                                 // 打印磁力计 Y 轴物理量
-                         mag_physical.mag_z_ut);                                                                                // 打印磁力计 Z 轴物理量
+            Debug_Printf("[ImuTask] fused roll=%.1f pitch=%.1f yaw=%.1f mag_yaw=%.1f mag_ok=%u\r\n",
+                         attitude.roll_deg,
+                         attitude.pitch_deg,
+                         attitude.yaw_deg,
+                         mag_yaw_deg,
+                         (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK) ? 1U : 0U);
         } // 结束代码块
 
         /*

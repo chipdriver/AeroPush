@@ -49,6 +49,23 @@ typedef struct /* 定义 AK8963 磁力计物理量结构体 */
     float mag_z_ut;     /* 保存磁力计 Z 轴物理量，单位 uT */
 } AK8963_Physical_Data; /* 声明 AK8963 磁力计物理量类型 */
 
+typedef struct
+{
+    float roll;
+    float pitch;
+    float yaw;
+} EulerAngle_t;
+
+typedef struct
+{
+    float q0;
+    float q1;
+    float q2;
+    float q3;
+} Quaternion_t;
+
+extern EulerAngle_t g_euler_acc_mag;
+extern EulerAngle_t g_euler_fused;
 uint8_t MPU9250_Driver_Init(void);                                                            /* 声明 MPU9250/AK8963 驱动初始化函数 */
 uint8_t MPU9250_Driver_ReadWhoAmI(uint8_t *id);                                               /* 声明 MPU9250 WHO_AM_I 读取函数 */
 void MPU9250_SoftReset(void);                                                                 /* 声明 MPU9250 软复位函数 */
@@ -75,5 +92,13 @@ int AK8963_Read_Mag_UT(AK8963_Physical_Data *mag_out);                          
 void MPU9250_CalibrateGyro(uint16_t samples, uint16_t delay_ms);                              /* 声明 MPU9250 陀螺仪零偏校准函数 */
 void MPU9250_CalibrateAccel(uint16_t samples, uint16_t delay_ms);                             /* 声明 MPU9250 加速度计零偏校准函数 */
 void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms);                                /* 声明 AK8963 硬铁和软铁校准函数 */
-
+void MPU9250_ComputeEuler_FromAccMag(const MPU9250_Physical_Data *imu,
+                                     const AK8963_Physical_Data *mag);
+void MPU9250_GetEulerDeg(float *roll_deg, float *pitch_deg, float *yaw_deg);
+void MPU9250_MahonyInit(float kp, float ki);
+void MPU9250_MahonyUpdate(const MPU9250_Physical_Data *imu,
+                          const AK8963_Physical_Data *mag,
+                          float dt);
+void MPU9250_MahonyUpdateIMU(const MPU9250_Physical_Data *imu, float dt);
+void MPU9250_GetEulerFusedDeg(float *roll_deg, float *pitch_deg, float *yaw_deg);
 #endif /* 结束 MPU9250 驱动头文件保护宏 */

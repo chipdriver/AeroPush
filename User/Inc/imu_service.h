@@ -8,6 +8,10 @@
 #include "app_types.h"      /* 引入项目公共数据结构 */
 #include "mpu9250_driver.h" /* 引入 MPU9250/AK8963 驱动数据类型 */
 
+#define IMU_SERVICE_READ_FAIL 0U
+#define IMU_SERVICE_READ_9AXIS_OK 1U
+#define IMU_SERVICE_READ_6AXIS_OK 2U
+
 uint8_t ImuService_Init(void);                                                       /* 声明 IMU 服务初始化函数 */
 void ImuService_BuildSimAttitude(AttitudeData_t *attitude);                          /* 声明模拟姿态数据构造函数 */
 void ImuService_ReadRaw(MPU9250_raw_Data *raw);                                      /* 声明 MPU9250 六轴原始数据读取函数 */

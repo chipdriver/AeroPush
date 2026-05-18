@@ -1,7 +1,7 @@
 #ifndef __APP_CONFIG_H__ // 防止 app_config.h 被重复包含
 #define __APP_CONFIG_H__ // 定义头文件保护宏
 
-#define APP_TASK_INIT_STACK_SIZE 256      // InitTask 栈大小
+#define APP_TASK_INIT_STACK_SIZE 768      // InitTask 栈大小
 #define APP_TASK_IMU_STACK_SIZE 256       // ImuTask 栈大小
 #define APP_TASK_MODEM_STACK_SIZE 768     // ModemTask 栈大小
 #define APP_TASK_TELEMETRY_STACK_SIZE 768 // TelemetryTask 栈大小
@@ -29,5 +29,8 @@
 
 #define APP_SIM_ATTITUDE_STEP_DEG 1.0f  // 模拟姿态角变化步长
 #define APP_SIM_ATTITUDE_MAX_DEG 360.0f // 模拟姿态角最大值
+
+#define APP_MAG_POINT_CLOUD_DEBUG_ENABLE 1U // 1: 在磁力计标定阶段输出原始点云，0: 关闭
+#define APP_MAG_POINT_CLOUD_PRINT_DIV 1U    // 每隔多少个有效点打印一次，1 表示全量输出
 
 #endif // 结束头文件保护宏

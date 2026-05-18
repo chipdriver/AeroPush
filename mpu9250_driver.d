@@ -35,4 +35,5 @@
   User\Inc\freertos_objects.h User\Inc\app_types.h \
   FreeRTOS\Include\event_groups.h FreeRTOS\Include\timers.h \
   FreeRTOS\Include\task.h FreeRTOS\Include\list.h \
-  FreeRTOS\Include\queue.h FreeRTOS\Include\semphr.h
+  FreeRTOS\Include\queue.h FreeRTOS\Include\semphr.h \
+  User\Inc\app_config.h

@@ -10,7 +10,7 @@ typedef struct /* 定义姿态数据结构体 */
 {
     float roll_deg;        /* 保存横滚角，单位 deg */
     float pitch_deg;       /* 保存俯仰角，单位 deg */
-    float yaw_deg;         /* 保存航向角，单位 deg */
+    float yaw_deg;         /* 保存航向角，单位 deg；北为 0°，东为 +90°，范围 (-180°, 180°] */
     uint32_t timestamp_ms; /* 保存姿态时间戳，单位 ms */
     uint8_t valid;         /* 保存姿态有效标志，1 有效，0 无效 */
 } AttitudeData_t;          /* 声明姿态数据类型 */

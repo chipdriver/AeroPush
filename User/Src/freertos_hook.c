@@ -1,4 +1,5 @@
-#include "freertos_hook.h" // 引入 FreeRTOS 钩子函数声明
+#include "freertos_hook.h"
+#include "debug_log.h" // 引入 FreeRTOS 钩子函数声明
 
 /**
  * @brief  内存分配失败钩子函数
@@ -24,7 +25,10 @@ void vApplicationMallocFailedHook(void) // 定义 FreeRTOS 内存分配失败钩
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) // 定义 FreeRTOS 任务栈溢出钩子函数
 {                                                                        // vApplicationStackOverflowHook 函数体开始
     (void)xTask;                                                         // 防止编译器警告：参数未使用
-    (void)pcTaskName;                                                    // 防止编译器警告：参数未使用
+    if (pcTaskName != 0)
+    {
+        Debug_Printf("[FreeRTOS] stack overflow task=%s\r\n", pcTaskName);
+    }
 
     taskDISABLE_INTERRUPTS(); // 关闭中断，防止系统继续运行造成更大错误
     while (1)                 // 进入死循环，方便调试定位栈溢出问题
