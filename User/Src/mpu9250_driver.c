@@ -1093,7 +1093,7 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms)
     vTaskDelay(pdMS_TO_TICKS(1000));
     Debug_Print("[AK8963] start in 1...\r\n");
     vTaskDelay(pdMS_TO_TICKS(1000));
-    Debug_Print("[AK8963] mag calibration begin, keep moving\r\n");
+    Debug_Print("[AK8963] mag calibration begin,  keep moving\r\n");
 
     for (i = 0U; i < samples; i++)
     {
