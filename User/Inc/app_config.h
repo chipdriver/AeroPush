@@ -1,36 +1,36 @@
-#ifndef __APP_CONFIG_H__ // 防止 app_config.h 被重复包含
-#define __APP_CONFIG_H__ // 定义头文件保护宏
+#ifndef __APP_CONFIG_H__ // 检查 __APP_CONFIG_H__ 是否未定义，防止头文件重复包含
+#define __APP_CONFIG_H__ // 定义 __APP_CONFIG_H__ 变量
 
-#define APP_TASK_INIT_STACK_SIZE 768      // InitTask 栈大小
-#define APP_TASK_IMU_STACK_SIZE 256       // ImuTask 栈大小
-#define APP_TASK_MODEM_STACK_SIZE 768     // ModemTask 栈大小
-#define APP_TASK_TELEMETRY_STACK_SIZE 768 // TelemetryTask 栈大小
-#define APP_TASK_LED_STACK_SIZE 128       // LedTask 栈大小
+#define APP_TASK_INIT_STACK_SIZE 768 // 定义 APP_TASK_INIT_STACK_SIZE 应用配置项为 768
+#define APP_TASK_IMU_STACK_SIZE 256 // 定义 APP_TASK_IMU_STACK_SIZE 应用配置项为 256
+#define APP_TASK_MODEM_STACK_SIZE 768 // 定义 APP_TASK_MODEM_STACK_SIZE 应用配置项为 768
+#define APP_TASK_TELEMETRY_STACK_SIZE 768 // 定义 APP_TASK_TELEMETRY_STACK_SIZE 应用配置项为 768
+#define APP_TASK_LED_STACK_SIZE 128 // 定义 APP_TASK_LED_STACK_SIZE 应用配置项为 128
 
-#define APP_TASK_INIT_PRIORITY 4      // InitTask 优先级
-#define APP_TASK_IMU_PRIORITY 3       // ImuTask 优先级
-#define APP_TASK_MODEM_PRIORITY 2     // ModemTask 优先级
-#define APP_TASK_TELEMETRY_PRIORITY 2 // TelemetryTask 优先级
-#define APP_TASK_LED_PRIORITY 1       // LedTask 优先级
+#define APP_TASK_INIT_PRIORITY 4 // 定义 APP_TASK_INIT_PRIORITY 应用配置项为 4
+#define APP_TASK_IMU_PRIORITY 3 // 定义 APP_TASK_IMU_PRIORITY 应用配置项为 3
+#define APP_TASK_MODEM_PRIORITY 2 // 定义 APP_TASK_MODEM_PRIORITY 应用配置项为 2
+#define APP_TASK_TELEMETRY_PRIORITY 2 // 定义 APP_TASK_TELEMETRY_PRIORITY 应用配置项为 2
+#define APP_TASK_LED_PRIORITY 1 // 定义 APP_TASK_LED_PRIORITY 应用配置项为 1
 
-#define APP_IMU_TASK_PERIOD_MS 20         // ImuTask 周期，单位 ms
-#define APP_MODEM_TASK_PERIOD_MS 20       // ModemTask 周期，单位 ms
-#define APP_TELEMETRY_TASK_PERIOD_MS 1000 // TelemetryTask 周期，单位 ms
-#define APP_LED_TASK_PERIOD_MS 500        // LedTask 周期，单位 ms
+#define APP_IMU_TASK_PERIOD_MS 20 // 定义 APP_IMU_TASK_PERIOD_MS 应用配置项为 20
+#define APP_MODEM_TASK_PERIOD_MS 20 // 定义 APP_MODEM_TASK_PERIOD_MS 应用配置项为 20
+#define APP_TELEMETRY_TASK_PERIOD_MS 1000 // 定义 APP_TELEMETRY_TASK_PERIOD_MS 应用配置项为 1000
+#define APP_LED_TASK_PERIOD_MS 500 // 定义 APP_LED_TASK_PERIOD_MS 应用配置项为 500
 
-#define APP_MQTT_TOPIC "aeropush/telemetry" // MQTT 遥测 topic
+#define APP_MQTT_TOPIC "aeropush/telemetry" // 定义 APP_MQTT_TOPIC 应用配置项为 "aeropush/telemetry"
 
-#define APP_SIM_GNSS_BASE_LAT 36.000000  // 模拟 GNSS 初始纬度
-#define APP_SIM_GNSS_BASE_LON 120.000000 // 模拟 GNSS 初始经度
-#define APP_SIM_GNSS_STEP 0.000001       // 模拟 GNSS 变化步长
-#define APP_SIM_GNSS_ALTITUDE_M 30.0f    // 模拟高度，单位 m
-#define APP_SIM_GNSS_SPEED_MPS 5.0f      // 模拟速度，单位 m/s
-#define APP_SIM_GNSS_NUM 12              // 模拟卫星数量
+#define APP_SIM_GNSS_BASE_LAT 36.000000 // 定义 APP_SIM_GNSS_BASE_LAT 应用配置项为 36.000000
+#define APP_SIM_GNSS_BASE_LON 120.000000 // 定义 APP_SIM_GNSS_BASE_LON 应用配置项为 120.000000
+#define APP_SIM_GNSS_STEP 0.000001 // 定义 APP_SIM_GNSS_STEP 应用配置项为 0.000001
+#define APP_SIM_GNSS_ALTITUDE_M 30.0f // 定义 APP_SIM_GNSS_ALTITUDE_M 应用配置项为 30.0f
+#define APP_SIM_GNSS_SPEED_MPS 5.0f // 定义 APP_SIM_GNSS_SPEED_MPS 应用配置项为 5.0f
+#define APP_SIM_GNSS_NUM 12 // 定义 APP_SIM_GNSS_NUM 应用配置项为 12
 
-#define APP_SIM_ATTITUDE_STEP_DEG 1.0f  // 模拟姿态角变化步长
-#define APP_SIM_ATTITUDE_MAX_DEG 360.0f // 模拟姿态角最大值
+#define APP_SIM_ATTITUDE_STEP_DEG 1.0f // 定义 APP_SIM_ATTITUDE_STEP_DEG 应用配置项为 1.0f
+#define APP_SIM_ATTITUDE_MAX_DEG 360.0f // 定义 APP_SIM_ATTITUDE_MAX_DEG 应用配置项为 360.0f
 
-#define APP_MAG_POINT_CLOUD_DEBUG_ENABLE 1U // 1: 在磁力计标定阶段输出原始点云，0: 关闭
-#define APP_MAG_POINT_CLOUD_PRINT_DIV 1U    // 每隔多少个有效点打印一次，1 表示全量输出
+#define APP_MAG_POINT_CLOUD_DEBUG_ENABLE 1U // 定义 APP_MAG_POINT_CLOUD_DEBUG_ENABLE 应用配置项为 1U
+#define APP_MAG_POINT_CLOUD_PRINT_DIV 1U // 定义 APP_MAG_POINT_CLOUD_PRINT_DIV 应用配置项为 1U
 
-#endif // 结束头文件保护宏
+#endif // 结束当前条件编译或头文件保护范围

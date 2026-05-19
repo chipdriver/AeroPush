@@ -1,37 +1,34 @@
-#include "freertos_hook.h"
-#include "debug_log.h" // 引入 FreeRTOS 钩子函数声明
+#include "freertos_hook.h" // 引入 freertos_hook.h 提供的接口、宏和类型定义
+#include "debug_log.h" // 引入 debug_log.h 提供的接口、宏和类型定义
 
 /**
- * @brief  内存分配失败钩子函数
- * @note   当 FreeRTOS 堆内存不足时会进入这里
- * @param  None
- * @return None
+ * @brief vApplicationMallocFailedHook 函数。
+ * @retval None
  */
-void vApplicationMallocFailedHook(void) // 定义 FreeRTOS 内存分配失败钩子函数
-{                                       // vApplicationMallocFailedHook 函数体开始
-    taskDISABLE_INTERRUPTS();           // 关闭中断，防止系统继续运行造成更大错误
-    while (1)                           // 进入死循环，方便调试定位内存不足问题
-    {                                   // 死循环开始
-    } // 死循环结束
-} // vApplicationMallocFailedHook 函数体结束
+void vApplicationMallocFailedHook(void) // 定义vApplicationMallocFailedHook 函数签名：vApplicationMallocFailedHook 函数
+{ // 进入当前代码块
+    taskDISABLE_INTERRUPTS(); // 调用taskDISABLE_INTERRUPTS 函数
+    while (1) // 当 1 成立时持续执行循环体
+    { // 进入当前代码块
+    } // 结束当前代码块
+} // 结束当前代码块
 
 /**
- * @brief  任务栈溢出钩子函数
- * @note   当某个任务发生栈溢出时会进入这里
- * @param  xTask: 发生栈溢出的任务句柄
- * @param  pcTaskName: 发生栈溢出的任务名
- * @return None
+ * @brief vApplicationStackOverflowHook 函数。
+ * @param xTask xTask 变量。
+ * @param pcTaskName pcTaskName 变量。
+ * @retval None
  */
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) // 定义 FreeRTOS 任务栈溢出钩子函数
-{                                                                        // vApplicationStackOverflowHook 函数体开始
-    (void)xTask;                                                         // 防止编译器警告：参数未使用
-    if (pcTaskName != 0)
-    {
-        Debug_Printf("[FreeRTOS] stack overflow task=%s\r\n", pcTaskName);
-    }
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) // 定义vApplicationStackOverflowHook 函数签名：vApplicationStackOverflowHook 函数
+{ // 进入当前代码块
+    (void)xTask; // 标记 xTask 变量 当前未使用，避免编译器告警
+    if (pcTaskName != 0) // 判断 pcTaskName != 0 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        Debug_Printf("[FreeRTOS] stack overflow task=%s\r\n", pcTaskName); // 调用格式化并通过调试串口输出调试信息，参数为 "[FreeRTOS] stack overflow task=%s\r\n", pcTaskName
+    } // 结束当前代码块
 
-    taskDISABLE_INTERRUPTS(); // 关闭中断，防止系统继续运行造成更大错误
-    while (1)                 // 进入死循环，方便调试定位栈溢出问题
-    {                         // 死循环开始
-    } // 死循环结束
-} // vApplicationStackOverflowHook 函数体结束
+    taskDISABLE_INTERRUPTS(); // 调用taskDISABLE_INTERRUPTS 函数
+    while (1) // 当 1 成立时持续执行循环体
+    { // 进入当前代码块
+    } // 结束当前代码块
+} // 结束当前代码块

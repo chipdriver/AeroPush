@@ -21,9 +21,9 @@
 */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_it.h"                                                                 // 包含所需头文件
-#include "main.h"                                                                         // 包含所需头文件
-#include "delay.h"                                                                        // 包含所需头文件
+#include "stm32f4xx_it.h" // 引入 stm32f4xx_it.h 提供的接口、宏和类型定义
+#include "main.h" // 引入 main.h 提供的接口、宏和类型定义
+#include "delay.h" // 引入 delay.h 提供的接口、宏和类型定义
 /** @addtogroup Template_Project
  * @{
  */
@@ -40,65 +40,60 @@
 /******************************************************************************/
 
 /**
- * @brief  This function handles NMI exception.
- * @param  None
+ * @brief NMI_Handler 函数。
  * @retval None
  */
-void NMI_Handler(void)                                                                    // 说明当前代码行
-{                                                                                         // 进入代码块
-}                                                                                         // 结束代码块
+void NMI_Handler(void) // 定义NMI_Handler 函数签名：NMI_Handler 函数
+{ // 进入当前代码块
+} // 结束当前代码块
 
 /**
- * @brief  This function handles Hard Fault exception.
- * @param  None
+ * @brief HardFault_Handler 函数。
  * @retval None
  */
-void HardFault_Handler(void)                                                              // 说明当前代码行
-{                                                                                         // 进入代码块
+void HardFault_Handler(void) // 定义HardFault_Handler 函数签名：HardFault_Handler 函数
+{ // 进入当前代码块
     /* Go to infinite loop when Hard Fault exception occurs */
-    while (1)                                                                             // 开始循环执行
-    {                                                                                     // 进入代码块
-    }                                                                                     // 结束代码块
-}                                                                                         // 结束代码块
+    while (1) // 当 1 成立时持续执行循环体
+    { // 进入当前代码块
+    } // 结束当前代码块
+} // 结束当前代码块
 
 /**
- * @brief  This function handles Memory Manage exception.
- * @param  None
+ * @brief MemManage_Handler 函数。
  * @retval None
  */
-void MemManage_Handler(void)                                                              // 说明当前代码行
-{                                                                                         // 进入代码块
+void MemManage_Handler(void) // 定义MemManage_Handler 函数签名：MemManage_Handler 函数
+{ // 进入当前代码块
     /* Go to infinite loop when Memory Manage exception occurs */
-    while (1)                                                                             // 开始循环执行
-    {                                                                                     // 进入代码块
-    }                                                                                     // 结束代码块
-}                                                                                         // 结束代码块
+    while (1) // 当 1 成立时持续执行循环体
+    { // 进入当前代码块
+    } // 结束当前代码块
+} // 结束当前代码块
 
 /**
- * @brief  This function handles Bus Fault exception.
- * @param  None
+ * @brief BusFault_Handler 函数。
  * @retval None
  */
-void BusFault_Handler(void)                                                               // 说明当前代码行
-{                                                                                         // 进入代码块
+void BusFault_Handler(void) // 定义BusFault_Handler 函数签名：BusFault_Handler 函数
+{ // 进入当前代码块
     /* Go to infinite loop when Bus Fault exception occurs */
-    while (1)                                                                             // 开始循环执行
-    {                                                                                     // 进入代码块
-    }                                                                                     // 结束代码块
-}                                                                                         // 结束代码块
+    while (1) // 当 1 成立时持续执行循环体
+    { // 进入当前代码块
+    } // 结束当前代码块
+} // 结束当前代码块
 
 /**
- * @brief  This function handles Usage Fault exception.
- * @param  None
+ * @brief UsageFault_Handler 函数。
  * @retval None
  */
-void UsageFault_Handler(void)                                                             // 说明当前代码行
-{                                                                                         // 进入代码块
+void UsageFault_Handler(void) // 定义UsageFault_Handler 函数签名：UsageFault_Handler 函数
+{ // 进入当前代码块
     /* Go to infinite loop when Usage Fault exception occurs */
-    while (1)                                                                             // 开始循环执行
-    {                                                                                     // 进入代码块
-    }                                                                                     // 结束代码块
-}                                                                                         // 结束代码块
+    while (1) // 当 1 成立时持续执行循环体
+    { // 进入当前代码块
+    } // 结束当前代码块
+} // 结束当前代码块
 
 /**
  * @brief  This function handles SVCall exception.
@@ -106,17 +101,16 @@ void UsageFault_Handler(void)                                                   
  * @retval None
  */
 /*void SVC_Handler(void)
-{
-}*/
+{ // 进入当前代码块
+}*/ // 执行 }*/，完成当前上下文中的具体处理
 
 /**
- * @brief  This function handles Debug Monitor exception.
- * @param  None
+ * @brief DebugMon_Handler 函数。
  * @retval None
  */
-void DebugMon_Handler(void)                                                               // 说明当前代码行
-{                                                                                         // 进入代码块
-}                                                                                         // 结束代码块
+void DebugMon_Handler(void) // 定义DebugMon_Handler 函数签名：DebugMon_Handler 函数
+{ // 进入当前代码块
+} // 结束当前代码块
 
 /**
  * @brief  This function handles PendSVC exception.
@@ -124,8 +118,8 @@ void DebugMon_Handler(void)                                                     
  * @retval None
  */
 /*void PendSV_Handler(void)
-{
-}
+{ // 进入当前代码块
+} // 结束当前代码块
 */
 /**
  * @brief  This function handles SysTick Handler.
@@ -133,9 +127,9 @@ void DebugMon_Handler(void)                                                     
  * @retval None
  */
 /*void SysTick_Handler(void)
-{
-    TimingDelay_Decrement();
-}*/
+{ // 进入当前代码块
+    TimingDelay_Decrement(); // 调用TimingDelay_Decrement 函数
+}*/ // 执行 }*/，完成当前上下文中的具体处理
 
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */
@@ -150,8 +144,8 @@ void DebugMon_Handler(void)                                                     
  * @retval None
  */
 /*void PPP_IRQHandler(void)
-{
-}*/
+{ // 进入当前代码块
+}*/ // 执行 }*/，完成当前上下文中的具体处理
 
 /**
  * @}

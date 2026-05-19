@@ -239,25 +239,53 @@ fused yaw 和 mag_yaw 基本贴合
 当前工程中的磁力计数据流可以写成：
 
 ```text
-AK8963 raw data   AK8963的原始数据
+AK8963 raw data
+    AK8963 的原始磁力计数据，通常是寄存器里的 raw_x / raw_y / raw_z
+
     ->
+
 AK8963_Read_Axis()
+    从 AK8963 寄存器读取三轴原始数据 raw_x / raw_y / raw_z
+
     ->
+
 ak8963_convert_raw_to_ut()
+    将 raw 原始值转换成 uT 单位的磁场物理量
+
     ->
-center 校正：raw - center
+
+center 校正：mag_ut - center
+    将整个点云的中心拉回原点，也就是硬铁校准
+
     ->
-3×3 矩阵校正：M * (raw - center)
+
+3×3 矩阵校正：M * (mag_ut - center)
+    在硬铁校准基础上进行软铁校正，修正椭球拉伸、压扁、旋转和轴间耦合
+
     ->
+
 corrected mag
+    得到已经修正过的磁力计数据 corrected_x / corrected_y / corrected_z
+
     ->
+
 MPU9250_ComputeEuler_FromAccMag()
+    用加速度计和校正后的磁力计直接计算一组参考欧拉角
+
     ->
+
 mag_yaw
+    根据校正后的磁力计数据，算出一个磁力计参考航向角
+
     ->
+
 MPU9250_MahonyUpdate()
+    Mahony 融合陀螺仪、加速度计、磁力计，更新最终姿态
+
     ->
+
 fused yaw
+    Mahony 融合后的最终航向角
 ```
 
 结合任务层调用链，再展开就是：
@@ -349,7 +377,7 @@ void AK8963_Calibrate(const AK8963_raw_Data *raw,
 }
 ```
 
-在线运行时真正被调用的是：
+在线运行时真正被调用的是：	
 
 ```c
 int AK8963_Read_Mag_UT(AK8963_Physical_Data *mag_out)

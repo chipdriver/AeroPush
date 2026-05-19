@@ -2,452 +2,427 @@
  * @file    bsp_i2c_soft.c
  * @brief   软件模拟 I2C 驱动实现，当前使用 PB6/PB7 连接 MPU9250。
  */
-#include "bsp_i2c_soft.h" /* 引入软件 I2C 接口和引脚宏 */                                           // 包含所需头文件
+#include "bsp_i2c_soft.h" // 引入 bsp_i2c_soft.h 提供的接口、宏和类型定义
 
-#ifndef I2C_SOFT_DELAY_COUNT      /* 允许外部通过编译宏覆盖延时循环次数 */                                 // 条件编译判断
-#define I2C_SOFT_DELAY_COUNT 100U /* 默认延时循环次数，决定软件 I2C 时序速度 */                            // 定义本文件使用的宏
-#endif                            /* 结束延时循环次数宏判断 */                                       // 结束条件编译
+#ifndef I2C_SOFT_DELAY_COUNT // 检查 I2C_SOFT_DELAY_COUNT 是否未定义，防止头文件重复包含
+#define I2C_SOFT_DELAY_COUNT 100U // 定义 I2C_SOFT_DELAY_COUNT 变量为 100U
+#endif // 结束当前条件编译或头文件保护范围
 
 /**
- * @brief  软件 I2C 短延时。
- * @param  None
+ * @brief I2C_Delay 函数。
  * @retval None
- * @note   用于保证 SCL/SDA 电平切换后有足够建立和保持时间。
  */
-static void I2C_Delay(void) /* 定义内部短延时函数 */                                               // 说明当前代码行
-{                           /* 函数体开始 */                                                   // 说明当前代码行
-    volatile uint32_t i;    /* 使用 volatile 防止循环被优化掉 */                                    // 说明当前代码行
+static void I2C_Delay(void) // 定义I2C_Delay 函数签名：I2C_Delay 函数
+{ // 进入当前代码块
+    volatile uint32_t i; // 声明 循环索引，供后续计算、状态保存或模块间传递使用
 
-    for (i = 0U; i < I2C_SOFT_DELAY_COUNT; i++) /* 按固定次数执行空操作 */                          // 开始循环采样或遍历
-    {                                           /* 循环体开始 */                               // 说明当前代码行
-        __NOP();                                /* 执行一个空指令拉开时序 */                         // 调用函数执行对应操作
-    } /* 循环体结束 */                                                                         // 说明当前代码行
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    for (i = 0U; i < I2C_SOFT_DELAY_COUNT; i++) // 按照 i = 0U; i < I2C_SOFT_DELAY_COUNT; i++ 的初始化、边界和步进条件重复执行循环体
+    { // 进入当前代码块
+        __NOP(); // 调用__NOP 函数
+    } // 结束当前代码块
+} // 结束当前代码块
 
 /**
- * @brief  初始化软件 I2C GPIO。
- * @param  None
+ * @brief BSP_I2C_Soft_Init 函数。
  * @retval None
- * @note   PB6 作为 SCL，PB7 作为 SDA，均配置为开漏输出并打开内部上拉。
  */
-void BSP_I2C_Soft_Init(void)             /* 定义软件 I2C 初始化函数 */                             // 说明当前代码行
-{                                        /* 函数体开始 */                                      // 说明当前代码行
-    GPIO_InitTypeDef GPIO_InitStructure; /* 定义 GPIO 初始化结构体 */                             // 说明当前代码行
+void BSP_I2C_Soft_Init(void) // 定义BSP_I2C_Soft_Init 函数签名：BSP_I2C_Soft_Init 函数
+{ // 进入当前代码块
+    GPIO_InitTypeDef GPIO_InitStructure; // 执行 GPIO_InitTypeDef GPIO_InitStructure;，完成当前上下文中的具体处理
 
-    RCC_AHB1PeriphClockCmd(I2C_GPIO_CLK, ENABLE); /* 使能 GPIOB 外设时钟 */                     // 调用函数执行对应操作
+    RCC_AHB1PeriphClockCmd(I2C_GPIO_CLK, ENABLE); // 调用RCC_AHB1PeriphClockCmd 函数，参数为 I2C_GPIO_CLK, ENABLE
 
-    SCL_H(); /* 配置 GPIO 前先释放 SCL */                                                       // 调用函数执行对应操作
-    SDA_H(); /* 配置 GPIO 前先释放 SDA */                                                       // 调用函数执行对应操作
+    SCL_H(); // 调用SCL_H 函数
+    SDA_H(); // 调用SDA_H 函数
 
-    GPIO_InitStructure.GPIO_Pin = I2C_SCL_PIN | I2C_SDA_PIN; /* 选择 PB6 和 PB7 */           // 给变量或寄存器写入新值
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;            /* 配置为普通输出模式 */              // 给变量或寄存器写入新值
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;           /* 配置为开漏输出，符合 I2C 总线特性 */    // 给变量或寄存器写入新值
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;        /* 设置 GPIO 输出速度 */           // 给变量或寄存器写入新值
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;             /* 打开内部上拉，外部上拉存在时也兼容 */      // 给变量或寄存器写入新值
-    GPIO_Init(I2C_GPIO_PORT, &GPIO_InitStructure);           /* 初始化 GPIOB 的 I2C 引脚 */     // 调用函数执行对应操作
+    GPIO_InitStructure.GPIO_Pin = I2C_SCL_PIN | I2C_SDA_PIN; // 把 I2C_SCL_PIN | I2C_SDA_PIN 写入 GPIO_InitStructure.GPIO_Pin 字段值
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // 把 GPIO_Mode_OUT 变量 写入 GPIO_InitStructure.GPIO_Mode 字段值
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_OD; // 把 GPIO_OType_OD 变量 写入 GPIO_InitStructure.GPIO_OType 字段值
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; // 把 GPIO_Speed_50MHz 变量 写入 GPIO_InitStructure.GPIO_Speed 字段值
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; // 把 GPIO_PuPd_UP 变量 写入 GPIO_InitStructure.GPIO_PuPd 字段值
+    GPIO_Init(I2C_GPIO_PORT, &GPIO_InitStructure); // 调用GPIO_Init 函数，参数为 I2C_GPIO_PORT, &GPIO_InitStructure
 
-    SCL_H();     /* 初始化后释放 SCL 为空闲高电平 */                                                  // 调用函数执行对应操作
-    SDA_H();     /* 初始化后释放 SDA 为空闲高电平 */                                                  // 调用函数执行对应操作
-    I2C_Delay(); /* 等待总线电平稳定 */                                                           // 执行软件 I2C 操作
+    SCL_H(); // 调用SCL_H 函数
+    SDA_H(); // 调用SDA_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
 
-    (void)BSP_I2C_Soft_RecoverBus(); /* 尝试恢复可能被从机拉住的总线 */                                 // 显式标记参数未使用
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    (void)BSP_I2C_Soft_RecoverBus(); // 执行 (void)BSP_I2C_Soft_RecoverBus();，完成当前上下文中的具体处理
+} // 结束当前代码块
 
 /**
- * @brief  尝试恢复被从机拉住的数据总线。
- * @param  None
- * @retval 0 表示恢复成功，负数表示恢复失败。
- * @note   当 SDA 被从机保持低电平时，最多输出 9 个 SCL 脉冲让从机释放总线。
+ * @brief BSP_I2C_Soft_RecoverBus 函数。
+ * @retval 函数执行结果或计算得到的返回值。
  */
-int BSP_I2C_Soft_RecoverBus(void) /* 定义软件 I2C 总线恢复函数 */                                   // 定义局部变量
-{                                 /* 函数体开始 */                                             // 说明当前代码行
-    uint8_t i;                    /* 定义 SCL 恢复脉冲计数变量 */                                   // 定义局部变量
+int BSP_I2C_Soft_RecoverBus(void) // 定义BSP_I2C_Soft_RecoverBus 函数签名：BSP_I2C_Soft_RecoverBus 函数
+{ // 进入当前代码块
+    uint8_t i; // 声明 循环索引，供后续计算、状态保存或模块间传递使用
 
-    SDA_H();     /* 释放 SDA，让上拉电阻拉高数据线 */                                                  // 调用函数执行对应操作
-    SCL_H();     /* 释放 SCL，让上拉电阻拉高时钟线 */                                                  // 调用函数执行对应操作
-    I2C_Delay(); /* 等待总线电平稳定 */                                                           // 执行软件 I2C 操作
+    SDA_H(); // 调用SDA_H 函数
+    SCL_H(); // 调用SCL_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
 
-    if (SDA_READ() != 0U) /* 如果 SDA 已经为高，说明总线没有被占住 */                                     // 判断条件是否成立
-    {                     /* if 分支开始 */                                                   // 说明当前代码行
-        return 0;         /* 直接返回恢复成功 */                                                  // 返回函数执行结果
-    } /* if 分支结束 */                                                                       // 说明当前代码行
+    if (SDA_READ() != 0U) // 判断 SDA_READ() != 0U 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        return 0; // 将 0 返回给调用者
+    } // 结束当前代码块
 
-    for (i = 0U; i < 9U; i++) /* 最多输出 9 个时钟脉冲 */                                          // 开始循环采样或遍历
-    {                         /* 循环体开始 */                                                 // 说明当前代码行
-        SCL_L();              /* 拉低 SCL 产生时钟低电平 */                                        // 调用函数执行对应操作
-        I2C_Delay();          /* 保持 SCL 低电平一小段时间 */                                       // 执行软件 I2C 操作
-        SCL_H();              /* 释放 SCL 产生时钟高电平 */                                        // 调用函数执行对应操作
-        I2C_Delay();          /* 保持 SCL 高电平一小段时间 */                                       // 执行软件 I2C 操作
+    for (i = 0U; i < 9U; i++) // 按照 i = 0U; i < 9U; i++ 的初始化、边界和步进条件重复执行循环体
+    { // 进入当前代码块
+        SCL_L(); // 调用SCL_L 函数
+        I2C_Delay(); // 调用I2C_Delay 函数
+        SCL_H(); // 调用SCL_H 函数
+        I2C_Delay(); // 调用I2C_Delay 函数
 
-        if (SDA_READ() != 0U) /* 检查从机是否已经释放 SDA */                                        // 判断条件是否成立
-        {                     /* if 分支开始 */                                               // 说明当前代码行
-            break;            /* 已释放则提前结束恢复脉冲 */                                          // 跳出当前分支或循环
-        } /* if 分支结束 */                                                                   // 说明当前代码行
-    } /* 循环体结束 */                                                                         // 说明当前代码行
+        if (SDA_READ() != 0U) // 判断 SDA_READ() != 0U 是否成立，以选择后续执行路径
+        { // 进入当前代码块
+            break; // 结束当前循环或分支处理
+        } // 结束当前代码块
+    } // 结束当前代码块
 
-    I2C_Stop(); /* 发送 STOP，让总线回到空闲状态 */                                                   // 执行软件 I2C 操作
+    I2C_Stop(); // 调用I2C_Stop 函数
 
-    return ((SDA_READ() != 0U) && (SCL_READ() != 0U)) ? 0 : -1; /* 判断 SCL/SDA 是否都已回到高电平 */ // 返回函数执行结果
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    return ((SDA_READ() != 0U) && (SCL_READ() != 0U)) ? 0 : -1; // 将 ((SDA_READ() != 0U) && (SCL_READ() != 0U)) ? 0 : -1 的计算结果 返回给调用者
+} // 结束当前代码块
 
 /**
- * @brief  产生 I2C 起始条件。
- * @param  None
+ * @brief I2C_Start 函数。
  * @retval None
- * @note   当 SCL 为高电平时，SDA 从高到低跳变表示 START。
  */
-void I2C_Start(void) /* 定义 I2C 起始条件函数 */                                                  // 说明当前代码行
-{                    /* 函数体开始 */                                                          // 说明当前代码行
-    SDA_H();         /* 先释放 SDA，确保数据线为高 */                                                // 调用函数执行对应操作
-    SCL_H();         /* 再释放 SCL，确保时钟线为高 */                                                // 调用函数执行对应操作
-    I2C_Delay();     /* 等待总线稳定在空闲状态 */                                                    // 执行软件 I2C 操作
-    SDA_L();         /* 在 SCL 高电平时拉低 SDA，产生 START */                                      // 调用函数执行对应操作
-    I2C_Delay();     /* 保持起始条件一小段时间 */                                                    // 执行软件 I2C 操作
-    SCL_L();         /* 拉低 SCL，准备后续传输数据位 */                                               // 调用函数执行对应操作
-    I2C_Delay();     /* 等待 SCL 低电平稳定 */                                                   // 执行软件 I2C 操作
-} /* 函数体结束 */                                                                             // 说明当前代码行
+void I2C_Start(void) // 定义I2C_Start 函数签名：I2C_Start 函数
+{ // 进入当前代码块
+    SDA_H(); // 调用SDA_H 函数
+    SCL_H(); // 调用SCL_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SDA_L(); // 调用SDA_L 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SCL_L(); // 调用SCL_L 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+} // 结束当前代码块
 
 /**
- * @brief  产生 I2C 停止条件。
- * @param  None
+ * @brief I2C_Stop 函数。
  * @retval None
- * @note   当 SCL 为高电平时，SDA 从低到高跳变表示 STOP。
  */
-void I2C_Stop(void) /* 定义 I2C 停止条件函数 */                                                   // 说明当前代码行
-{                   /* 函数体开始 */                                                           // 说明当前代码行
-    SCL_L();        /* 先拉低 SCL，确保可以安全改变 SDA */                                            // 调用函数执行对应操作
-    SDA_L();        /* 拉低 SDA，为 STOP 的上升沿做准备 */                                           // 调用函数执行对应操作
-    I2C_Delay();    /* 等待 SDA/SCL 低电平稳定 */                                                // 执行软件 I2C 操作
-    SCL_H();        /* 释放 SCL 到高电平 */                                                     // 调用函数执行对应操作
-    I2C_Delay();    /* 保持 SCL 高电平一小段时间 */                                                 // 执行软件 I2C 操作
-    SDA_H();        /* 在 SCL 高电平时释放 SDA，产生 STOP */                                        // 调用函数执行对应操作
-    I2C_Delay();    /* 等待 STOP 条件被从机识别 */                                                 // 执行软件 I2C 操作
-} /* 函数体结束 */                                                                             // 说明当前代码行
+void I2C_Stop(void) // 定义I2C_Stop 函数签名：I2C_Stop 函数
+{ // 进入当前代码块
+    SCL_L(); // 调用SCL_L 函数
+    SDA_L(); // 调用SDA_L 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SCL_H(); // 调用SCL_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SDA_H(); // 调用SDA_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+} // 结束当前代码块
 
 /**
- * @brief  等待从机 ACK。
- * @param  None
- * @retval 0 表示 ACK，1 表示 NACK。
- * @note   主机发送 8 位后释放 SDA，从机在第 9 个 SCL 高电平期间拉低 SDA 表示 ACK。
+ * @brief I2C_WaitAck 函数。
+ * @retval 函数执行结果或计算得到的返回值。
  */
-uint8_t I2C_WaitAck(void) /* 定义等待 ACK 函数 */                                               // 定义局部变量
-{                         /* 函数体开始 */                                                     // 说明当前代码行
-    uint8_t nack;         /* 定义 NACK 状态变量 */                                              // 定义局部变量
+uint8_t I2C_WaitAck(void) // 定义I2C_WaitAck 函数签名：I2C_WaitAck 函数
+{ // 进入当前代码块
+    uint8_t nack; // 声明 nack 变量，供后续计算、状态保存或模块间传递使用
 
-    SDA_H();     /* 释放 SDA，让从机驱动 ACK 位 */                                                 // 调用函数执行对应操作
-    I2C_Delay(); /* 等待 SDA 释放后电平稳定 */                                                     // 执行软件 I2C 操作
-    SCL_H();     /* 拉高 SCL，进入第 9 个时钟周期 */                                                 // 调用函数执行对应操作
-    I2C_Delay(); /* 等待从机 ACK 电平稳定 */                                                      // 执行软件 I2C 操作
+    SDA_H(); // 调用SDA_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SCL_H(); // 调用SCL_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
 
-    nack = (SDA_READ() != 0U) ? 1U : 0U; /* SDA 高表示 NACK，SDA 低表示 ACK */                   // 给变量或寄存器写入新值
+    nack = (SDA_READ() != 0U) ? 1U : 0U; // 把 (SDA_READ() != 0U) ? 1U : 0U 写入 nack 变量
 
-    SCL_L();     /* 拉低 SCL，结束 ACK 时钟周期 */                                                 // 调用函数执行对应操作
-    I2C_Delay(); /* 等待 SCL 低电平稳定 */                                                       // 执行软件 I2C 操作
+    SCL_L(); // 调用SCL_L 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
 
-    return nack; /* 返回 ACK/NACK 判断结果 */                                                   // 返回函数执行结果
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    return nack; // 将 nack 变量 返回给调用者
+} // 结束当前代码块
 
 /**
- * @brief  主机发送 ACK。
- * @param  None
+ * @brief I2C_SendACK 函数。
  * @retval None
- * @note   主机读取一个字节后拉低 SDA，表示还要继续读取后续数据。
  */
-void I2C_SendACK(void) /* 定义主机发送 ACK 函数 */                                                // 说明当前代码行
-{                      /* 函数体开始 */                                                        // 说明当前代码行
-    SCL_L();           /* 拉低 SCL，准备驱动 SDA */                                              // 调用函数执行对应操作
-    SDA_L();           /* 拉低 SDA，表示 ACK */                                                // 调用函数执行对应操作
-    I2C_Delay();       /* 等待 ACK 电平稳定 */                                                  // 执行软件 I2C 操作
-    SCL_H();           /* 拉高 SCL，让从机采样 ACK */                                             // 调用函数执行对应操作
-    I2C_Delay();       /* 保持 ACK 时钟高电平 */                                                 // 执行软件 I2C 操作
-    SCL_L();           /* 拉低 SCL，结束 ACK 位 */                                              // 调用函数执行对应操作
-    I2C_Delay();       /* 等待 SCL 低电平稳定 */                                                 // 执行软件 I2C 操作
-    SDA_H();           /* 释放 SDA，避免持续占用数据线 */                                             // 调用函数执行对应操作
-} /* 函数体结束 */                                                                             // 说明当前代码行
+void I2C_SendACK(void) // 定义I2C_SendACK 函数签名：I2C_SendACK 函数
+{ // 进入当前代码块
+    SCL_L(); // 调用SCL_L 函数
+    SDA_L(); // 调用SDA_L 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SCL_H(); // 调用SCL_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SCL_L(); // 调用SCL_L 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SDA_H(); // 调用SDA_H 函数
+} // 结束当前代码块
 
 /**
- * @brief  主机发送 NACK。
- * @param  None
+ * @brief I2C_NACK 函数。
  * @retval None
- * @note   主机读取最后一个字节后释放 SDA，表示本次读取结束。
  */
-void I2C_NACK(void) /* 定义主机发送 NACK 函数 */                                                  // 说明当前代码行
-{                   /* 函数体开始 */                                                           // 说明当前代码行
-    SCL_L();        /* 拉低 SCL，准备释放 SDA */                                                 // 调用函数执行对应操作
-    SDA_H();        /* 释放 SDA，表示 NACK */                                                  // 调用函数执行对应操作
-    I2C_Delay();    /* 等待 NACK 电平稳定 */                                                    // 执行软件 I2C 操作
-    SCL_H();        /* 拉高 SCL，让从机采样 NACK */                                               // 调用函数执行对应操作
-    I2C_Delay();    /* 保持 NACK 时钟高电平 */                                                   // 执行软件 I2C 操作
-    SCL_L();        /* 拉低 SCL，结束 NACK 位 */                                                // 调用函数执行对应操作
-    I2C_Delay();    /* 等待 SCL 低电平稳定 */                                                    // 执行软件 I2C 操作
-} /* 函数体结束 */                                                                             // 说明当前代码行
+void I2C_NACK(void) // 定义I2C_NACK 函数签名：I2C_NACK 函数
+{ // 进入当前代码块
+    SCL_L(); // 调用SCL_L 函数
+    SDA_H(); // 调用SDA_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SCL_H(); // 调用SCL_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SCL_L(); // 调用SCL_L 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+} // 结束当前代码块
 
 /**
- * @brief  主机发送 NACK。
- * @param  None
+ * @brief I2C_SendNACK 函数。
  * @retval None
- * @note   该函数是 I2C_NACK 的别名，用于提供更直观的命名。
  */
-void I2C_SendNACK(void) /* 定义 NACK 别名函数 */                                                // 说明当前代码行
-{                       /* 函数体开始 */                                                       // 说明当前代码行
-    I2C_NACK();         /* 调用实际的 NACK 发送函数 */                                             // 执行软件 I2C 操作
-} /* 函数体结束 */                                                                             // 说明当前代码行
+void I2C_SendNACK(void) // 定义I2C_SendNACK 函数签名：I2C_SendNACK 函数
+{ // 进入当前代码块
+    I2C_NACK(); // 调用I2C_NACK 函数
+} // 结束当前代码块
 
 /**
- * @brief  发送 1 个数据位。
- * @param  bit 要发送的数据位，0 表示低电平，非 0 表示高电平。
+ * @brief I2C_SendBit 函数。
+ * @param bit bit 变量。
  * @retval None
- * @note   数据必须在 SCL 低电平期间改变，并在 SCL 高电平期间保持稳定。
  */
-static void I2C_SendBit(uint8_t bit) /* 定义内部发送位函数 */                                      // 说明当前代码行
-{                                    /* 函数体开始 */                                          // 说明当前代码行
-    SCL_L();                         /* 确保 SCL 为低，允许改变 SDA */                             // 调用函数执行对应操作
+static void I2C_SendBit(uint8_t bit) // 定义I2C_SendBit 函数签名：I2C_SendBit 函数
+{ // 进入当前代码块
+    SCL_L(); // 调用SCL_L 函数
 
-    if (bit != 0U) /* 判断当前要发送的位是否为 1 */                                                   // 判断条件是否成立
-    {              /* if 分支开始 */                                                          // 说明当前代码行
-        SDA_H();   /* 释放 SDA，发送逻辑 1 */                                                    // 调用函数执行对应操作
-    } /* if 分支结束 */                                                                       // 说明当前代码行
-    else         /* 当前要发送的位为 0 */                                                         // 处理条件不成立的分支
-    {            /* else 分支开始 */                                                          // 说明当前代码行
-        SDA_L(); /* 拉低 SDA，发送逻辑 0 */                                                      // 调用函数执行对应操作
-    } /* else 分支结束 */                                                                     // 说明当前代码行
+    if (bit != 0U) // 判断 bit != 0U 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        SDA_H(); // 调用SDA_H 函数
+    } // 结束当前代码块
+    else // 处理前面判断条件不成立时的备用逻辑
+    { // 进入当前代码块
+        SDA_L(); // 调用SDA_L 函数
+    } // 结束当前代码块
 
-    I2C_Delay(); /* 等待 SDA 电平稳定 */                                                        // 执行软件 I2C 操作
-    SCL_H();     /* 拉高 SCL，让从机采样当前数据位 */                                                  // 调用函数执行对应操作
-    I2C_Delay(); /* 保持 SCL 高电平满足采样时间 */                                                   // 执行软件 I2C 操作
-    SCL_L();     /* 拉低 SCL，结束当前数据位 */                                                     // 调用函数执行对应操作
-    I2C_Delay(); /* 等待 SCL 低电平稳定 */                                                       // 执行软件 I2C 操作
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SCL_H(); // 调用SCL_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SCL_L(); // 调用SCL_L 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+} // 结束当前代码块
 
 /**
- * @brief  读取 1 个数据位。
- * @param  None
- * @retval 读取到的数据位，0 或 1。
- * @note   主机释放 SDA 后，在 SCL 高电平期间采样从机输出的数据位。
+ * @brief I2C_ReadBit 函数。
+ * @retval 函数执行结果或计算得到的返回值。
  */
-static uint8_t I2C_ReadBit(void) /* 定义内部读取位函数 */                                          // 说明当前代码行
-{                                /* 函数体开始 */                                              // 说明当前代码行
-    uint8_t bit;                 /* 定义读取到的数据位 */                                          // 定义局部变量
+static uint8_t I2C_ReadBit(void) // 定义I2C_ReadBit 函数签名：I2C_ReadBit 函数
+{ // 进入当前代码块
+    uint8_t bit; // 声明 bit 变量，供后续计算、状态保存或模块间传递使用
 
-    SCL_L();     /* 确保 SCL 为低，准备读取下一位 */                                                  // 调用函数执行对应操作
-    SDA_H();     /* 释放 SDA，让从机驱动数据线 */                                                    // 调用函数执行对应操作
-    I2C_Delay(); /* 等待 SDA 释放后电平稳定 */                                                     // 执行软件 I2C 操作
-    SCL_H();     /* 拉高 SCL，进入数据采样窗口 */                                                    // 调用函数执行对应操作
-    I2C_Delay(); /* 等待从机输出电平稳定 */                                                         // 执行软件 I2C 操作
+    SCL_L(); // 调用SCL_L 函数
+    SDA_H(); // 调用SDA_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
+    SCL_H(); // 调用SCL_H 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
 
-    bit = (SDA_READ() != 0U) ? 1U : 0U; /* 读取 SDA 电平并转换成 0/1 */                           // 给变量或寄存器写入新值
+    bit = (SDA_READ() != 0U) ? 1U : 0U; // 把 (SDA_READ() != 0U) ? 1U : 0U 写入 bit 变量
 
-    SCL_L();     /* 拉低 SCL，结束当前数据位读取 */                                                   // 调用函数执行对应操作
-    I2C_Delay(); /* 等待 SCL 低电平稳定 */                                                       // 执行软件 I2C 操作
+    SCL_L(); // 调用SCL_L 函数
+    I2C_Delay(); // 调用I2C_Delay 函数
 
-    return bit; /* 返回读取到的数据位 */                                                           // 返回函数执行结果
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    return bit; // 将 bit 变量 返回给调用者
+} // 结束当前代码块
 
 /**
- * @brief  发送 1 个字节。
- * @param  data 要发送的字节。
+ * @brief I2C_SendByte 函数。
+ * @param data data 变量。
  * @retval None
- * @note   按 I2C 协议从最高位到最低位依次发送。
  */
-void I2C_SendByte(uint8_t data) /* 定义发送字节函数 */                                            // 说明当前代码行
-{                               /* 函数体开始 */                                               // 说明当前代码行
-    uint8_t mask;               /* 定义位掩码变量 */                                             // 定义局部变量
+void I2C_SendByte(uint8_t data) // 定义I2C_SendByte 函数签名：I2C_SendByte 函数
+{ // 进入当前代码块
+    uint8_t mask; // 声明 mask 变量，供后续计算、状态保存或模块间传递使用
 
-    for (mask = 0x80U; mask != 0U; mask >>= 1U) /* 从 bit7 到 bit0 依次发送 */                  // 开始循环采样或遍历
-    {                                           /* 循环体开始 */                               // 说明当前代码行
-        I2C_SendBit((data & mask) ? 1U : 0U);   /* 发送当前掩码对应的数据位 */                        // 执行软件 I2C 操作
-    } /* 循环体结束 */                                                                         // 说明当前代码行
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    for (mask = 0x80U; mask != 0U; mask >>= 1U) // 按照 mask = 0x80U; mask != 0U; mask >>= 1U 的初始化、边界和步进条件重复执行循环体
+    { // 进入当前代码块
+        I2C_SendBit((data & mask) ? 1U : 0U); // 调用I2C_SendBit 函数，参数为 (data & mask) ? 1U : 0U
+    } // 结束当前代码块
+} // 结束当前代码块
 
 /**
- * @brief  读取 1 个字节。
- * @param  send_ack 读取后应答控制，I2C_ACK 表示发送 ACK，I2C_NACK_BIT 表示发送 NACK。
- * @retval 读取到的字节。
- * @note   按 I2C 协议从最高位到最低位依次读取，随后发送 ACK 或 NACK。
+ * @brief I2C_ReadByte 函数。
+ * @param send_ack send_ack 变量。
+ * @retval 函数执行结果或计算得到的返回值。
  */
-uint8_t I2C_ReadByte(uint8_t send_ack) /* 定义读取字节函数 */                                     // 定义局部变量
-{                                      /* 函数体开始 */                                        // 说明当前代码行
-    uint8_t i;                         /* 定义循环计数变量 */                                     // 定义局部变量
-    uint8_t data = 0U;                 /* 定义并清零接收字节 */                                    // 定义局部变量
+uint8_t I2C_ReadByte(uint8_t send_ack) // 定义I2C_ReadByte 函数签名：I2C_ReadByte 函数
+{ // 进入当前代码块
+    uint8_t i; // 声明 循环索引，供后续计算、状态保存或模块间传递使用
+    uint8_t data = 0U; // 定义 data 变量，初始值设置为 0
 
-    SDA_H(); /* 释放 SDA，让从机输出数据 */                                                         // 调用函数执行对应操作
+    SDA_H(); // 调用SDA_H 函数
 
-    for (i = 0U; i < 8U; i++)  /* 连续读取 8 个数据位 */                                          // 开始循环采样或遍历
-    {                          /* 循环体开始 */                                                // 说明当前代码行
-        data <<= 1U;           /* 左移一位，为新读取的位腾位置 */                                       // 给变量或寄存器写入新值
-        data |= I2C_ReadBit(); /* 读取 1 位并合入接收字节 */                                        // 给变量或寄存器写入新值
-    } /* 循环体结束 */                                                                         // 说明当前代码行
+    for (i = 0U; i < 8U; i++) // 按照 i = 0U; i < 8U; i++ 的初始化、边界和步进条件重复执行循环体
+    { // 进入当前代码块
+        data <<= 1U; // 执行 data <<= 1U;，完成当前上下文中的具体处理
+        data |= I2C_ReadBit(); // 执行 data |= I2C_ReadBit();，完成当前上下文中的具体处理
+    } // 结束当前代码块
 
-    if (send_ack == I2C_ACK) /* 判断调用者是否要求发送 ACK */                                        // 判断条件是否成立
-    {                        /* if 分支开始 */                                                // 说明当前代码行
-        I2C_SendACK();       /* 发送 ACK，表示还要继续读取 */                                        // 执行软件 I2C 操作
-    } /* if 分支结束 */                                                                       // 说明当前代码行
-    else            /* 调用者要求发送 NACK */                                                    // 处理条件不成立的分支
-    {               /* else 分支开始 */                                                       // 说明当前代码行
-        I2C_NACK(); /* 发送 NACK，表示读取结束 */                                                  // 执行软件 I2C 操作
-    } /* else 分支结束 */                                                                     // 说明当前代码行
+    if (send_ack == I2C_ACK) // 判断 send_ack == I2C_ACK 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        I2C_SendACK(); // 调用I2C_SendACK 函数
+    } // 结束当前代码块
+    else // 处理前面判断条件不成立时的备用逻辑
+    { // 进入当前代码块
+        I2C_NACK(); // 调用I2C_NACK 函数
+    } // 结束当前代码块
 
-    return data; /* 返回读取到的字节 */                                                           // 返回函数执行结果
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    return data; // 将 data 变量 返回给调用者
+} // 结束当前代码块
 
 /**
- * @brief  探测指定 7 位地址的 I2C 设备是否应答。
- * @param  dev7 7 位 I2C 设备地址，不包含读写位。
- * @retval 0 表示收到 ACK，负数表示无应答。
+ * @brief I2C_CheckDevice 函数。
+ * @param dev7 dev7 变量。
+ * @retval 函数执行结果或计算得到的返回值。
  */
-int I2C_CheckDevice(uint8_t dev7) /* 定义 I2C 设备探测函数 */                                     // 定义局部变量
-{                                 /* 函数体开始 */                                             // 说明当前代码行
-    int ret;                      /* 定义返回状态变量 */                                          // 定义局部变量
+int I2C_CheckDevice(uint8_t dev7) // 定义I2C_CheckDevice 函数签名：I2C_CheckDevice 函数
+{ // 进入当前代码块
+    int ret; // 声明 函数返回状态变量，供后续计算、状态保存或模块间传递使用
 
-    I2C_Start();                                /* 发送起始条件 */                              // 执行软件 I2C 操作
-    I2C_SendByte((uint8_t)((dev7 << 1U) | 0U)); /* 发送设备地址和写方向位 */                         // 执行软件 I2C 操作
-    ret = (I2C_WaitAck() == 0U) ? 0 : -1;       /* 根据 ACK 状态生成返回值 */                      // 给变量或寄存器写入新值
-    I2C_Stop();                                 /* 发送停止条件，释放总线 */                         // 执行软件 I2C 操作
+    I2C_Start(); // 调用I2C_Start 函数
+    I2C_SendByte((uint8_t)((dev7 << 1U) | 0U)); // 调用I2C_SendByte 函数，参数为 (uint8_t)((dev7 << 1U) | 0U)
+    ret = (I2C_WaitAck() == 0U) ? 0 : -1; // 把 (I2C_WaitAck() == 0U) ? 0 : -1 的计算结果 写入 函数返回状态变量
+    I2C_Stop(); // 调用I2C_Stop 函数
 
-    return ret; /* 返回设备探测结果 */                                                            // 返回函数执行结果
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    return ret; // 将 函数返回状态变量 返回给调用者
+} // 结束当前代码块
 
 /**
- * @brief  向设备寄存器写入 1 个字节。
- * @param  dev7 7 位 I2C 设备地址。
- * @param  reg  寄存器地址。
- * @param  val  要写入的数据。
- * @retval 0 表示成功，负数表示失败。
+ * @brief I2C_WriteReg 函数。
+ * @param dev7 dev7 变量。
+ * @param reg reg 变量。
+ * @param val 寄存器临时读写值。
+ * @retval 函数执行结果或计算得到的返回值。
  */
-int I2C_WriteReg(uint8_t dev7, uint8_t reg, uint8_t val) /* 定义单字节寄存器写函数 */                // 定义局部变量
-{                                                        /* 函数体开始 */                      // 说明当前代码行
-    return I2C_WriteRegs(dev7, reg, &val, 1U);           /* 复用多字节写函数写入 1 个字节 */           // 返回函数执行结果
-} /* 函数体结束 */                                                                             // 说明当前代码行
+int I2C_WriteReg(uint8_t dev7, uint8_t reg, uint8_t val) // 定义I2C_WriteReg 函数签名：I2C_WriteReg 函数
+{ // 进入当前代码块
+    return I2C_WriteRegs(dev7, reg, &val, 1U); // 将 I2C_WriteRegs(dev7, reg, &val, 1U) 返回给调用者
+} // 结束当前代码块
 
 /**
- * @brief  从设备寄存器读取 1 个字节。
- * @param  dev7 7 位 I2C 设备地址。
- * @param  reg  寄存器地址。
- * @retval 读取到的数据；通信失败时返回 0xFF。
- * @note   为兼容旧接口保留，推荐新代码使用 I2C_ReadRegData 获取明确状态码。
+ * @brief I2C_ReadReg 函数。
+ * @param dev7 dev7 变量。
+ * @param reg reg 变量。
+ * @retval 函数执行结果或计算得到的返回值。
  */
-uint8_t I2C_ReadReg(uint8_t dev7, uint8_t reg) /* 定义兼容旧接口的单字节读取函数 */                      // 定义局部变量
-{                                              /* 函数体开始 */                                // 说明当前代码行
-    uint8_t val = 0xFFU;                       /* 默认值设为 0xFF，便于失败时返回 */                   // 定义局部变量
+uint8_t I2C_ReadReg(uint8_t dev7, uint8_t reg) // 定义I2C_ReadReg 函数签名：I2C_ReadReg 函数
+{ // 进入当前代码块
+    uint8_t val = 0xFFU; // 定义 寄存器临时读写值，初始值设置为 0xFFU
 
-    (void)I2C_ReadRegData(dev7, reg, &val); /* 调用带状态码的读取函数 */                             // 显式标记参数未使用
+    (void)I2C_ReadRegData(dev7, reg, &val); // 执行 (void)I2C_ReadRegData(dev7, reg, &val);，完成当前上下文中的具体处理
 
-    return val; /* 返回读取值或默认失败值 */                                                         // 返回函数执行结果
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    return val; // 将 寄存器临时读写值 返回给调用者
+} // 结束当前代码块
 
 /**
- * @brief  从设备寄存器读取 1 个字节并返回状态码。
- * @param  dev7 7 位 I2C 设备地址。
- * @param  reg  寄存器地址。
- * @param  val  保存读取结果的指针。
- * @retval 0 表示成功，负数表示失败。
+ * @brief I2C_ReadRegData 函数。
+ * @param dev7 dev7 变量。
+ * @param reg reg 变量。
+ * @param val 寄存器临时读写值。
+ * @retval 函数执行结果或计算得到的返回值。
  */
-int I2C_ReadRegData(uint8_t dev7, uint8_t reg, uint8_t *val) /* 定义带状态码的单字节读取函数 */         // 定义局部变量
-{                                                            /* 函数体开始 */                  // 说明当前代码行
-    if (val == 0)                                            /* 检查输出指针是否为空 */             // 判断条件是否成立
-    {                                                        /* if 分支开始 */                // 说明当前代码行
-        return -4;                                           /* 返回参数错误 */                 // 返回函数执行结果
-    } /* if 分支结束 */                                                                       // 说明当前代码行
+int I2C_ReadRegData(uint8_t dev7, uint8_t reg, uint8_t *val) // 定义I2C_ReadRegData 函数签名：I2C_ReadRegData 函数
+{ // 进入当前代码块
+    if (val == 0) // 判断 val == 0 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        return -4; // 将 -4 的计算结果 返回给调用者
+    } // 结束当前代码块
 
-    return I2C_ReadRegs(dev7, reg, val, 1U); /* 复用多字节读函数读取 1 个字节 */                       // 返回函数执行结果
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    return I2C_ReadRegs(dev7, reg, val, 1U); // 将 I2C_ReadRegs(dev7, reg, val, 1U) 返回给调用者
+} // 结束当前代码块
 
 /**
- * @brief  向连续寄存器写入多个字节。
- * @param  dev7 7 位 I2C 设备地址。
- * @param  reg  起始寄存器地址。
- * @param  buf  待写入数据缓冲区。
- * @param  len  待写入字节数。
- * @retval 0 表示成功，负数表示失败。
+ * @brief I2C_WriteRegs 函数。
+ * @param dev7 dev7 变量。
+ * @param reg reg 变量。
+ * @param buf buf 变量。
+ * @param len len 变量。
+ * @retval 函数执行结果或计算得到的返回值。
  */
-int I2C_WriteRegs(uint8_t dev7, uint8_t reg, const uint8_t *buf, uint16_t len) /* 定义多字节写函数 */ // 定义局部变量
-{                                                                              /* 函数体开始 */ // 说明当前代码行
-    uint16_t i;                                                                /* 定义写入循环计数变量 */ // 定义局部变量
+int I2C_WriteRegs(uint8_t dev7, uint8_t reg, const uint8_t *buf, uint16_t len) // 定义I2C_WriteRegs 函数签名：I2C_WriteRegs 函数
+{ // 进入当前代码块
+    uint16_t i; // 声明 循环索引，供后续计算、状态保存或模块间传递使用
 
-    if ((buf == 0) || (len == 0U)) /* 检查输入缓冲区和长度是否合法 */                                   // 判断条件是否成立
-    {                              /* if 分支开始 */                                          // 说明当前代码行
-        return -4;                 /* 返回参数错误 */                                           // 返回函数执行结果
-    } /* if 分支结束 */                                                                       // 说明当前代码行
+    if ((buf == 0) || (len == 0U)) // 判断 (buf == 0) || (len == 0U) 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        return -4; // 将 -4 的计算结果 返回给调用者
+    } // 结束当前代码块
 
-    I2C_Start();                                /* 发送起始条件 */                              // 执行软件 I2C 操作
-    I2C_SendByte((uint8_t)((dev7 << 1U) | 0U)); /* 发送设备地址和写方向位 */                         // 执行软件 I2C 操作
-    if (I2C_WaitAck() != 0U)                    /* 检查设备地址阶段是否收到 ACK */                    // 判断条件是否成立
-    {                                           /* if 分支开始 */                             // 说明当前代码行
-        I2C_Stop();                             /* 失败时发送停止条件释放总线 */                       // 执行软件 I2C 操作
-        return -1;                              /* 返回设备地址无应答错误 */                         // 返回函数执行结果
-    } /* if 分支结束 */                                                                       // 说明当前代码行
+    I2C_Start(); // 调用I2C_Start 函数
+    I2C_SendByte((uint8_t)((dev7 << 1U) | 0U)); // 调用I2C_SendByte 函数，参数为 (uint8_t)((dev7 << 1U) | 0U)
+    if (I2C_WaitAck() != 0U) // 判断 I2C_WaitAck() != 0U 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        I2C_Stop(); // 调用I2C_Stop 函数
+        return -1; // 将 -1 的计算结果 返回给调用者
+    } // 结束当前代码块
 
-    I2C_SendByte(reg);       /* 发送起始寄存器地址 */                                              // 执行软件 I2C 操作
-    if (I2C_WaitAck() != 0U) /* 检查寄存器地址阶段是否收到 ACK */                                      // 判断条件是否成立
-    {                        /* if 分支开始 */                                                // 说明当前代码行
-        I2C_Stop();          /* 失败时发送停止条件释放总线 */                                          // 执行软件 I2C 操作
-        return -2;           /* 返回寄存器地址无应答错误 */                                           // 返回函数执行结果
-    } /* if 分支结束 */                                                                       // 说明当前代码行
+    I2C_SendByte(reg); // 调用I2C_SendByte 函数，参数为 reg
+    if (I2C_WaitAck() != 0U) // 判断 I2C_WaitAck() != 0U 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        I2C_Stop(); // 调用I2C_Stop 函数
+        return -2; // 将 -2 的计算结果 返回给调用者
+    } // 结束当前代码块
 
-    for (i = 0U; i < len; i++)   /* 逐字节写入数据缓冲区 */                                         // 开始循环采样或遍历
-    {                            /* 循环体开始 */                                              // 说明当前代码行
-        I2C_SendByte(buf[i]);    /* 发送当前数据字节 */                                           // 执行软件 I2C 操作
-        if (I2C_WaitAck() != 0U) /* 检查当前数据字节是否收到 ACK */                                   // 判断条件是否成立
-        {                        /* if 分支开始 */                                            // 说明当前代码行
-            I2C_Stop();          /* 失败时发送停止条件释放总线 */                                      // 执行软件 I2C 操作
-            return -3;           /* 返回数据阶段无应答错误 */                                        // 返回函数执行结果
-        } /* if 分支结束 */                                                                   // 说明当前代码行
-    } /* 循环体结束 */                                                                         // 说明当前代码行
+    for (i = 0U; i < len; i++) // 按照 i = 0U; i < len; i++ 的初始化、边界和步进条件重复执行循环体
+    { // 进入当前代码块
+        I2C_SendByte(buf[i]); // 调用I2C_SendByte 函数，参数为 buf[i]
+        if (I2C_WaitAck() != 0U) // 判断 I2C_WaitAck() != 0U 是否成立，以选择后续执行路径
+        { // 进入当前代码块
+            I2C_Stop(); // 调用I2C_Stop 函数
+            return -3; // 将 -3 的计算结果 返回给调用者
+        } // 结束当前代码块
+    } // 结束当前代码块
 
-    I2C_Stop(); /* 所有字节写完后发送停止条件 */                                                       // 执行软件 I2C 操作
+    I2C_Stop(); // 调用I2C_Stop 函数
 
-    return 0; /* 返回写入成功 */                                                                // 返回函数执行结果
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    return 0; // 将 0 返回给调用者
+} // 结束当前代码块
 
 /**
- * @brief  从连续寄存器读取多个字节。
- * @param  dev7 7 位 I2C 设备地址。
- * @param  reg  起始寄存器地址。
- * @param  buf  保存读取结果的缓冲区。
- * @param  len  待读取字节数。
- * @retval 0 表示成功，负数表示失败。
- * @note   读取最后一个字节后发送 NACK，其余字节后发送 ACK。
+ * @brief I2C_ReadRegs 函数。
+ * @param dev7 dev7 变量。
+ * @param reg reg 变量。
+ * @param buf buf 变量。
+ * @param len len 变量。
+ * @retval 函数执行结果或计算得到的返回值。
  */
-int I2C_ReadRegs(uint8_t dev7, uint8_t reg, uint8_t *buf, uint16_t len) /* 定义多字节读函数 */    // 定义局部变量
-{                                                                       /* 函数体开始 */       // 说明当前代码行
-    uint16_t i;                                                         /* 定义读取循环计数变量 */  // 定义局部变量
-    uint8_t ack;                                                        /* 定义每次读字节后的应答类型 */ // 定义局部变量
+int I2C_ReadRegs(uint8_t dev7, uint8_t reg, uint8_t *buf, uint16_t len) // 定义I2C_ReadRegs 函数签名：I2C_ReadRegs 函数
+{ // 进入当前代码块
+    uint16_t i; // 声明 循环索引，供后续计算、状态保存或模块间传递使用
+    uint8_t ack; // 声明 ack 变量，供后续计算、状态保存或模块间传递使用
 
-    if ((buf == 0) || (len == 0U)) /* 检查输出缓冲区和长度是否合法 */                                   // 判断条件是否成立
-    {                              /* if 分支开始 */                                          // 说明当前代码行
-        return -4;                 /* 返回参数错误 */                                           // 返回函数执行结果
-    } /* if 分支结束 */                                                                       // 说明当前代码行
+    if ((buf == 0) || (len == 0U)) // 判断 (buf == 0) || (len == 0U) 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        return -4; // 将 -4 的计算结果 返回给调用者
+    } // 结束当前代码块
 
-    I2C_Start();                                /* 发送起始条件 */                              // 执行软件 I2C 操作
-    I2C_SendByte((uint8_t)((dev7 << 1U) | 0U)); /* 发送设备地址和写方向位 */                         // 执行软件 I2C 操作
-    if (I2C_WaitAck() != 0U)                    /* 检查设备地址写阶段是否收到 ACK */                   // 判断条件是否成立
-    {                                           /* if 分支开始 */                             // 说明当前代码行
-        I2C_Stop();                             /* 失败时发送停止条件释放总线 */                       // 执行软件 I2C 操作
-        return -1;                              /* 返回设备地址写阶段无应答错误 */                      // 返回函数执行结果
-    } /* if 分支结束 */                                                                       // 说明当前代码行
+    I2C_Start(); // 调用I2C_Start 函数
+    I2C_SendByte((uint8_t)((dev7 << 1U) | 0U)); // 调用I2C_SendByte 函数，参数为 (uint8_t)((dev7 << 1U) | 0U)
+    if (I2C_WaitAck() != 0U) // 判断 I2C_WaitAck() != 0U 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        I2C_Stop(); // 调用I2C_Stop 函数
+        return -1; // 将 -1 的计算结果 返回给调用者
+    } // 结束当前代码块
 
-    I2C_SendByte(reg);       /* 发送待读取的起始寄存器地址 */                                          // 执行软件 I2C 操作
-    if (I2C_WaitAck() != 0U) /* 检查寄存器地址阶段是否收到 ACK */                                      // 判断条件是否成立
-    {                        /* if 分支开始 */                                                // 说明当前代码行
-        I2C_Stop();          /* 失败时发送停止条件释放总线 */                                          // 执行软件 I2C 操作
-        return -2;           /* 返回寄存器地址无应答错误 */                                           // 返回函数执行结果
-    } /* if 分支结束 */                                                                       // 说明当前代码行
+    I2C_SendByte(reg); // 调用I2C_SendByte 函数，参数为 reg
+    if (I2C_WaitAck() != 0U) // 判断 I2C_WaitAck() != 0U 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        I2C_Stop(); // 调用I2C_Stop 函数
+        return -2; // 将 -2 的计算结果 返回给调用者
+    } // 结束当前代码块
 
-    I2C_Start();                                /* 发送重复起始条件，切换到读方向 */                     // 执行软件 I2C 操作
-    I2C_SendByte((uint8_t)((dev7 << 1U) | 1U)); /* 发送设备地址和读方向位 */                         // 执行软件 I2C 操作
-    if (I2C_WaitAck() != 0U)                    /* 检查设备地址读阶段是否收到 ACK */                   // 判断条件是否成立
-    {                                           /* if 分支开始 */                             // 说明当前代码行
-        I2C_Stop();                             /* 失败时发送停止条件释放总线 */                       // 执行软件 I2C 操作
-        return -3;                              /* 返回设备地址读阶段无应答错误 */                      // 返回函数执行结果
-    } /* if 分支结束 */                                                                       // 说明当前代码行
+    I2C_Start(); // 调用I2C_Start 函数
+    I2C_SendByte((uint8_t)((dev7 << 1U) | 1U)); // 调用I2C_SendByte 函数，参数为 (uint8_t)((dev7 << 1U) | 1U)
+    if (I2C_WaitAck() != 0U) // 判断 I2C_WaitAck() != 0U 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        I2C_Stop(); // 调用I2C_Stop 函数
+        return -3; // 将 -3 的计算结果 返回给调用者
+    } // 结束当前代码块
 
-    for (i = 0U; i < len; i++)                           /* 按长度连续读取数据 */                  // 开始循环采样或遍历
-    {                                                    /* 循环体开始 */                      // 说明当前代码行
-        ack = ((i + 1U) < len) ? I2C_ACK : I2C_NACK_BIT; /* 最后一个字节后发送 NACK */             // 给变量或寄存器写入新值
-        buf[i] = I2C_ReadByte(ack);                      /* 读取当前字节并发送对应 ACK/NACK */       // 给变量或寄存器写入新值
-    } /* 循环体结束 */                                                                         // 说明当前代码行
+    for (i = 0U; i < len; i++) // 按照 i = 0U; i < len; i++ 的初始化、边界和步进条件重复执行循环体
+    { // 进入当前代码块
+        ack = ((i + 1U) < len) ? I2C_ACK : I2C_NACK_BIT; // 把 ((i + 1U) < len) ? I2C_ACK : I2C_NACK_BIT 的计算结果 写入 ack 变量
+        buf[i] = I2C_ReadByte(ack); // 把 I2C_ReadByte(ack) 写入 buf[i]
+    } // 结束当前代码块
 
-    I2C_Stop(); /* 读取完成后发送停止条件 */                                                         // 执行软件 I2C 操作
+    I2C_Stop(); // 调用I2C_Stop 函数
 
-    return 0; /* 返回读取成功 */                                                                // 返回函数执行结果
-} /* 函数体结束 */                                                                             // 说明当前代码行
+    return 0; // 将 0 返回给调用者
+} // 结束当前代码块

@@ -1,31 +1,31 @@
-#include "telemetry_service.h" // 引入遥测服务模块接口声明
-#include "app_config.h"        // 引入全局配置，例如 MQTT topic
+#include "telemetry_service.h" // 引入 telemetry_service.h 提供的接口、宏和类型定义
+#include "app_config.h" // 引入 app_config.h 提供的接口、宏和类型定义
 
 /**
- * @brief  根据姿态数据和 GNSS 数据组装 MQTT 遥测消息。
- * @param  att 指向姿态数据的结构体指针。
- * @param  gnss 指向 GNSS 数据的结构体指针。
- * @param  msg 用于保存 MQTT 发布消息的结构体指针。
+ * @brief 根据姿态和 GNSS 数据构造 MQTT 遥测消息。
+ * @param att att 变量。
+ * @param gnss GNSS 定位数据结构体。
+ * @param msg msg 变量。
  * @retval None
  */
-void Telemetry_BuildMqttMsg(const AttitudeData_t *att, const GnssData_t *gnss, MqttPublishMsg_t *msg) // 将姿态数据和 GNSS 数据打包成 MQTT 消息
-{                                                                                                     // Telemetry_BuildMqttMsg 函数体开始
-    if (att == 0 || gnss == 0 || msg == 0)                                                            // 检查输入指针是否为空，避免访问非法地址
-        return;                                                                                       // 任意输入为空时直接返回，不继续组包
+void Telemetry_BuildMqttMsg(const AttitudeData_t *att, const GnssData_t *gnss, MqttPublishMsg_t *msg) // 定义Telemetry_BuildMqttMsg 函数签名：根据姿态和 GNSS 数据构造 MQTT 遥测消息
+{ // 进入当前代码块
+    if (att == 0 || gnss == 0 || msg == 0) // 判断 att == 0 || gnss == 0 || msg == 0 是否成立，以选择后续执行路径
+        return; // 当前条件不满足继续处理，直接返回调用者
 
-    memset(msg, 0, sizeof(MqttPublishMsg_t)); // 清空 MQTT 消息结构体，避免残留旧数据
+    memset(msg, 0, sizeof(MqttPublishMsg_t)); // 按指定字节值填充目标内存区域，参数为 msg, 0, sizeof(MqttPublishMsg_t)
 
-    strcpy(msg->topic, APP_MQTT_TOPIC); // 使用全局配置中的 MQTT topic
+    strcpy(msg->topic, APP_MQTT_TOPIC); // 调用strcpy 函数，参数为 msg->topic, APP_MQTT_TOPIC
 
-    snprintf(msg->payload,                                                            // 将遥测数据格式化为 JSON 字符串并写入 payload
-             MQTT_PAYLOAD_MAX_LEN,                                                    // 限制写入长度，避免 payload 缓冲区溢出
-             "{\"roll\":%.1f,\"pitch\":%.1f,\"yaw\":%.1f,\"lat\":%.6f,\"lon\":%.6f}", // JSON 字符串格式模板
-             att->roll_deg,                                                           // 写入 roll 角度，保留 1 位小数
-             att->pitch_deg,                                                          // 写入 pitch 角度，保留 1 位小数
-             att->yaw_deg,                                                            // 写入 yaw 角度，保留 1 位小数
-             gnss->latitude,                                                          // 写入纬度，保留 6 位小数
-             gnss->longitude);                                                        // 写入经度，保留 6 位小数
+    snprintf(msg->payload, // 把格式化后的文本写入字符缓冲区，参数为 msg->payload,
+             MQTT_PAYLOAD_MAX_LEN, // 继续传入 MQTT_PAYLOAD_MAX_LEN 变量，作为当前多行调用或初始化列表的一项
+             "{\"roll\":%.1f,\"pitch\":%.1f,\"yaw\":%.1f,\"lat\":%.6f,\"lon\":%.6f}", // 继续传入 "{\"roll\":%.1f,\"pitch\":%.1f,\"yaw\":%.1f,\"lat\":%.6f,\"lon\":%.6f}" 字段值，作为当前多行调用或初始化列表的一项
+             att->roll_deg, // 继续传入 att->roll_deg 字段值，作为当前多行调用或初始化列表的一项
+             att->pitch_deg, // 继续传入 att->pitch_deg 字段值，作为当前多行调用或初始化列表的一项
+             att->yaw_deg, // 继续传入 att->yaw_deg 字段值，作为当前多行调用或初始化列表的一项
+             gnss->latitude, // 继续传入 gnss->latitude 字段值，作为当前多行调用或初始化列表的一项
+             gnss->longitude); // 执行 gnss->longitude);，完成当前上下文中的具体处理
 
-    msg->payload_len = strlen(msg->payload); // 记录 payload 实际字符串长度
+    msg->payload_len = strlen(msg->payload); // 把 strlen(msg->payload) 字段值 写入 msg->payload_len 字段值
 
-} // Telemetry_BuildMqttMsg 函数结束
+} // 结束当前代码块

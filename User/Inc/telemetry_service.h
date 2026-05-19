@@ -1,10 +1,17 @@
-#ifndef __TELEMETRY_SERVICE_H__ /* 防止 telemetry_service.h 被重复包含 */
-#define __TELEMETRY_SERVICE_H__ /* 定义遥测服务头文件保护宏 */
+#ifndef __TELEMETRY_SERVICE_H__ // 检查 __TELEMETRY_SERVICE_H__ 是否未定义，防止头文件重复包含
+#define __TELEMETRY_SERVICE_H__ // 定义 __TELEMETRY_SERVICE_H__ 变量
 
-#include <stdio.h>     /* 引入 snprintf 等格式化接口 */
-#include <string.h>    /* 引入 memset 等字符串处理接口 */
-#include "app_types.h" /* 引入姿态、GNSS、MQTT 消息类型 */
+#include <stdio.h> // 引入 stdio.h 提供的接口、宏和类型定义
+#include <string.h> // 引入 string.h 提供的接口、宏和类型定义
+#include "app_types.h" // 引入 app_types.h 提供的接口、宏和类型定义
 
-void Telemetry_BuildMqttMsg(const AttitudeData_t *att, const GnssData_t *gnss, MqttPublishMsg_t *msg); /* 声明 MQTT 遥测消息组装函数 */
+/**
+ * @brief 根据姿态和 GNSS 数据构造 MQTT 遥测消息。
+ * @param att att 变量。
+ * @param gnss GNSS 定位数据结构体。
+ * @param msg msg 变量。
+ * @retval None
+ */
+void Telemetry_BuildMqttMsg(const AttitudeData_t *att, const GnssData_t *gnss, MqttPublishMsg_t *msg); // 声明Telemetry_BuildMqttMsg 函数签名：根据姿态和 GNSS 数据构造 MQTT 遥测消息
 
-#endif /* 结束遥测服务头文件保护宏 */
+#endif // 结束当前条件编译或头文件保护范围

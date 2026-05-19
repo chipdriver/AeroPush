@@ -1,4 +1,4 @@
-#include "app_tasks.h" // 引入应用任务模块接口
+#include "app_tasks.h" // 引入 app_tasks.h 提供的接口、宏和类型定义
 
 /*任务句柄*/
 /*
@@ -6,11 +6,11 @@
  *  任务句柄可以理解为“任务的管理编号”，后续如果要挂起、恢复、删除某个任务，可以通过任务句柄来操作。
  *  ②static表示这些变量只能在这个文件内可见
  */
-static TaskHandle_t InitTaskHandle = NULL;      // 初始化任务的句柄，后续用于保存InitTask的任务控制句柄
-static TaskHandle_t IMUTaskHandle = NULL;       // IMU任务的句柄，后续用于保存IMUTask的任务控制句柄
-static TaskHandle_t ModemTaskHandle = NULL;     // 通信任务的句柄，后续用于保存ModemTask的任务控制句柄
-static TaskHandle_t TelemetryTaskHandle = NULL; // 遥测任务的句柄，后续用于保存TelemetryTask的任务控制句柄
-static TaskHandle_t LedTaskHandle = NULL;       // LED任务的句柄，后续用于保存LEDTask的任务控制句柄
+static TaskHandle_t InitTaskHandle = NULL; // 定义 InitTaskHandle 任务句柄，初始值设置为 空指针
+static TaskHandle_t IMUTaskHandle = NULL; // 定义 IMUTaskHandle 任务句柄，初始值设置为 空指针
+static TaskHandle_t ModemTaskHandle = NULL; // 定义 ModemTaskHandle 任务句柄，初始值设置为 空指针
+static TaskHandle_t TelemetryTaskHandle = NULL; // 定义 TelemetryTaskHandle 任务句柄，初始值设置为 空指针
+static TaskHandle_t LedTaskHandle = NULL; // 定义 LedTaskHandle 任务句柄，初始值设置为 空指针
 
 /*任务函数声明*/
 /*
@@ -18,47 +18,46 @@ static TaskHandle_t LedTaskHandle = NULL;       // LED任务的句柄，后续�
  *  ②void *argument 是FreeRTOS 任务函数的标准参数形式；即使现在不用这个参数，也要保留这个格式。
  */
 /**
- * @brief  初始化任务函数声明。
- * @param  argument FreeRTOS 任务参数，当前未使用。
+ * @brief 完成 LED、调试串口、IMU 等系统初始化。
+ * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
-static void InitTask(void *argument); // 声明初始化任务函数
+static void InitTask(void *argument); // 声明InitTask 函数签名：完成 LED、调试串口、IMU 等系统初始化
 
 /**
- * @brief  IMU 任务函数声明。
- * @param  argument FreeRTOS 任务参数，当前未使用。
+ * @brief 周期读取 IMU 数据、执行姿态融合并更新姿态队列。
+ * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
-static void ImuTask(void *argument); // 声明 IMU 任务函数
+static void ImuTask(void *argument); // 声明ImuTask 函数签名：周期读取 IMU 数据、执行姿态融合并更新姿态队列
 
 /**
- * @brief  通信任务函数声明。
- * @param  argument FreeRTOS 任务参数，当前未使用。
+ * @brief 周期构造 GNSS 数据并处理 MQTT 发布队列。
+ * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
-static void ModemTask(void *argument); // 声明通信任务函数
+static void ModemTask(void *argument); // 声明ModemTask 函数签名：周期构造 GNSS 数据并处理 MQTT 发布队列
 
 /**
- * @brief  遥测任务函数声明。
- * @param  argument FreeRTOS 任务参数，当前未使用。
+ * @brief 读取姿态和 GNSS 队列并组装遥测消息。
+ * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
-static void TelemetryTask(void *argument); // 声明遥测任务函数
+static void TelemetryTask(void *argument); // 声明TelemetryTask 函数签名：读取姿态和 GNSS 队列并组装遥测消息
 
 /**
- * @brief  LED 任务函数声明。
- * @param  argument FreeRTOS 任务参数，当前未使用。
+ * @brief 根据系统状态周期翻转 LED 指示运行状态。
+ * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
-static void LedTask(void *argument); // 声明 LED 任务函数
+static void LedTask(void *argument); // 声明LedTask 函数签名：根据系统状态周期翻转 LED 指示运行状态
 
 /**
- * @brief  创建应用层所有 FreeRTOS 任务。
- * @param  None
+ * @brief 创建应用层所有 FreeRTOS 任务。
  * @retval None
  */
-void APP_TasksCreate(void) // 定义应用任务创建函数
-{                          // APP_TasksCreate 函数体开始
+void APP_TasksCreate(void) // 定义APP_TasksCreate 函数签名：创建应用层所有 FreeRTOS 任务
+{ // 进入当前代码块
     /*
      *  xTaskCreate()   用于创建一个 FreeRTOS 任务
      *
@@ -69,62 +68,61 @@ void APP_TasksCreate(void) // 定义应用任务创建函数
      *  参数5：任务优先级，数字越大，优先级越高
      *  参数6：任务句柄地址，用于保存任务句柄
      */
-    xTaskCreate(InitTask,                 // 创建 InitTask 初始化任务
-                "InitTask",               // 任务名称
-                APP_TASK_INIT_STACK_SIZE, // 任务栈大小，单位是word
-                NULL,                     // 不向任务函数传递参数
-                APP_TASK_INIT_PRIORITY,   // 任务优先级为4，当前最高，启动阶段优先执行。
-                &InitTaskHandle);         // 保存任务句柄到 InitTaskHandle
+    xTaskCreate(InitTask, // 创建 FreeRTOS 任务并保存任务句柄，参数为 InitTask,
+                "InitTask", // 继续传入 "InitTask"，作为当前多行调用或初始化列表的一项
+                APP_TASK_INIT_STACK_SIZE, // 继续传入 APP_TASK_INIT_STACK_SIZE 应用配置项，作为当前多行调用或初始化列表的一项
+                NULL, // 继续传入 空指针，作为当前多行调用或初始化列表的一项
+                APP_TASK_INIT_PRIORITY, // 继续传入 APP_TASK_INIT_PRIORITY 应用配置项，作为当前多行调用或初始化列表的一项
+                &InitTaskHandle); // 执行 &InitTaskHandle);，完成当前上下文中的具体处理
 
-    xTaskCreate(ImuTask,                 // 创建 ImuTask 姿态任务
-                "ImuTask",               // 任务名称
-                APP_TASK_IMU_STACK_SIZE, // 栈大小，单位是word
-                NULL,                    // 不向任务函数传递参数
-                APP_TASK_IMU_PRIORITY,   // 任务优先级为3，IMU需要高频执行，所以优先级较高。
-                &IMUTaskHandle);         // 保存任务句柄到 IMUTaskHandle
+    xTaskCreate(ImuTask, // 创建 FreeRTOS 任务并保存任务句柄，参数为 ImuTask,
+                "ImuTask", // 继续传入 "ImuTask"，作为当前多行调用或初始化列表的一项
+                APP_TASK_IMU_STACK_SIZE, // 继续传入 APP_TASK_IMU_STACK_SIZE 应用配置项，作为当前多行调用或初始化列表的一项
+                NULL, // 继续传入 空指针，作为当前多行调用或初始化列表的一项
+                APP_TASK_IMU_PRIORITY, // 继续传入 APP_TASK_IMU_PRIORITY 应用配置项，作为当前多行调用或初始化列表的一项
+                &IMUTaskHandle); // 执行 &IMUTaskHandle);，完成当前上下文中的具体处理
 
-    xTaskCreate(ModemTask,                                                                                                               // 创建 ModemTask 通信任务
-                "ModemTask",                                                                                                             // 任务名称
-                APP_TASK_MODEM_STACK_SIZE,                                                                                               // 任务栈大小，单位是word
-                NULL,                                                                                                                    // 不向任务函数传递参数
-                APP_TASK_MODEM_PRIORITY,                                                                                                 // 任务优先级为2，负责A7670E、GNSS、MQTT
-                &ModemTaskHandle);                                                                                                       // 保存任务句柄到 ModemTask
-    xTaskCreate(TelemetryTask, "TelemetryTask", APP_TASK_TELEMETRY_STACK_SIZE, NULL, APP_TASK_TELEMETRY_PRIORITY, &TelemetryTaskHandle); // 创建 TelemetryTask 任务
-    xTaskCreate(LedTask, "LedTask", APP_TASK_LED_STACK_SIZE, NULL, APP_TASK_LED_PRIORITY, &LedTaskHandle);                               // 创建 LedTask 任务
-} // APP_TasksCreate 函数体结束
+    xTaskCreate(ModemTask, // 创建 FreeRTOS 任务并保存任务句柄，参数为 ModemTask,
+                "ModemTask", // 继续传入 "ModemTask"，作为当前多行调用或初始化列表的一项
+                APP_TASK_MODEM_STACK_SIZE, // 继续传入 APP_TASK_MODEM_STACK_SIZE 应用配置项，作为当前多行调用或初始化列表的一项
+                NULL, // 继续传入 空指针，作为当前多行调用或初始化列表的一项
+                APP_TASK_MODEM_PRIORITY, // 继续传入 APP_TASK_MODEM_PRIORITY 应用配置项，作为当前多行调用或初始化列表的一项
+                &ModemTaskHandle); // 执行 &ModemTaskHandle);，完成当前上下文中的具体处理
+    xTaskCreate(TelemetryTask, "TelemetryTask", APP_TASK_TELEMETRY_STACK_SIZE, NULL, APP_TASK_TELEMETRY_PRIORITY, &TelemetryTaskHandle); // 创建 FreeRTOS 任务并保存任务句柄，参数为 TelemetryTask, "TelemetryTask", APP_TASK_TELEMETRY_STACK_SIZE, NULL, APP_TASK_TELEMETRY_PRIORITY, &TelemetryTaskHandle
+    xTaskCreate(LedTask, "LedTask", APP_TASK_LED_STACK_SIZE, NULL, APP_TASK_LED_PRIORITY, &LedTaskHandle); // 创建 FreeRTOS 任务并保存任务句柄，参数为 LedTask, "LedTask", APP_TASK_LED_STACK_SIZE, NULL, APP_TASK_LED_PRIORITY, &LedTaskHandle
+} // 结束当前代码块
 
 /**
- * @brief  初始化任务。
- * @param  argument FreeRTOS 任务参数，当前未使用。
+ * @brief 完成 LED、调试串口、IMU 等系统初始化。
+ * @param argument FreeRTOS 任务入口参数。
  * @retval None
- * @note   当前负责初始化 LED、调试串口、IMU，并设置系统状态位。
  */
-static void InitTask(void *argument) // 定义初始化任务函数
-{                                    // InitTask 函数体开始
-    uint8_t imu_ret;                 // 保存 IMU 服务初始化结果，1 表示成功，0 表示失败
-    (void)argument;                  // 显示表示argument参数暂时不用，避免编译器警告
+static void InitTask(void *argument) // 定义InitTask 函数签名：完成 LED、调试串口、IMU 等系统初始化
+{ // 进入当前代码块
+    uint8_t imu_ret; // 声明 imu_ret 变量，供后续计算、状态保存或模块间传递使用
+    (void)argument; // 标记 FreeRTOS 任务入口参数 当前未使用，避免编译器告警
 
-    LedService_Init();   // 调用 LED 服务完成板载 LED 初始化
-    DebugService_Init(); // 调用调试服务完成调试串口初始化
+    LedService_Init(); // 调用初始化 LED 服务
+    DebugService_Init(); // 调用DebugService_Init 函数
 
     /*打印调试任务*/
     // Debug_Print("\r\n[AeroPush] RTOS start\r\n"); // 打印系统启动信息
     // Debug_Print("[InitTask] start\r\n");       // 打印 InitTask 开始运行信息
 
-    imu_ret = ImuService_Init();             // 调用 IMU 服务初始化，为后续接入真实 MPU9250 预留入口
-    if (imu_ret == 1)                        // 判断条件是否成立
-    {                                        // 进入代码块
-        AppStatus_Set(APP_STATUS_IMU_READY); // 初始化成功后设置 IMU 就绪状态位
-        MPU9250_MahonyInit(0.3f, 0.0f);
-    } // 结束代码块
-    else                                     // 处理条件不成立的分支
-    {                                        // 进入代码块
-        AppStatus_Set(APP_STATUS_IMU_ERROR); // 初始化失败时设置 IMU 错误状态位
-    } // 结束代码块
+    imu_ret = ImuService_Init(); // 把 ImuService_Init() 写入 imu_ret 变量
+    if (imu_ret == 1) // 判断 imu_ret == 1 是否成立，以选择后续执行路径
+    { // 进入当前代码块
+        AppStatus_Set(APP_STATUS_IMU_READY); // 调用置位指定系统状态标志，参数为 APP_STATUS_IMU_READY
+        MPU9250_MahonyInit(0.3f, 0.0f); // 调用初始化 Mahony 姿态融合四元数和误差积分项，参数为 0.3f, 0.0f
+    } // 结束当前代码块
+    else // 处理前面判断条件不成立时的备用逻辑
+    { // 进入当前代码块
+        AppStatus_Set(APP_STATUS_IMU_ERROR); // 调用置位指定系统状态标志，参数为 APP_STATUS_IMU_ERROR
+    } // 结束当前代码块
 
-    AppStatus_Set(APP_STATUS_GNSS_READY); // 设置 GNSS 就绪状态位，表示 GNSS 功能已打开
-    AppStatus_Set(APP_STATUS_MQTT_READY); // 设置 MQTT 就绪状态位，表示 MQTT 功能已打开
-    AppStatus_Set(APP_STATUS_NET_READY);  // 当前阶段先模拟 4G 网络已就绪
+    AppStatus_Set(APP_STATUS_GNSS_READY); // 调用置位指定系统状态标志，参数为 APP_STATUS_GNSS_READY
+    AppStatus_Set(APP_STATUS_MQTT_READY); // 调用置位指定系统状态标志，参数为 APP_STATUS_MQTT_READY
+    AppStatus_Set(APP_STATUS_NET_READY); // 调用置位指定系统状态标志，参数为 APP_STATUS_NET_READY
 
     // Debug_Print("[InitTask] status ready\r\n");  // 打印系统状态初始化完成信息
     // Debug_Print("[InitTask] done\r\n");        // 打印 InitTask 初始化完成信息
@@ -133,84 +131,83 @@ static void InitTask(void *argument) // 定义初始化任务函数
      *   初始化完成后，调用vTaskDelete(NULL) 删除自己。
      *   NULL表示删除当前正在运行的任务
      */
-    vTaskDelete(NULL); // 删除当前 InitTask 任务，释放任务资源
-} // InitTask 函数体结束
+    vTaskDelete(NULL); // 删除当前任务并释放任务资源，参数为 NULL
+} // 结束当前代码块
 
 /**
- * @brief  IMU 周期读取任务。
- * @param  argument FreeRTOS 任务参数，当前未使用。
+ * @brief 周期读取 IMU 数据、执行姿态融合并更新姿态队列。
+ * @param argument FreeRTOS 任务入口参数。
  * @retval None
- * @note   当前读取 MPU9250 六轴和 AK8963 磁力计物理量，后续姿态融合也建议接在这里。
  */
-static void ImuTask(void *argument)          // 定义 IMU 任务函数
-{                                            // ImuTask 函数体开始
-    TickType_t lastWakeTime;                 // 定义一个变量，用于保存上一次任务唤醒的系统 tick 时间
-    (void)argument;                          // 显示表示 argument 参数暂时不用，避免编译器警告
-    AttitudeData_t attitude;                 // 定义姿态数据变量,用于保存模拟姿态数据
-    uint32_t print_count = 0;                // 定义一个计数器变量，用于控制串口打印频率
-    MPU9250_Physical_Data phys = {0};        // 定义局部变量
-    AK8963_Physical_Data mag_physical = {0}; // 定义局部变量
-    uint8_t imu_read_ok = 0;                 // 定义局部变量
-    const float imu_dt = (float)APP_IMU_TASK_PERIOD_MS * 0.001f;
-    float roll_deg = 0.0f;
-    float pitch_deg = 0.0f;
-    float yaw_deg = 0.0f;
-    float mag_roll_deg = 0.0f;
-    float mag_pitch_deg = 0.0f;
-    float mag_yaw_deg = 0.0f;
+static void ImuTask(void *argument) // 定义ImuTask 函数签名：周期读取 IMU 数据、执行姿态融合并更新姿态队列
+{ // 进入当前代码块
+    TickType_t lastWakeTime; // 声明 周期任务上一次唤醒的 tick 基准时间，供后续计算、状态保存或模块间传递使用
+    (void)argument; // 标记 FreeRTOS 任务入口参数 当前未使用，避免编译器告警
+    AttitudeData_t attitude; // 声明 姿态数据结构体，供后续计算、状态保存或模块间传递使用
+    uint32_t print_count = 0; // 定义 串口打印分频计数器，初始值设置为 0
+    MPU9250_Physical_Data phys = {0}; // 定义 MPU9250 六轴物理量数据，初始值设置为 全零初始化值
+    AK8963_Physical_Data mag_physical = {0}; // 定义 AK8963 磁力计物理量数据，初始值设置为 全零初始化值
+    uint8_t imu_read_ok = 0; // 定义 IMU 读取结果标志，初始值设置为 0
+    const float imu_dt = (float)APP_IMU_TASK_PERIOD_MS * 0.001f; // 定义 IMU 融合更新周期秒数，初始值设置为 (float)APP_IMU_TASK_PERIOD_MS * 0.001f 字段值
+    float roll_deg = 0.0f; // 定义 横滚角角度值，初始值设置为 0.0f 字段值
+    float pitch_deg = 0.0f; // 定义 俯仰角角度值，初始值设置为 0.0f 字段值
+    float yaw_deg = 0.0f; // 定义 航向角角度值，初始值设置为 0.0f 字段值
+    float mag_roll_deg = 0.0f; // 定义 磁力计直接解算的横滚角角度值，初始值设置为 0.0f 字段值
+    float mag_pitch_deg = 0.0f; // 定义 磁力计直接解算的俯仰角角度值，初始值设置为 0.0f 字段值
+    float mag_yaw_deg = 0.0f; // 定义 磁力计直接解算的航向角角度值，初始值设置为 0.0f 字段值
     /*
      *   xTaskGetTickCount() 用于获取当前 FreeRTOS 系统 tick 计数值。
      *   这里把当前时间保存下来，作为vTaskDelayUntil()   的基准时间
      */
-    lastWakeTime = xTaskGetTickCount(); // 获取当前系统tick，作为周期任务的起始时间
+    lastWakeTime = xTaskGetTickCount(); // 把 当前 FreeRTOS tick 计数 写入 周期任务上一次唤醒的 tick 基准时间
 
-    while (1) // 任务主循环，FreeRTOS 任务一般都是while(1) 死循环结构
-    {         // 进入代码块
+    while (1) // 当 1 成立时持续执行循环体
+    { // 进入当前代码块
 
-        if (AppStatus_IsSet(APP_STATUS_IMU_READY) == 0) // 如果 IMU 就绪状态位未设置，说明 IMU 初始化未完成
-        {                                               // 进入代码块
-            vTaskDelay(pdMS_TO_TICKS(100));             // 每100ms检查一次状态位，等待 IMU 初始化完成
-            continue;                                   // 跳过本次循环，继续等待
-        } // 结束代码块
+        if (AppStatus_IsSet(APP_STATUS_IMU_READY) == 0) // 判断 AppStatus_IsSet(APP_STATUS_IMU_READY) == 0 是否成立，以选择后续执行路径
+        { // 进入当前代码块
+            vTaskDelay(pdMS_TO_TICKS(100)); // 让当前任务阻塞指定时间以释放 CPU，参数为 pdMS_TO_TICKS(100)
+            continue; // 跳过本轮剩余逻辑，等待下一次循环处理
+        } // 结束当前代码块
 
-        imu_read_ok = ImuService_ReadPhys(&phys, &mag_physical);                   // 调用 IMU 服务读取物理量数据函数，获取最新姿态数据
-        if (imu_read_ok == IMU_SERVICE_READ_FAIL)                                                     // 判断条件是否成立
-        {                                                                          // 进入代码块
-            vTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 按固定周期延时到下一次执行
-            continue;                                                              // 跳过本次循环后续逻辑
-        } // 结束代码块
+        imu_read_ok = ImuService_ReadPhys(&phys, &mag_physical); // 把 ImuService_ReadPhys(&phys, &mag_physical) 写入 IMU 读取结果标志
+        if (imu_read_ok == IMU_SERVICE_READ_FAIL) // 判断 imu_read_ok == IMU_SERVICE_READ_FAIL 是否成立，以选择后续执行路径
+        { // 进入当前代码块
+            vTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 按固定周期延时到下一次任务唤醒点，参数为 &lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)
+            continue; // 跳过本轮剩余逻辑，等待下一次循环处理
+        } // 结束当前代码块
 
-        if (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK)
-        {
-            MPU9250_ComputeEuler_FromAccMag(&phys, &mag_physical);
-            MPU9250_GetEulerDeg(&mag_roll_deg, &mag_pitch_deg, &mag_yaw_deg);
-            MPU9250_MahonyUpdate(&phys, &mag_physical, imu_dt);
-        }
-        else
-        {
-            MPU9250_MahonyUpdateIMU(&phys, imu_dt);
-        }
+        if (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK) // 判断 imu_read_ok == IMU_SERVICE_READ_9AXIS_OK 是否成立，以选择后续执行路径
+        { // 进入当前代码块
+            MPU9250_ComputeEuler_FromAccMag(&phys, &mag_physical); // 调用使用加速度计和磁力计直接计算欧拉角，参数为 &phys, &mag_physical
+            MPU9250_GetEulerDeg(&mag_roll_deg, &mag_pitch_deg, &mag_yaw_deg); // 调用读取加速度计磁力计解算的欧拉角角度值，参数为 &mag_roll_deg, &mag_pitch_deg, &mag_yaw_deg
+            MPU9250_MahonyUpdate(&phys, &mag_physical, imu_dt); // 调用使用九轴数据执行 Mahony 姿态融合更新，参数为 &phys, &mag_physical, imu_dt
+        } // 结束当前代码块
+        else // 处理前面判断条件不成立时的备用逻辑
+        { // 进入当前代码块
+            MPU9250_MahonyUpdateIMU(&phys, imu_dt); // 调用使用六轴 IMU 数据执行 Mahony 姿态融合更新，参数为 &phys, imu_dt
+        } // 结束当前代码块
 
-        MPU9250_GetEulerFusedDeg(&roll_deg, &pitch_deg, &yaw_deg);
-        attitude.roll_deg = roll_deg;
-        attitude.pitch_deg = pitch_deg;
-        attitude.yaw_deg = yaw_deg;
-        attitude.timestamp_ms = xTaskGetTickCount();
-        attitude.valid = 1U;
-        xQueueOverwrite(qAttitude, &attitude);
-        print_count++; // 读取成功，增加计数器
+        MPU9250_GetEulerFusedDeg(&roll_deg, &pitch_deg, &yaw_deg); // 调用读取 Mahony 融合后的欧拉角角度值，参数为 &roll_deg, &pitch_deg, &yaw_deg
+        attitude.roll_deg = roll_deg; // 把 横滚角角度值 写入 attitude.roll_deg 字段值
+        attitude.pitch_deg = pitch_deg; // 把 俯仰角角度值 写入 attitude.pitch_deg 字段值
+        attitude.yaw_deg = yaw_deg; // 把 航向角角度值 写入 attitude.yaw_deg 字段值
+        attitude.timestamp_ms = xTaskGetTickCount(); // 把 当前 FreeRTOS tick 计数 写入 attitude.timestamp_ms 字段值
+        attitude.valid = 1U; // 把 1U 写入 attitude.valid 字段值
+        xQueueOverwrite(qAttitude, &attitude); // 把最新数据写入队列，队列满时覆盖旧数据，参数为 qAttitude, &attitude
+        print_count++; // 将 串口打印分频计数器 自增 1，用于推进计数或索引
 
-        if (print_count >= 200) // ImuTask 周期为 20ms，200 次约等于 4 秒
-        {                       // 进入代码块
-            print_count = 0;    // 清零打印计数器
+        if (print_count >= 200) // 判断 print_count >= 200 是否成立，以选择后续执行路径
+        { // 进入当前代码块
+            print_count = 0; // 把 0 写入 串口打印分频计数器
 
-            Debug_Printf("[ImuTask] fused roll=%.1f pitch=%.1f yaw=%.1f mag_yaw=%.1f mag_ok=%u\r\n",
-                         attitude.roll_deg,
-                         attitude.pitch_deg,
-                         attitude.yaw_deg,
-                         mag_yaw_deg,
-                         (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK) ? 1U : 0U);
-        } // 结束代码块
+            Debug_Printf("[ImuTask] fused roll=%.1f pitch=%.1f yaw=%.1f mag_yaw=%.1f mag_ok=%u\r\n", // 调用格式化并通过调试串口输出调试信息，参数为 "[ImuTask] fused roll=%.1f pitch=%.1f yaw=%.1f mag_yaw=%.1f mag_ok=%u\r\n",
+                         attitude.roll_deg, // 继续传入 attitude.roll_deg 字段值，作为当前多行调用或初始化列表的一项
+                         attitude.pitch_deg, // 继续传入 attitude.pitch_deg 字段值，作为当前多行调用或初始化列表的一项
+                         attitude.yaw_deg, // 继续传入 attitude.yaw_deg 字段值，作为当前多行调用或初始化列表的一项
+                         mag_yaw_deg, // 继续传入 磁力计直接解算的航向角角度值，作为当前多行调用或初始化列表的一项
+                         (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK) ? 1U : 0U); // 执行 (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK) ? 1U : 0U);，完成当前上下文中的具体处理
+        } // 结束当前代码块
 
         /*
          *   vTaskDelayUntil()   用于实现严格周期延时，它与 vTaskDelay() 不一样；
@@ -219,99 +216,97 @@ static void ImuTask(void *argument)          // 定义 IMU 任务函数
          *
          *   APP_IMU_TASK_PERIOD_MS 在 app_config.h 中统一配置
          *   所以这里表示 ImuTask 按配置周期执行一次*/
-        vTaskDelayUntil(&lastWakeTime,                          // 传入上一次唤醒时间的地址，函数内部会自动更新它
-                        pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 延时到下一个 5ms 周期点，实现 200HZ 周期任务
-    } // 结束代码块
-} // ImuTask 函数体结束
+        vTaskDelayUntil(&lastWakeTime, // 按固定周期延时到下一次任务唤醒点，参数为 &lastWakeTime,
+                        pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 调用pdMS_TO_TICKS 函数，参数为 APP_IMU_TASK_PERIOD_MS)
+    } // 结束当前代码块
+} // 结束当前代码块
 
 /**
- * @brief  通信任务。
- * @param  argument FreeRTOS 任务参数，当前未使用。
+ * @brief 周期构造 GNSS 数据并处理 MQTT 发布队列。
+ * @param argument FreeRTOS 任务入口参数。
  * @retval None
- * @note   当前负责模拟 GNSS 数据，并从 MQTT 发布队列取出待发送消息。
  */
-static void ModemTask(void *argument) // 定义通信任务函数
-{                                     // ModemTask 函数体开始
-    GnssData_t gnss;                  // 定义 GNSS 数据变量,用于保存模拟数据
-    MqttPublishMsg_t mqtt_msg;        // 定义 MQTT 消息变量,用于接收待发布消息
-    (void)argument;                   // 显示表示argument参数暂时不用，避免编译器警告
+static void ModemTask(void *argument) // 定义ModemTask 函数签名：周期构造 GNSS 数据并处理 MQTT 发布队列
+{ // 进入当前代码块
+    GnssData_t gnss; // 声明 GNSS 定位数据结构体，供后续计算、状态保存或模块间传递使用
+    MqttPublishMsg_t mqtt_msg; // 声明 MQTT 发布消息结构体，供后续计算、状态保存或模块间传递使用
+    (void)argument; // 标记 FreeRTOS 任务入口参数 当前未使用，避免编译器告警
 
-    memset(&gnss, 0, sizeof(gnss));         // 将 GNSS 数据变量清零，避免初始值随机
-    memset(&mqtt_msg, 0, sizeof(mqtt_msg)); // 将 MQTT 消息变量清零，避免字符串缓冲区残留脏数据
+    memset(&gnss, 0, sizeof(gnss)); // 按指定字节值填充目标内存区域，参数为 &gnss, 0, sizeof(gnss)
+    memset(&mqtt_msg, 0, sizeof(mqtt_msg)); // 按指定字节值填充目标内存区域，参数为 &mqtt_msg, 0, sizeof(mqtt_msg)
 
-    while (1) // 通信任务主循环
-    {         // 进入代码块
+    while (1) // 当 1 成立时持续执行循环体
+    { // 进入当前代码块
 
         /*模拟GNSS数据*/
-        ModemService_BuildSimGnss(&gnss); // 调用通信服务层接口
+        ModemService_BuildSimGnss(&gnss); // 调用构造模拟 GNSS 定位数据，参数为 &gnss
 
-        if (gnss.fix_valid)                       // 如果模拟的 GNSS 定位有效
-            AppStatus_Set(APP_STATUS_GNSS_FIX);   // 设置 GNSS 已定位状态位
-        else                                      // 处理条件不成立的分支
-            AppStatus_Clear(APP_STATUS_GNSS_FIX); // 清除 GNSS 已定位状态位
+        if (gnss.fix_valid) // 判断 gnss.fix_valid 是否成立，以选择后续执行路径
+            AppStatus_Set(APP_STATUS_GNSS_FIX); // 调用置位指定系统状态标志，参数为 APP_STATUS_GNSS_FIX
+        else // 处理前面判断条件不成立时的备用逻辑
+            AppStatus_Clear(APP_STATUS_GNSS_FIX); // 调用清除指定系统状态标志，参数为 APP_STATUS_GNSS_FIX
 
-        xQueueOverwrite(qGnss, &gnss); // 将最新 GNSS 数据写入 qGnss 队列，如果已有旧数据则覆盖
+        xQueueOverwrite(qGnss, &gnss); // 把最新数据写入队列，队列满时覆盖旧数据，参数为 qGnss, &gnss
 
         /*
          * 2. 处理 MQTT 发布队列
          * 后续这里会替换成真正的 MQTT_Publish。
          */
-        if (xQueueReceive(qMqttPublish, &mqtt_msg, 0) == pdPASS) // 尝试从 MQTT 队列中取出一条发布消息，不等待
-        {                                                        // 进入代码块
-            ModemService_Publish(&mqtt_msg);                     // 调用通信服务层接口
-        } // 结束代码块
+        if (xQueueReceive(qMqttPublish, &mqtt_msg, 0) == pdPASS) // 判断 xQueueReceive(qMqttPublish, &mqtt_msg, 0) == pdPASS 是否成立，以选择后续执行路径
+        { // 进入当前代码块
+            ModemService_Publish(&mqtt_msg); // 调用处理一条待发布 MQTT 消息，参数为 &mqtt_msg
+        } // 结束当前代码块
         /*
          *   vTaskDelay() 用于让当前任务主动阻塞一段时间
          *   周期在 app_config.h 中统一配置，避免通信任务一直占用CPU
          */
-        vTaskDelay(pdMS_TO_TICKS(APP_MODEM_TASK_PERIOD_MS)); // 当前任务按配置周期延时，让出 CPU 给其他任务执行
-    } // 结束代码块
-} // ModemTask 函数体结束
+        vTaskDelay(pdMS_TO_TICKS(APP_MODEM_TASK_PERIOD_MS)); // 让当前任务阻塞指定时间以释放 CPU，参数为 pdMS_TO_TICKS(APP_MODEM_TASK_PERIOD_MS)
+    } // 结束当前代码块
+} // 结束当前代码块
+
 
 /**
- * @brief  遥测组包任务。
- * @param  argument FreeRTOS 任务参数，当前未使用。
+ * @brief 读取姿态和 GNSS 队列并组装遥测消息。
+ * @param argument FreeRTOS 任务入口参数。
  * @retval None
- * @note   当前从姿态队列和 GNSS 队列读取数据，组装 MQTT 消息后放入发布队列。
  */
+static void TelemetryTask(void *argument) // 定义TelemetryTask 函数签名：读取姿态和 GNSS 队列并组装遥测消息
+{ // 进入当前代码块
+    AttitudeData_t attitude; // 声明 姿态数据结构体，供后续计算、状态保存或模块间传递使用
+    GnssData_t gnss; // 声明 GNSS 定位数据结构体，供后续计算、状态保存或模块间传递使用
+    MqttPublishMsg_t mqtt_msg; // 声明 MQTT 发布消息结构体，供后续计算、状态保存或模块间传递使用
+    char log_buf[256]; // 声明 log_buf 变量，供后续计算、状态保存或模块间传递使用
 
-static void TelemetryTask(void *argument) // 定义遥测任务函数
-{                                         // TelemetryTask 函数体开始
-    AttitudeData_t attitude;              // 定义姿态数据变量，用于保存从 qAttitude 读取到的数据
-    GnssData_t gnss;                      // 定义 GNSS 数据变量，用于保存从 qGnss 读取到的数据
-    MqttPublishMsg_t mqtt_msg;            // 定义 MQTT 发布消息变量，用于组装 topic 和 payload
-    char log_buf[256];                    // 定义日志缓冲区，用于格式化串口打印内容
+    (void)argument; // 标记 FreeRTOS 任务入口参数 当前未使用，避免编译器告警
 
-    (void)argument; // 显示表示 argument 参数暂时不用，避免编译器警告
+    memset(&attitude, 0, sizeof(attitude)); // 按指定字节值填充目标内存区域，参数为 &attitude, 0, sizeof(attitude)
+    memset(&gnss, 0, sizeof(gnss)); // 按指定字节值填充目标内存区域，参数为 &gnss, 0, sizeof(gnss)
+    memset(&mqtt_msg, 0, sizeof(mqtt_msg)); // 按指定字节值填充目标内存区域，参数为 &mqtt_msg, 0, sizeof(mqtt_msg)
 
-    memset(&attitude, 0, sizeof(attitude)); // 将姿态数据变量清零,避免初始值随机
-    memset(&gnss, 0, sizeof(gnss));         // 将 GNSS 数据变量清零，避免初始值随机
-    memset(&mqtt_msg, 0, sizeof(mqtt_msg)); // 将 MQTT 消息变量清零，避免字符串缓冲区残留脏数据
-
-    while (1) // 开始循环执行
-    {         // 进入代码块
+    while (1) // 当 1 成立时持续执行循环体
+    { // 进入当前代码块
 
         /* 1.获取最新姿态数据 */
-        xQueuePeek(qAttitude, &attitude, 0); // 从姿态队列读取最新数据，但不把数据从队列中删除
+        xQueuePeek(qAttitude, &attitude, 0); // 从队列读取最新数据但不移除内容，参数为 qAttitude, &attitude, 0
 
         /* 2. 获取最新 GNSS 数据 */
-        xQueuePeek(qGnss, &gnss, 0); // 从 GNSS 队列读取最新数据，但不把数据从队列中删除
+        xQueuePeek(qGnss, &gnss, 0); // 从队列读取最新数据但不移除内容，参数为 qGnss, &gnss, 0
 
         /* 3. 组装JSON数据*/
-        Telemetry_BuildMqttMsg(&attitude, &gnss, &mqtt_msg); // 调用遥测组包接口
+        Telemetry_BuildMqttMsg(&attitude, &gnss, &mqtt_msg); // 调用根据姿态和 GNSS 数据构造 MQTT 遥测消息，参数为 &attitude, &gnss, &mqtt_msg
 
         /* 4.发送给ModemTask */
-        xQueueSend(qMqttPublish, &mqtt_msg, 0); // 将 MQTT 发布消息发送到 qMqttPublish 队列，不等待
+        xQueueSend(qMqttPublish, &mqtt_msg, 0); // 向队列发送一条消息，参数为 qMqttPublish, &mqtt_msg, 0
 
         /* 5.打印当前遥测状态 */
-        snprintf(log_buf,                                                               // 将格式化后的日志字符串写入 log_buf
-                 sizeof(log_buf),                                                       // 限制最大写入长度，防止 log_buf 溢出
-                 "[TelemetryTask] roll=%.1f pitch=%.1f yaw=%.1f lat=%.6f lon=%.6f\r\n", // 日志输出格式
-                 attitude.roll_deg,                                                     // 写入 roll 角数据
-                 attitude.pitch_deg,                                                    // 写入 pitch 角数据
-                 attitude.yaw_deg,                                                      // 写入 yaw 角数据
-                 gnss.latitude,                                                         // 写入纬度数据
-                 gnss.longitude);                                                       // 写入经度数据
+        snprintf(log_buf, // 把格式化后的文本写入字符缓冲区，参数为 log_buf,
+                 sizeof(log_buf), // 调用sizeof 函数，参数为 log_buf),
+                 "[TelemetryTask] roll=%.1f pitch=%.1f yaw=%.1f lat=%.6f lon=%.6f\r\n", // 继续传入 "[TelemetryTask] roll=%.1f pitch=%.1f yaw=%.1f lat=%.6f lon=%.6f\r\n" 字段值，作为当前多行调用或初始化列表的一项
+                 attitude.roll_deg, // 继续传入 attitude.roll_deg 字段值，作为当前多行调用或初始化列表的一项
+                 attitude.pitch_deg, // 继续传入 attitude.pitch_deg 字段值，作为当前多行调用或初始化列表的一项
+                 attitude.yaw_deg, // 继续传入 attitude.yaw_deg 字段值，作为当前多行调用或初始化列表的一项
+                 gnss.latitude, // 继续传入 gnss.latitude 字段值，作为当前多行调用或初始化列表的一项
+                 gnss.longitude); // 执行 gnss.longitude);，完成当前上下文中的具体处理
 
         // Debug_Print(log_buf);  //通过调试串口打印遥测状态日志
 
@@ -319,30 +314,29 @@ static void TelemetryTask(void *argument) // 定义遥测任务函数
          *   遥测任务不需要像 IMU 那样高频运行。
          *   周期在 app_config.h 中统一配置
          */
-        vTaskDelay(pdMS_TO_TICKS(APP_TELEMETRY_TASK_PERIOD_MS)); // 当前任务按配置周期延时，控制遥测组包频率
-    } // 结束代码块
-} // TelemetryTask 函数体结束
+        vTaskDelay(pdMS_TO_TICKS(APP_TELEMETRY_TASK_PERIOD_MS)); // 让当前任务阻塞指定时间以释放 CPU，参数为 pdMS_TO_TICKS(APP_TELEMETRY_TASK_PERIOD_MS)
+    } // 结束当前代码块
+} // 结束当前代码块
 
 /**
- * @brief  LED 状态指示任务。
- * @param  argument FreeRTOS 任务参数，当前未使用。
+ * @brief 根据系统状态周期翻转 LED 指示运行状态。
+ * @param argument FreeRTOS 任务入口参数。
  * @retval None
- * @note   根据系统事件组中的状态位切换 LED 闪烁节奏。
  */
-static void LedTask(void *argument) // 定义 LED 任务函数
-{                                   // LedTask 函数体开始
-    (void)argument;                 // 显示表示 argument 参数暂时不用，避免编译器警告
-    while (1)                       // 开始循环执行
-    {                               // 进入代码块
-        LedService_Toggle();        // 调用 LED 服务翻转板载 LED 状态
+static void LedTask(void *argument) // 定义LedTask 函数签名：根据系统状态周期翻转 LED 指示运行状态
+{ // 进入当前代码块
+    (void)argument; // 标记 FreeRTOS 任务入口参数 当前未使用，避免编译器告警
+    while (1) // 当 1 成立时持续执行循环体
+    { // 进入当前代码块
+        LedService_Toggle(); // 调用翻转 LED 当前亮灭状态
 
-        if (AppStatus_IsSet(APP_STATUS_GNSS_FIX) && AppStatus_IsSet(APP_STATUS_MQTT_READY)) // 如果 GNSS 已定位且 MQTT 已就绪，说明系统状态良好，LED 正常
-        {                                                                                   // 进入代码块
-            vTaskDelay(pdMS_TO_TICKS(APP_LED_TASK_PERIOD_MS));                              // LED 正常
-        } // 结束代码块
-        else                                // 处理条件不成立的分支
-        {                                   // 进入代码块
-            vTaskDelay(pdMS_TO_TICKS(100)); // LED 快闪，提示用户系统状态异常
-        } // 结束代码块
-    } // 结束代码块
-} // LedTask 函数体结束
+        if (AppStatus_IsSet(APP_STATUS_GNSS_FIX) && AppStatus_IsSet(APP_STATUS_MQTT_READY)) // 判断 AppStatus_IsSet(APP_STATUS_GNSS_FIX) && AppStatus_IsSet(APP_STATUS_MQTT_READY) 是否成立，以选择后续执行路径
+        { // 进入当前代码块
+            vTaskDelay(pdMS_TO_TICKS(APP_LED_TASK_PERIOD_MS)); // 让当前任务阻塞指定时间以释放 CPU，参数为 pdMS_TO_TICKS(APP_LED_TASK_PERIOD_MS)
+        } // 结束当前代码块
+        else // 处理前面判断条件不成立时的备用逻辑
+        { // 进入当前代码块
+            vTaskDelay(pdMS_TO_TICKS(100)); // 让当前任务阻塞指定时间以释放 CPU，参数为 pdMS_TO_TICKS(100)
+        } // 结束当前代码块
+    } // 结束当前代码块
+} // 结束当前代码块
