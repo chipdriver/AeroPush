@@ -1,0 +1,38 @@
+*** Using Compiler 'V6.24', folder: 'D:\Keil_v5\ARM\ARMCLANG\Bin'
+Build target 'Target_1'
+User/Src/app_main.c(2): warning: In file included from..../User/Inc\app_main.h(4): warning: In file included from..../User/Inc\freertos_objects.h(4): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling app_main.c...
+linking...
+Program Size: Code=34816 RO-data=2276 RW-data=68 ZI-data=29080  
+".\AeroPush.axf" - 0 Error(s), 5 Warning(s).
+Build Time Elapsed:  00:00:01

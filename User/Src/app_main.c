@@ -10,9 +10,9 @@
  */
 void APP_Main(void) // 定义APP_Main 函数签名：应用层主入口，创建 RTOS 对象和任务并启动调度器
 { // 进入当前代码块
-    FreeRTOS_ObjectsCreate(); // 调用创建系统使用的 FreeRTOS 队列、互斥量和事件组
-
     APP_TasksCreate(); // 调用创建应用层所有 FreeRTOS 任务
+
+    FreeRTOS_ObjectsCreate(); // 调用创建系统使用的 FreeRTOS 队列、互斥量和事件组
 
     vTaskStartScheduler(); // 启动 FreeRTOS 任务调度器
 

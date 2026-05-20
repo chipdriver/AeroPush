@@ -643,21 +643,25 @@ static int mpu9250_check_device(void) // 定义mpu9250_check_device 函数签名
 } // 结束当前代码块
 
 /**
- * @brief mpu9250_config_six_axis 函数。
+ * @brief 配置 MPU9250 六轴初始化参数。
+ *
+ * 六轴指三轴加速度计和三轴陀螺仪。
+ * 这里完成复位、唤醒、使能、滤波、采样率和量程配置。
+ *
  * @retval None
  */
-static void mpu9250_config_six_axis(void) // 定义mpu9250_config_six_axis 函数签名：mpu9250_config_six_axis 函数
-{ // 进入当前代码块
-    MPU9250_SoftReset(); // 调用MPU9250_SoftReset 函数
-    mpu_set_clock_to_auto(); // 调用mpu_set_clock_to_auto 函数
-    mpu_enable_six_axis(); // 调用mpu_enable_six_axis 函数
-    mpu_set_dlpf_cfg_3(); // 调用mpu_set_dlpf_cfg_3 函数
-    mpu_set_sample_rate_200hz(); // 调用mpu_set_sample_rate_200hz 函数
-    mpu_set_accel_dlpf(); // 调用mpu_set_accel_dlpf 函数
-    mpu_set_gyro_config(); // 调用mpu_set_gyro_config 函数
-    mpu_set_accel_range(); // 调用mpu_set_accel_range 函数
-    MPU9250_Read_PowerMgmt(); // 调用MPU9250_Read_PowerMgmt 函数
-} // 结束当前代码块
+static void mpu9250_config_six_axis(void) // 配置 MPU9250 的加速度计和陀螺仪
+{
+    MPU9250_SoftReset();         // 软件复位 MPU9250
+    mpu_set_clock_to_auto();     // 唤醒芯片并选择时钟源
+    mpu_enable_six_axis();       // 使能三轴加速度计和三轴陀螺仪
+    mpu_set_dlpf_cfg_3();        // 配置陀螺仪低通滤波
+    mpu_set_sample_rate_200hz(); // 配置六轴采样率为 200Hz
+    mpu_set_accel_dlpf();        // 配置加速度计低通滤波
+    mpu_set_gyro_config();       // 配置陀螺仪量程
+    mpu_set_accel_range();       // 配置加速度计量程
+    MPU9250_Read_PowerMgmt();    // 读取电源管理寄存器用于调试确认
+}
 
 /**
  * @brief ak8963_init 函数。
@@ -1330,39 +1334,49 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms) // 定义AK8963_Ca
 } // 结束当前代码块
 
 /**
- * @brief 初始化 MPU9250 和 AK8963 并完成基础校准。
- * @retval 函数执行结果或计算得到的返回值。
+ * @brief 初始化 MPU9250、AK8963，并完成启动阶段校准。
+ *
+ * 主要做五件事：
+ * 1. 打印驱动初始化开始日志；
+ * 2. 初始化软件 I2C；
+ * 3. 检查 MPU9250 并配置六轴参数；
+ * 4. 初始化 AK8963 磁力计；
+ * 5. 执行陀螺仪、加速度计、磁力计校准。
+ *
+ * @retval 1 初始化成功；0 初始化失败。
  */
-uint8_t MPU9250_Driver_Init(void) // 定义MPU9250_Driver_Init 函数签名：初始化 MPU9250 和 AK8963 并完成基础校准
-{ // 进入当前代码块
-    Debug_Print("[MPU9250] driver init start\r\n"); // 调用通过调试串口输出字符串，参数为 "[MPU9250] driver init start\r\n"
+uint8_t MPU9250_Driver_Init(void)
+{
+    /* 2. 初始化软件 I2C */
+    BSP_I2C_Soft_Init(); // 初始化软件 I2C 总线
 
-    BSP_I2C_Soft_Init(); // 调用BSP_I2C_Soft_Init 函数
-    Debug_Print("[MPU9250] soft i2c init ok\r\n"); // 调用通过调试串口输出字符串，参数为 "[MPU9250] soft i2c init ok\r\n"
+    /* 3. 检查 MPU9250 并配置六轴 */
+    if (mpu9250_check_device() != 0) // 检查 MPU9250 设备 ID
+    {
+        Debug_Print("[MPU9250] driver init failed\r\n"); // 输出 MPU9250 检查失败日志
+        return 0U; // MPU9250 检查失败
+    }
 
-    if (mpu9250_check_device() != 0) // 判断 mpu9250_check_device() != 0 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        Debug_Print("[MPU9250] driver init failed\r\n"); // 调用通过调试串口输出字符串，参数为 "[MPU9250] driver init failed\r\n"
-        return 0U; // 将 0 返回给调用者
-    } // 结束当前代码块
+    mpu9250_config_six_axis(); // 配置加速度计和陀螺仪参数
 
-    mpu9250_config_six_axis(); // 调用mpu9250_config_six_axis 函数
+    /* 4. 初始化 AK8963 磁力计 */
+    if (ak8963_init() == 0U) // 初始化磁力计并读取灵敏度参数
+    {
+        return 0U; // 磁力计初始化失败
+    }
 
-    if (ak8963_init() == 0U) // 判断 ak8963_init() == 0U 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        return 0U; // 将 0 返回给调用者
-    } // 结束当前代码块
+    /* 5. 启动阶段校准 */
+    MPU9250_CalibrateGyro(1000U, 10U); // 校准陀螺仪零偏
+    MPU9250_CalibrateAccel(1000U, 10U); // 校准加速度计零偏
+    AK8963_CalibrateMag(500U, 20U); // 校准磁力计硬铁和软铁误差
+    Debug_Print("[MPU9250] driver init ok\r\n"); // 输出驱动初始化成功日志
 
-    MPU9250_CalibrateGyro(1000U, 10U); // 调用MPU9250_CalibrateGyro 函数，参数为 1000U, 10U
-    MPU9250_CalibrateAccel(1000U, 10U); // 调用MPU9250_CalibrateAccel 函数，参数为 1000U, 10U
-    AK8963_CalibrateMag(500U, 20U); // 调用采集磁力计样本并计算硬铁和软铁校准参数，参数为 500U, 20U
-    Debug_Print("[MPU9250] driver init ok\r\n"); // 调用通过调试串口输出字符串，参数为 "[MPU9250] driver init ok\r\n"
-    return 1U; // 将 1U 返回给调用者
-} // 结束当前代码块
+    return 1U; // 驱动初始化成功
+}
 
 /*=================================================================================姿态解算与融合=================================================================================*/
 
-EulerAngle_t g_euler_acc_mag = {0.0f, 0.0f, 0.0f}; // 定义 g_euler_acc_mag 全局状态变量，初始值设置为 {0.0f, 0.0f, 0.0f} 字段值
+//EulerAngle_t g_euler_acc_mag = {0.0f, 0.0f, 0.0f}; // 定义 g_euler_acc_mag 全局状态变量，初始值设置为 {0.0f, 0.0f, 0.0f} 字段值
 EulerAngle_t g_euler_fused = {0.0f, 0.0f, 0.0f}; // 定义 g_euler_fused 全局状态变量，初始值设置为 {0.0f, 0.0f, 0.0f} 字段值
 
 static Quaternion_t g_q = {1.0f, 0.0f, 0.0f, 0.0f}; // 定义 g_q 全局状态变量，初始值设置为 {1.0f, 0.0f, 0.0f, 0.0f} 字段值
@@ -1500,73 +1514,73 @@ static void mpu9250_integrate_quaternion(float gx, float gy, float gz, float dt)
  * @param mag AK8963 磁力计物理量数据。
  * @retval None
  */
-void MPU9250_ComputeEuler_FromAccMag(const MPU9250_Physical_Data *imu, // 定义MPU9250_ComputeEuler_FromAccMag 函数签名：使用加速度计和磁力计直接计算欧拉角
-                                     const AK8963_Physical_Data *mag) // 定义MPU9250_ComputeEuler_FromAccMag 函数签名：使用加速度计和磁力计直接计算欧拉角
-{ // 进入当前代码块
-    float ax; // 声明 X 轴加速度分量，供后续计算、状态保存或模块间传递使用
-    float ay; // 声明 Y 轴加速度分量，供后续计算、状态保存或模块间传递使用
-    float az; // 声明 Z 轴加速度分量，供后续计算、状态保存或模块间传递使用
-    float mx; // 声明 X 轴磁场分量，供后续计算、状态保存或模块间传递使用
-    float my; // 声明 Y 轴磁场分量，供后续计算、状态保存或模块间传递使用
-    float mz; // 声明 Z 轴磁场分量，供后续计算、状态保存或模块间传递使用
-    float norm; // 声明 norm 变量，供后续计算、状态保存或模块间传递使用
-    float roll; // 声明 roll 变量，供后续计算、状态保存或模块间传递使用
-    float pitch; // 声明 pitch 变量，供后续计算、状态保存或模块间传递使用
-    float sinRoll; // 声明 sinRoll 变量，供后续计算、状态保存或模块间传递使用
-    float cosRoll; // 声明 cosRoll 变量，供后续计算、状态保存或模块间传递使用
-    float sinPitch; // 声明 sinPitch 变量，供后续计算、状态保存或模块间传递使用
-    float cosPitch; // 声明 cosPitch 变量，供后续计算、状态保存或模块间传递使用
-    float mx2; // 声明 mx2 变量，供后续计算、状态保存或模块间传递使用
-    float my2; // 声明 my2 变量，供后续计算、状态保存或模块间传递使用
+// void MPU9250_ComputeEuler_FromAccMag(const MPU9250_Physical_Data *imu, // 定义MPU9250_ComputeEuler_FromAccMag 函数签名：使用加速度计和磁力计直接计算欧拉角
+//                                      const AK8963_Physical_Data *mag) // 定义MPU9250_ComputeEuler_FromAccMag 函数签名：使用加速度计和磁力计直接计算欧拉角
+// { // 进入当前代码块
+//     float ax; // 声明 X 轴加速度分量，供后续计算、状态保存或模块间传递使用
+//     float ay; // 声明 Y 轴加速度分量，供后续计算、状态保存或模块间传递使用
+//     float az; // 声明 Z 轴加速度分量，供后续计算、状态保存或模块间传递使用
+//     float mx; // 声明 X 轴磁场分量，供后续计算、状态保存或模块间传递使用
+//     float my; // 声明 Y 轴磁场分量，供后续计算、状态保存或模块间传递使用
+//     float mz; // 声明 Z 轴磁场分量，供后续计算、状态保存或模块间传递使用
+//     float norm; // 声明 norm 变量，供后续计算、状态保存或模块间传递使用
+//     float roll; // 声明 roll 变量，供后续计算、状态保存或模块间传递使用
+//     float pitch; // 声明 pitch 变量，供后续计算、状态保存或模块间传递使用
+//     float sinRoll; // 声明 sinRoll 变量，供后续计算、状态保存或模块间传递使用
+//     float cosRoll; // 声明 cosRoll 变量，供后续计算、状态保存或模块间传递使用
+//     float sinPitch; // 声明 sinPitch 变量，供后续计算、状态保存或模块间传递使用
+//     float cosPitch; // 声明 cosPitch 变量，供后续计算、状态保存或模块间传递使用
+//     float mx2; // 声明 mx2 变量，供后续计算、状态保存或模块间传递使用
+//     float my2; // 声明 my2 变量，供后续计算、状态保存或模块间传递使用
 
-    if ((imu == 0) || (mag == 0)) // 判断 (imu == 0) || (mag == 0) 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        return; // 当前条件不满足继续处理，直接返回调用者
-    } // 结束当前代码块
+//     if ((imu == 0) || (mag == 0)) // 判断 (imu == 0) || (mag == 0) 是否成立，以选择后续执行路径
+//     { // 进入当前代码块
+//         return; // 当前条件不满足继续处理，直接返回调用者
+//     } // 结束当前代码块
 
-    ax =  imu->accel_x_g; // 把 imu->accel_x_g 字段值 写入 X 轴加速度分量
-    ay = -imu->accel_y_g; // 把 -imu->accel_y_g 字段值 写入 Y 轴加速度分量
-    az =  imu->accel_z_g; // 把 imu->accel_z_g 字段值 写入 Z 轴加速度分量
+//     ax =  imu->accel_x_g; // 把 imu->accel_x_g 字段值 写入 X 轴加速度分量
+//     ay = -imu->accel_y_g; // 把 -imu->accel_y_g 字段值 写入 Y 轴加速度分量
+//     az =  imu->accel_z_g; // 把 imu->accel_z_g 字段值 写入 Z 轴加速度分量
 
-    mx =  mag->mag_x_ut; // 把 mag->mag_x_ut 字段值 写入 X 轴磁场分量
-    my = -mag->mag_y_ut; // 把 -mag->mag_y_ut 字段值 写入 Y 轴磁场分量
-    mz = -mag->mag_z_ut; // 把 -mag->mag_z_ut 字段值 写入 Z 轴磁场分量
+//     mx =  mag->mag_x_ut; // 把 mag->mag_x_ut 字段值 写入 X 轴磁场分量
+//     my = -mag->mag_y_ut; // 把 -mag->mag_y_ut 字段值 写入 Y 轴磁场分量
+//     mz = -mag->mag_z_ut; // 把 -mag->mag_z_ut 字段值 写入 Z 轴磁场分量
 
-    norm = sqrtf(ax * ax + ay * ay + az * az); // 把 sqrtf(ax * ax + ay * ay + az * az) 的计算结果 写入 norm 变量
-    if (norm < 1e-6f) // 判断 norm < 1e-6f 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        return; // 当前条件不满足继续处理，直接返回调用者
-    } // 结束当前代码块
-    ax /= norm; // 执行 ax /= norm;，完成当前上下文中的具体处理
-    ay /= norm; // 执行 ay /= norm;，完成当前上下文中的具体处理
-    az /= norm; // 执行 az /= norm;，完成当前上下文中的具体处理
+//     norm = sqrtf(ax * ax + ay * ay + az * az); // 把 sqrtf(ax * ax + ay * ay + az * az) 的计算结果 写入 norm 变量
+//     if (norm < 1e-6f) // 判断 norm < 1e-6f 是否成立，以选择后续执行路径
+//     { // 进入当前代码块
+//         return; // 当前条件不满足继续处理，直接返回调用者
+//     } // 结束当前代码块
+//     ax /= norm; // 执行 ax /= norm;，完成当前上下文中的具体处理
+//     ay /= norm; // 执行 ay /= norm;，完成当前上下文中的具体处理
+//     az /= norm; // 执行 az /= norm;，完成当前上下文中的具体处理
 
-    roll = atan2f(ay, az); // 把 atan2f(ay, az) 写入 roll 变量
-    pitch = atan2f(-ax, sqrtf(ay * ay + az * az)); // 把 atan2f(-ax, sqrtf(ay * ay + az * az)) 的计算结果 写入 pitch 变量
+//     roll = atan2f(ay, az); // 把 atan2f(ay, az) 写入 roll 变量
+//     pitch = atan2f(-ax, sqrtf(ay * ay + az * az)); // 把 atan2f(-ax, sqrtf(ay * ay + az * az)) 的计算结果 写入 pitch 变量
 
-    norm = sqrtf(mx * mx + my * my + mz * mz); // 把 sqrtf(mx * mx + my * my + mz * mz) 的计算结果 写入 norm 变量
-    if (norm < 1e-6f) // 判断 norm < 1e-6f 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        g_euler_acc_mag.roll = roll; // 把 roll 变量 写入 g_euler_acc_mag.roll 字段值
-        g_euler_acc_mag.pitch = pitch; // 把 pitch 变量 写入 g_euler_acc_mag.pitch 字段值
-        return; // 当前条件不满足继续处理，直接返回调用者
-    } // 结束当前代码块
-    mx /= norm; // 执行 mx /= norm;，完成当前上下文中的具体处理
-    my /= norm; // 执行 my /= norm;，完成当前上下文中的具体处理
-    mz /= norm; // 执行 mz /= norm;，完成当前上下文中的具体处理
+//     norm = sqrtf(mx * mx + my * my + mz * mz); // 把 sqrtf(mx * mx + my * my + mz * mz) 的计算结果 写入 norm 变量
+//     if (norm < 1e-6f) // 判断 norm < 1e-6f 是否成立，以选择后续执行路径
+//     { // 进入当前代码块
+//         g_euler_acc_mag.roll = roll; // 把 roll 变量 写入 g_euler_acc_mag.roll 字段值
+//         g_euler_acc_mag.pitch = pitch; // 把 pitch 变量 写入 g_euler_acc_mag.pitch 字段值
+//         return; // 当前条件不满足继续处理，直接返回调用者
+//     } // 结束当前代码块
+//     mx /= norm; // 执行 mx /= norm;，完成当前上下文中的具体处理
+//     my /= norm; // 执行 my /= norm;，完成当前上下文中的具体处理
+//     mz /= norm; // 执行 mz /= norm;，完成当前上下文中的具体处理
 
-    sinRoll = sinf(roll); // 把 sinf(roll) 写入 sinRoll 变量
-    cosRoll = cosf(roll); // 把 cosf(roll) 写入 cosRoll 变量
-    sinPitch = sinf(pitch); // 把 sinf(pitch) 写入 sinPitch 变量
-    cosPitch = cosf(pitch); // 把 cosf(pitch) 写入 cosPitch 变量
+//     sinRoll = sinf(roll); // 把 sinf(roll) 写入 sinRoll 变量
+//     cosRoll = cosf(roll); // 把 cosf(roll) 写入 cosRoll 变量
+//     sinPitch = sinf(pitch); // 把 sinf(pitch) 写入 sinPitch 变量
+//     cosPitch = cosf(pitch); // 把 cosf(pitch) 写入 cosPitch 变量
 
-    mx2 = mx * cosPitch + mz * sinPitch; // 把 mx * cosPitch + mz * sinPitch 的计算结果 写入 mx2 变量
-    my2 = mx * sinRoll * sinPitch + my * cosRoll - mz * sinRoll * cosPitch; // 把 mx * sinRoll * sinPitch + my * cosRoll - mz * sinRoll * cosPitch 的计算结果 写入 my2 变量
+//     mx2 = mx * cosPitch + mz * sinPitch; // 把 mx * cosPitch + mz * sinPitch 的计算结果 写入 mx2 变量
+//     my2 = mx * sinRoll * sinPitch + my * cosRoll - mz * sinRoll * cosPitch; // 把 mx * sinRoll * sinPitch + my * cosRoll - mz * sinRoll * cosPitch 的计算结果 写入 my2 变量
 
-    g_euler_acc_mag.roll = roll; // 把 roll 变量 写入 g_euler_acc_mag.roll 字段值
-    g_euler_acc_mag.pitch = pitch; // 把 pitch 变量 写入 g_euler_acc_mag.pitch 字段值
-    g_euler_acc_mag.yaw = atan2f(-my2, mx2); // 把 atan2f(-my2, mx2) 的计算结果 写入 g_euler_acc_mag.yaw 字段值
-} // 结束当前代码块
+//     g_euler_acc_mag.roll = roll; // 把 roll 变量 写入 g_euler_acc_mag.roll 字段值
+//     g_euler_acc_mag.pitch = pitch; // 把 pitch 变量 写入 g_euler_acc_mag.pitch 字段值
+//     g_euler_acc_mag.yaw = atan2f(-my2, mx2); // 把 atan2f(-my2, mx2) 的计算结果 写入 g_euler_acc_mag.yaw 字段值
+// } // 结束当前代码块
 
 /**
  * @brief 读取加速度计磁力计解算的欧拉角角度值。
@@ -1575,23 +1589,23 @@ void MPU9250_ComputeEuler_FromAccMag(const MPU9250_Physical_Data *imu, // 定义
  * @param yaw_deg 航向角角度值。
  * @retval None
  */
-void MPU9250_GetEulerDeg(float *roll_deg, float *pitch_deg, float *yaw_deg) // 定义MPU9250_GetEulerDeg 函数签名：读取加速度计磁力计解算的欧拉角角度值
-{ // 进入当前代码块
-    const float rad2deg = 57.295779513f; // 定义 rad2deg 变量，初始值设置为 57.295779513f 字段值
+// void MPU9250_GetEulerDeg(float *roll_deg, float *pitch_deg, float *yaw_deg) // 定义MPU9250_GetEulerDeg 函数签名：读取加速度计磁力计解算的欧拉角角度值
+// { // 进入当前代码块
+//     const float rad2deg = 57.295779513f; // 定义 rad2deg 变量，初始值设置为 57.295779513f 字段值
 
-    if (roll_deg != 0) // 判断 roll_deg != 0 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        *roll_deg = g_euler_acc_mag.roll * rad2deg;
-    } // 结束当前代码块
-    if (pitch_deg != 0) // 判断 pitch_deg != 0 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        *pitch_deg = g_euler_acc_mag.pitch * rad2deg;
-    } // 结束当前代码块
-    if (yaw_deg != 0) // 判断 yaw_deg != 0 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        *yaw_deg = mpu9250_math_yaw_to_heading_deg(g_euler_acc_mag.yaw * rad2deg);
-    } // 结束当前代码块
-} // 结束当前代码块
+//     if (roll_deg != 0) // 判断 roll_deg != 0 是否成立，以选择后续执行路径
+//     { // 进入当前代码块
+//         *roll_deg = g_euler_acc_mag.roll * rad2deg;
+//     } // 结束当前代码块
+//     if (pitch_deg != 0) // 判断 pitch_deg != 0 是否成立，以选择后续执行路径
+//     { // 进入当前代码块
+//         *pitch_deg = g_euler_acc_mag.pitch * rad2deg;
+//     } // 结束当前代码块
+//     if (yaw_deg != 0) // 判断 yaw_deg != 0 是否成立，以选择后续执行路径
+//     { // 进入当前代码块
+//         *yaw_deg = mpu9250_math_yaw_to_heading_deg(g_euler_acc_mag.yaw * rad2deg);
+//     } // 结束当前代码块
+// } // 结束当前代码块
 
 /**
  * @brief 初始化 Mahony 姿态融合四元数和误差积分项。
@@ -1614,9 +1628,9 @@ void MPU9250_MahonyInit(float kp, float ki) // 定义MPU9250_MahonyInit 函数�
     g_ezInt = 0.0f; // 把 0.0f 字段值 写入 g_ezInt 全局状态变量
     g_acc_norm_prev = 1.0f; // 把 1.0f 字段值 写入 g_acc_norm_prev 全局状态变量
 
-    g_euler_acc_mag.roll = 0.0f; // 把 0.0f 字段值 写入 g_euler_acc_mag.roll 字段值
-    g_euler_acc_mag.pitch = 0.0f; // 把 0.0f 字段值 写入 g_euler_acc_mag.pitch 字段值
-    g_euler_acc_mag.yaw = 0.0f; // 把 0.0f 字段值 写入 g_euler_acc_mag.yaw 字段值
+    // g_euler_acc_mag.roll = 0.0f; // 把 0.0f 字段值 写入 g_euler_acc_mag.roll 字段值
+    // g_euler_acc_mag.pitch = 0.0f; // 把 0.0f 字段值 写入 g_euler_acc_mag.pitch 字段值
+    // g_euler_acc_mag.yaw = 0.0f; // 把 0.0f 字段值 写入 g_euler_acc_mag.yaw 字段值
     g_euler_fused.roll = 0.0f; // 把 0.0f 字段值 写入 g_euler_fused.roll 字段值
     g_euler_fused.pitch = 0.0f; // 把 0.0f 字段值 写入 g_euler_fused.pitch 字段值
     g_euler_fused.yaw = 0.0f; // 把 0.0f 字段值 写入 g_euler_fused.yaw 字段值
@@ -1886,7 +1900,7 @@ void MPU9250_MahonyUpdateIMU(const MPU9250_Physical_Data *imu, float dt) // 定�
 } // 结束当前代码块
 
 /**
- * @brief 读取 Mahony 融合后的欧拉角角度值。
+ * @brief 读取 Mahony 融合后的欧拉角，并由弧度转换为角度。
  * @param roll_deg 横滚角角度值。
  * @param pitch_deg 俯仰角角度值。
  * @param yaw_deg 航向角角度值。

@@ -64,7 +64,7 @@ typedef struct // 开始定义结构体类型，用于集中保存相关数据�
     float q3; // 声明 四元数 Z 分量，供后续计算、状态保存或模块间传递使用
 } Quaternion_t; // 结束结构体定义，并声明结构体类型名 Quaternion_t
 
-extern EulerAngle_t g_euler_acc_mag; // 声明 g_euler_acc_mag 全局状态变量，供后续计算、状态保存或模块间传递使用
+//extern EulerAngle_t g_euler_acc_mag; // 声明 g_euler_acc_mag 全局状态变量，供后续计算、状态保存或模块间传递使用
 extern EulerAngle_t g_euler_fused; // 声明 g_euler_fused 全局状态变量，供后续计算、状态保存或模块间传递使用
 /**
  * @brief 初始化 MPU9250 和 AK8963 并完成基础校准。
@@ -216,8 +216,8 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms); // 声明AK8963_C
  * @param mag AK8963 磁力计物理量数据。
  * @retval None
  */
-void MPU9250_ComputeEuler_FromAccMag(const MPU9250_Physical_Data *imu, // 声明MPU9250_ComputeEuler_FromAccMag 函数签名：使用加速度计和磁力计直接计算欧拉角
-                                     const AK8963_Physical_Data *mag); // 声明MPU9250_ComputeEuler_FromAccMag 函数签名：使用加速度计和磁力计直接计算欧拉角
+//void MPU9250_ComputeEuler_FromAccMag(const MPU9250_Physical_Data *imu, // 声明MPU9250_ComputeEuler_FromAccMag 函数签名：使用加速度计和磁力计直接计算欧拉角
+//                                     const AK8963_Physical_Data *mag); // 声明MPU9250_ComputeEuler_FromAccMag 函数签名：使用加速度计和磁力计直接计算欧拉角
 /**
  * @brief 读取加速度计磁力计解算的欧拉角角度值。
  * @param roll_deg 横滚角角度值。
@@ -225,7 +225,7 @@ void MPU9250_ComputeEuler_FromAccMag(const MPU9250_Physical_Data *imu, // 声明
  * @param yaw_deg 航向角角度值。
  * @retval None
  */
-void MPU9250_GetEulerDeg(float *roll_deg, float *pitch_deg, float *yaw_deg); // 声明MPU9250_GetEulerDeg 函数签名：读取加速度计磁力计解算的欧拉角角度值
+//void MPU9250_GetEulerDeg(float *roll_deg, float *pitch_deg, float *yaw_deg); // 声明MPU9250_GetEulerDeg 函数签名：读取加速度计磁力计解算的欧拉角角度值
 /**
  * @brief 初始化 Mahony 姿态融合四元数和误差积分项。
  * @param kp Mahony 比例修正增益。

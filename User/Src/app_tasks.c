@@ -93,46 +93,47 @@ void APP_TasksCreate(void) // 定义APP_TasksCreate 函数签名：创建应用�
 } // 结束当前代码块
 
 /**
- * @brief 完成 LED、调试串口、IMU 等系统初始化。
- * @param argument FreeRTOS 任务入口参数。
+ * @brief 一次性完成系统启动初始化。
+ *
+ * 主要做四件事：
+ * 1. 初始化 LED 和调试服务；
+ * 2. 初始化 IMU，并根据结果更新系统状态；
+ * 3. 预置 GNSS、MQTT、网络状态；
+ * 4. 删除自身，释放初始化任务资源。
+ *
+ * @param argument FreeRTOS 任务入口参数，当前未使用。
  * @retval None
  */
-static void InitTask(void *argument) // 定义InitTask 函数签名：完成 LED、调试串口、IMU 等系统初始化
-{ // 进入当前代码块
-    uint8_t imu_ret; // 声明 imu_ret 变量，供后续计算、状态保存或模块间传递使用
-    (void)argument; // 标记 FreeRTOS 任务入口参数 当前未使用，避免编译器告警
+static void InitTask(void *argument)
+{
+    uint8_t imu_ret;
 
-    LedService_Init(); // 调用初始化 LED 服务
-    DebugService_Init(); // 调用DebugService_Init 函数
+    (void)argument;
 
-    /*打印调试任务*/
-    // Debug_Print("\r\n[AeroPush] RTOS start\r\n"); // 打印系统启动信息
-    // Debug_Print("[InitTask] start\r\n");       // 打印 InitTask 开始运行信息
+    /* 1. 基础服务初始化 */
+    LedService_Init();      //LED 初始化函数
+    DebugService_Init();    //调试串口初始化函数
 
-    imu_ret = ImuService_Init(); // 把 ImuService_Init() 写入 imu_ret 变量
-    if (imu_ret == 1) // 判断 imu_ret == 1 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        AppStatus_Set(APP_STATUS_IMU_READY); // 调用置位指定系统状态标志，参数为 APP_STATUS_IMU_READY
-        MPU9250_MahonyInit(0.3f, 0.0f); // 调用初始化 Mahony 姿态融合四元数和误差积分项，参数为 0.3f, 0.0f
-    } // 结束当前代码块
-    else // 处理前面判断条件不成立时的备用逻辑
-    { // 进入当前代码块
-        AppStatus_Set(APP_STATUS_IMU_ERROR); // 调用置位指定系统状态标志，参数为 APP_STATUS_IMU_ERROR
-    } // 结束当前代码块
+    /* 2. IMU 初始化和姿态融合初始化 */
+    imu_ret = ImuService_Init();
+    if (imu_ret == 1)
+    {
+        AppStatus_Set(APP_STATUS_IMU_READY);
+        MPU9250_MahonyInit(0.3f, 0.0f);
+    }
+    else
+    {
+        AppStatus_Set(APP_STATUS_IMU_ERROR);
+    }
 
-    AppStatus_Set(APP_STATUS_GNSS_READY); // 调用置位指定系统状态标志，参数为 APP_STATUS_GNSS_READY
-    AppStatus_Set(APP_STATUS_MQTT_READY); // 调用置位指定系统状态标志，参数为 APP_STATUS_MQTT_READY
-    AppStatus_Set(APP_STATUS_NET_READY); // 调用置位指定系统状态标志，参数为 APP_STATUS_NET_READY
+    /* 3. 当前阶段先置位其他业务状态 */
+    AppStatus_Set(APP_STATUS_GNSS_READY);
+    AppStatus_Set(APP_STATUS_MQTT_READY);
+    AppStatus_Set(APP_STATUS_NET_READY);
 
-    // Debug_Print("[InitTask] status ready\r\n");  // 打印系统状态初始化完成信息
-    // Debug_Print("[InitTask] done\r\n");        // 打印 InitTask 初始化完成信息
-    /*
-     *   初始化任务通常只需要运行一次。
-     *   初始化完成后，调用vTaskDelete(NULL) 删除自己。
-     *   NULL表示删除当前正在运行的任务
-     */
-    vTaskDelete(NULL); // 删除当前任务并释放任务资源，参数为 NULL
-} // 结束当前代码块
+    /* 4. InitTask 只运行一次，初始化完成后删除自身 */
+    vTaskDelete(NULL);
+}
 
 /**
  * @brief 周期读取 IMU 数据、执行姿态融合并更新姿态队列。
@@ -144,7 +145,7 @@ static void ImuTask(void *argument) // 定义ImuTask 函数签名：周期读取
     TickType_t lastWakeTime; // 声明 周期任务上一次唤醒的 tick 基准时间，供后续计算、状态保存或模块间传递使用
     (void)argument; // 标记 FreeRTOS 任务入口参数 当前未使用，避免编译器告警
     AttitudeData_t attitude; // 声明 姿态数据结构体，供后续计算、状态保存或模块间传递使用
-    uint32_t print_count = 0; // 定义 串口打印分频计数器，初始值设置为 0
+    //uint32_t print_count = 0; // 定义 串口打印分频计数器，初始值设置为 0
     MPU9250_Physical_Data phys = {0}; // 定义 MPU9250 六轴物理量数据，初始值设置为 全零初始化值
     AK8963_Physical_Data mag_physical = {0}; // 定义 AK8963 磁力计物理量数据，初始值设置为 全零初始化值
     uint8_t imu_read_ok = 0; // 定义 IMU 读取结果标志，初始值设置为 0
@@ -152,9 +153,9 @@ static void ImuTask(void *argument) // 定义ImuTask 函数签名：周期读取
     float roll_deg = 0.0f; // 定义 横滚角角度值，初始值设置为 0.0f 字段值
     float pitch_deg = 0.0f; // 定义 俯仰角角度值，初始值设置为 0.0f 字段值
     float yaw_deg = 0.0f; // 定义 航向角角度值，初始值设置为 0.0f 字段值
-    float mag_roll_deg = 0.0f; // 定义 磁力计直接解算的横滚角角度值，初始值设置为 0.0f 字段值
-    float mag_pitch_deg = 0.0f; // 定义 磁力计直接解算的俯仰角角度值，初始值设置为 0.0f 字段值
-    float mag_yaw_deg = 0.0f; // 定义 磁力计直接解算的航向角角度值，初始值设置为 0.0f 字段值
+    // float mag_roll_deg = 0.0f; // 定义 磁力计直接解算的横滚角角度值，初始值设置为 0.0f 字段值
+    // float mag_pitch_deg = 0.0f; // 定义 磁力计直接解算的俯仰角角度值，初始值设置为 0.0f 字段值
+    // float mag_yaw_deg = 0.0f; // 定义 磁力计直接解算的航向角角度值，初始值设置为 0.0f 字段值
     /*
      *   xTaskGetTickCount() 用于获取当前 FreeRTOS 系统 tick 计数值。
      *   这里把当前时间保存下来，作为vTaskDelayUntil()   的基准时间
@@ -170,7 +171,7 @@ static void ImuTask(void *argument) // 定义ImuTask 函数签名：周期读取
             continue; // 跳过本轮剩余逻辑，等待下一次循环处理
         } // 结束当前代码块
 
-        imu_read_ok = ImuService_ReadPhys(&phys, &mag_physical); // 把 ImuService_ReadPhys(&phys, &mag_physical) 写入 IMU 读取结果标志
+        imu_read_ok = ImuService_ReadPhys(&phys, &mag_physical); // 把 ImuService_ReadPhys(&phys, &mag_physical) 写入    IMU 读取结果标志
         if (imu_read_ok == IMU_SERVICE_READ_FAIL) // 判断 imu_read_ok == IMU_SERVICE_READ_FAIL 是否成立，以选择后续执行路径
         { // 进入当前代码块
             vTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 按固定周期延时到下一次任务唤醒点，参数为 &lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)
@@ -179,8 +180,8 @@ static void ImuTask(void *argument) // 定义ImuTask 函数签名：周期读取
 
         if (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK) // 判断 imu_read_ok == IMU_SERVICE_READ_9AXIS_OK 是否成立，以选择后续执行路径
         { // 进入当前代码块
-            MPU9250_ComputeEuler_FromAccMag(&phys, &mag_physical); // 调用使用加速度计和磁力计直接计算欧拉角，参数为 &phys, &mag_physical
-            MPU9250_GetEulerDeg(&mag_roll_deg, &mag_pitch_deg, &mag_yaw_deg); // 调用读取加速度计磁力计解算的欧拉角角度值，参数为 &mag_roll_deg, &mag_pitch_deg, &mag_yaw_deg
+            // MPU9250_ComputeEuler_FromAccMag(&phys, &mag_physical); // 调用使用加速度计和磁力计直接计算欧拉角，参数为 &phys, &mag_physical
+            // MPU9250_GetEulerDeg(&mag_roll_deg, &mag_pitch_deg, &mag_yaw_deg); // 调用读取加速度计磁力计解算的欧拉角角度值，参数为 &mag_roll_deg, &mag_pitch_deg, &mag_yaw_deg
             MPU9250_MahonyUpdate(&phys, &mag_physical, imu_dt); // 调用使用九轴数据执行 Mahony 姿态融合更新，参数为 &phys, &mag_physical, imu_dt
         } // 结束当前代码块
         else // 处理前面判断条件不成立时的备用逻辑
@@ -189,25 +190,25 @@ static void ImuTask(void *argument) // 定义ImuTask 函数签名：周期读取
         } // 结束当前代码块
 
         MPU9250_GetEulerFusedDeg(&roll_deg, &pitch_deg, &yaw_deg); // 调用读取 Mahony 融合后的欧拉角角度值，参数为 &roll_deg, &pitch_deg, &yaw_deg
-        attitude.roll_deg = roll_deg; // 把 横滚角角度值 写入 attitude.roll_deg 字段值
-        attitude.pitch_deg = pitch_deg; // 把 俯仰角角度值 写入 attitude.pitch_deg 字段值
-        attitude.yaw_deg = yaw_deg; // 把 航向角角度值 写入 attitude.yaw_deg 字段值
-        attitude.timestamp_ms = xTaskGetTickCount(); // 把 当前 FreeRTOS tick 计数 写入 attitude.timestamp_ms 字段值
-        attitude.valid = 1U; // 把 1U 写入 attitude.valid 字段值
+            attitude.roll_deg = roll_deg; // 把 横滚角角度值 写入 attitude.roll_deg 字段值
+            attitude.pitch_deg = pitch_deg; // 把 俯仰角角度值 写入 attitude.pitch_deg 字段值
+            attitude.yaw_deg = yaw_deg; // 把 航向角角度值 写入 attitude.yaw_deg 字段值
+            attitude.timestamp_ms = xTaskGetTickCount(); // 把 当前 FreeRTOS tick 计数 写入 attitude.timestamp_ms 字段值
+            attitude.valid = 1U; // 把 1U 写入 attitude.valid 字段值
         xQueueOverwrite(qAttitude, &attitude); // 把最新数据写入队列，队列满时覆盖旧数据，参数为 qAttitude, &attitude
-        print_count++; // 将 串口打印分频计数器 自增 1，用于推进计数或索引
+        //print_count++; // 将 串口打印分频计数器 自增 1，用于推进计数或索引
 
-        if (print_count >= 200) // 判断 print_count >= 200 是否成立，以选择后续执行路径
-        { // 进入当前代码块
-            print_count = 0; // 把 0 写入 串口打印分频计数器
+        // if (print_count >= 200) // 判断 print_count >= 200 是否成立，以选择后续执行路径
+        // { // 进入当前代码块
+        //     print_count = 0; // 把 0 写入 串口打印分频计数器
 
-            Debug_Printf("[ImuTask] fused roll=%.1f pitch=%.1f yaw=%.1f mag_yaw=%.1f mag_ok=%u\r\n", // 调用格式化并通过调试串口输出调试信息，参数为 "[ImuTask] fused roll=%.1f pitch=%.1f yaw=%.1f mag_yaw=%.1f mag_ok=%u\r\n",
-                         attitude.roll_deg, // 继续传入 attitude.roll_deg 字段值，作为当前多行调用或初始化列表的一项
-                         attitude.pitch_deg, // 继续传入 attitude.pitch_deg 字段值，作为当前多行调用或初始化列表的一项
-                         attitude.yaw_deg, // 继续传入 attitude.yaw_deg 字段值，作为当前多行调用或初始化列表的一项
-                         mag_yaw_deg, // 继续传入 磁力计直接解算的航向角角度值，作为当前多行调用或初始化列表的一项
-                         (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK) ? 1U : 0U); // 执行 (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK) ? 1U : 0U);，完成当前上下文中的具体处理
-        } // 结束当前代码块
+        //     // Debug_Printf("[ImuTask] fused roll=%.1f pitch=%.1f yaw=%.1f mag_yaw=%.1f mag_ok=%u\r\n", // 调用格式化并通过调试串口输出调试信息，参数为 "[ImuTask] fused roll=%.1f pitch=%.1f yaw=%.1f mag_yaw=%.1f mag_ok=%u\r\n",
+        //     //              attitude.roll_deg, // 继续传入 attitude.roll_deg 字段值，作为当前多行调用或初始化列表的一项
+        //     //              attitude.pitch_deg, // 继续传入 attitude.pitch_deg 字段值，作为当前多行调用或初始化列表的一项
+        //     //              attitude.yaw_deg, // 继续传入 attitude.yaw_deg 字段值，作为当前多行调用或初始化列表的一项
+        //     //              mag_yaw_deg, // 继续传入 磁力计直接解算的航向角角度值，作为当前多行调用或初始化列表的一项
+        //     //              (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK) ? 1U : 0U); // 执行 (imu_read_ok == IMU_SERVICE_READ_9AXIS_OK) ? 1U : 0U);，完成当前上下文中的具体处理
+        // } // 结束当前代码块
 
         /*
          *   vTaskDelayUntil()   用于实现严格周期延时，它与 vTaskDelay() 不一样；

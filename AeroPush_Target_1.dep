@@ -8,7 +8,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -37,7 +37,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -65,7 +65,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -93,7 +93,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -113,9 +113,9 @@ I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-F (.\User\Src\main.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./main.o -MMD)
-I (User\Inc\app_main.h)(0x6A05AC19)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
+F (.\User\Src\main.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./main.o -MMD)
+I (User\Inc\app_main.h)(0x6A0BC12D)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
@@ -124,52 +124,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-I (FreeRTOS\Include\projdefs.h)(0x69E9C61C)
-I (FreeRTOS\Include\portable.h)(0x69E9C61C)
-I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
-I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
-I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
-I (User\Inc\app_types.h)(0x6A069D97)
-I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
-I (FreeRTOS\Include\timers.h)(0x69E9C61C)
-I (FreeRTOS\Include\task.h)(0x69E9C61C)
-I (FreeRTOS\Include\list.h)(0x69E9C61C)
-I (FreeRTOS\Include\queue.h)(0x69E9C61C)
-I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-I (User\Inc\main.h)(0x6A05AC1A)
-F (.\User\Src\app_main.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./app_main.o -MMD)
-I (User\Inc\app_main.h)(0x6A05AC19)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
-I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
-I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
-I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
-I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -195,75 +150,17 @@ I (FreeRTOS\Include\portable.h)(0x69E9C61C)
 I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
 I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
 I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
-I (User\Inc\app_types.h)(0x6A069D97)
+I (User\Inc\app_types.h)(0x6A0BC12D)
 I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
 I (FreeRTOS\Include\timers.h)(0x69E9C61C)
 I (FreeRTOS\Include\task.h)(0x69E9C61C)
 I (FreeRTOS\Include\list.h)(0x69E9C61C)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-I (User\Inc\app_tasks.h)(0x6A05CB7C)
-I (User\Inc\app_config.h)(0x6A0ACA7F)
-I (User\Inc\app_status.h)(0x6A05AC19)
-I (User\Inc\debug_service.h)(0x6A05CB7C)
-I (User\Inc\bsp_debug_uart.h)(0x6A05AC1A)
-I (User\Inc\debug_log.h)(0x6A05AC1A)
-I (User\Inc\imu_service.h)(0x6A068ACE)
-I (User\Inc\mpu9250_driver.h)(0x6A068A74)
-I (User\Inc\bsp_i2c_soft.h)(0x6A05AC1A)
-I (User\Inc\led_service.h)(0x6A05CB7C)
-I (User\Inc\bsp_led.h)(0x6A05AC1A)
-I (User\Inc\modem_service.h)(0x6A05AC1A)
-I (User\Inc\telemetry_service.h)(0x6A05AC1A)
-F (.\User\Src\stm32f4xx_it.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./stm32f4xx_it.o -MMD)
-I (User\Inc\stm32f4xx_it.h)(0x6A05AC1A)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
-I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
-I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-I (User\Inc\main.h)(0x6A05AC1A)
-I (User\Inc\app_main.h)(0x6A05AC19)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
-I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
-I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
-I (FreeRTOS\Include\projdefs.h)(0x69E9C61C)
-I (FreeRTOS\Include\portable.h)(0x69E9C61C)
-I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
-I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
-I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
-I (User\Inc\app_types.h)(0x6A069D97)
-I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
-I (FreeRTOS\Include\timers.h)(0x69E9C61C)
-I (FreeRTOS\Include\task.h)(0x69E9C61C)
-I (FreeRTOS\Include\list.h)(0x69E9C61C)
-I (FreeRTOS\Include\queue.h)(0x69E9C61C)
-I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-I (User\Inc\delay.h)(0x6A05AC1A)
-F (.\User\Src\app_tasks.c)(0x6A06B62F)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./app_tasks.o -MMD)
-I (User\Inc\app_tasks.h)(0x6A05CB7C)
+I (User\Inc\main.h)(0x6A0BC12D)
+F (.\User\Src\app_main.c)(0x6A0D1799)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./app_main.o -MMD)
+I (User\Inc\app_main.h)(0x6A0BC12D)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
@@ -272,7 +169,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -298,28 +195,75 @@ I (FreeRTOS\Include\portable.h)(0x69E9C61C)
 I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
 I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
 I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
-I (FreeRTOS\Include\task.h)(0x69E9C61C)
-I (FreeRTOS\Include\list.h)(0x69E9C61C)
-I (User\Inc\app_config.h)(0x6A0ACA7F)
-I (User\Inc\app_status.h)(0x6A05AC19)
+I (User\Inc\app_types.h)(0x6A0BC12D)
 I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
 I (FreeRTOS\Include\timers.h)(0x69E9C61C)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
-I (User\Inc\app_types.h)(0x6A069D97)
+I (FreeRTOS\Include\task.h)(0x69E9C61C)
+I (FreeRTOS\Include\list.h)(0x69E9C61C)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-I (User\Inc\debug_service.h)(0x6A05CB7C)
-I (User\Inc\bsp_debug_uart.h)(0x6A05AC1A)
-I (User\Inc\debug_log.h)(0x6A05AC1A)
-I (User\Inc\imu_service.h)(0x6A068ACE)
-I (User\Inc\mpu9250_driver.h)(0x6A068A74)
-I (User\Inc\bsp_i2c_soft.h)(0x6A05AC1A)
-I (User\Inc\led_service.h)(0x6A05CB7C)
-I (User\Inc\bsp_led.h)(0x6A05AC1A)
-I (User\Inc\modem_service.h)(0x6A05AC1A)
-I (User\Inc\telemetry_service.h)(0x6A05AC1A)
-F (.\User\Src\imu_service.c)(0x6A068ACE)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./imu_service.o -MMD)
-I (User\Inc\imu_service.h)(0x6A068ACE)
+I (User\Inc\app_tasks.h)(0x6A0BC12D)
+I (User\Inc\app_config.h)(0x6A0BC12D)
+I (User\Inc\app_status.h)(0x6A0BC12D)
+I (User\Inc\debug_service.h)(0x6A0BC12D)
+I (User\Inc\bsp_debug_uart.h)(0x6A0BC12D)
+I (User\Inc\debug_log.h)(0x6A0BC12D)
+I (User\Inc\imu_service.h)(0x6A0BC12D)
+I (User\Inc\mpu9250_driver.h)(0x6A0D160A)
+I (User\Inc\bsp_i2c_soft.h)(0x6A0BC12D)
+I (User\Inc\led_service.h)(0x6A0BC12D)
+I (User\Inc\bsp_led.h)(0x6A0BC12D)
+I (User\Inc\modem_service.h)(0x6A0BC12D)
+I (User\Inc\telemetry_service.h)(0x6A0BC12D)
+F (.\User\Src\stm32f4xx_it.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./stm32f4xx_it.o -MMD)
+I (User\Inc\stm32f4xx_it.h)(0x6A0BC12D)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
+I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
+I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
+I (User\Inc\main.h)(0x6A0BC12D)
+I (User\Inc\app_main.h)(0x6A0BC12D)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
+I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
+I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
+I (FreeRTOS\Include\projdefs.h)(0x69E9C61C)
+I (FreeRTOS\Include\portable.h)(0x69E9C61C)
+I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
+I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
+I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
+I (User\Inc\app_types.h)(0x6A0BC12D)
+I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
+I (FreeRTOS\Include\timers.h)(0x69E9C61C)
+I (FreeRTOS\Include\task.h)(0x69E9C61C)
+I (FreeRTOS\Include\list.h)(0x69E9C61C)
+I (FreeRTOS\Include\queue.h)(0x69E9C61C)
+I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
+I (User\Inc\delay.h)(0x6A0BC12D)
+F (.\User\Src\app_tasks.c)(0x6A0D14C3)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./app_tasks.o -MMD)
+I (User\Inc\app_tasks.h)(0x6A0BC12D)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
@@ -328,7 +272,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -356,19 +300,26 @@ I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
 I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
 I (FreeRTOS\Include\task.h)(0x69E9C61C)
 I (FreeRTOS\Include\list.h)(0x69E9C61C)
-I (User\Inc\app_types.h)(0x6A069D97)
-I (User\Inc\mpu9250_driver.h)(0x6A068A74)
-I (User\Inc\bsp_i2c_soft.h)(0x6A05AC1A)
-I (User\Inc\debug_log.h)(0x6A05AC1A)
-I (User\Inc\bsp_debug_uart.h)(0x6A05AC1A)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
+I (User\Inc\app_config.h)(0x6A0BC12D)
+I (User\Inc\app_status.h)(0x6A0BC12D)
 I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
 I (FreeRTOS\Include\timers.h)(0x69E9C61C)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
+I (User\Inc\app_types.h)(0x6A0BC12D)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-I (User\Inc\app_config.h)(0x6A0ACA7F)
-F (.\User\Src\modem_service.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./modem_service.o -MMD)
-I (User\Inc\modem_service.h)(0x6A05AC1A)
+I (User\Inc\debug_service.h)(0x6A0BC12D)
+I (User\Inc\bsp_debug_uart.h)(0x6A0BC12D)
+I (User\Inc\debug_log.h)(0x6A0BC12D)
+I (User\Inc\imu_service.h)(0x6A0BC12D)
+I (User\Inc\mpu9250_driver.h)(0x6A0D160A)
+I (User\Inc\bsp_i2c_soft.h)(0x6A0BC12D)
+I (User\Inc\led_service.h)(0x6A0BC12D)
+I (User\Inc\bsp_led.h)(0x6A0BC12D)
+I (User\Inc\modem_service.h)(0x6A0BC12D)
+I (User\Inc\telemetry_service.h)(0x6A0BC12D)
+F (.\User\Src\imu_service.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./imu_service.o -MMD)
+I (User\Inc\imu_service.h)(0x6A0BC12D)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
@@ -377,161 +328,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-I (FreeRTOS\Include\projdefs.h)(0x69E9C61C)
-I (FreeRTOS\Include\portable.h)(0x69E9C61C)
-I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
-I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
-I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
-I (User\Inc\app_types.h)(0x6A069D97)
-I (User\Inc\debug_log.h)(0x6A05AC1A)
-I (User\Inc\bsp_debug_uart.h)(0x6A05AC1A)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
-I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
-I (FreeRTOS\Include\timers.h)(0x69E9C61C)
-I (FreeRTOS\Include\task.h)(0x69E9C61C)
-I (FreeRTOS\Include\list.h)(0x69E9C61C)
-I (FreeRTOS\Include\queue.h)(0x69E9C61C)
-I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-I (User\Inc\app_config.h)(0x6A0ACA7F)
-F (.\User\Src\telemetry_service.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./telemetry_service.o -MMD)
-I (User\Inc\telemetry_service.h)(0x6A05AC1A)
-I (User\Inc\app_types.h)(0x6A069D97)
-I (User\Inc\app_config.h)(0x6A0ACA7F)
-F (.\User\Src\led_service.c)(0x6A05CB7C)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./led_service.o -MMD)
-I (User\Inc\led_service.h)(0x6A05CB7C)
-I (User\Inc\bsp_led.h)(0x6A05AC1A)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
-I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
-I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-F (.\User\Src\debug_service.c)(0x6A05CB7C)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./debug_service.o -MMD)
-I (User\Inc\debug_service.h)(0x6A05CB7C)
-I (User\Inc\bsp_debug_uart.h)(0x6A05AC1A)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
-I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
-I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-F (.\User\Src\freertos_objects.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./freertos_objects.o -MMD)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
-I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
-I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
-I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
-I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
-I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-I (FreeRTOS\Include\projdefs.h)(0x69E9C61C)
-I (FreeRTOS\Include\portable.h)(0x69E9C61C)
-I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
-I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
-I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
-I (User\Inc\app_types.h)(0x6A069D97)
-I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
-I (FreeRTOS\Include\timers.h)(0x69E9C61C)
-I (FreeRTOS\Include\task.h)(0x69E9C61C)
-I (FreeRTOS\Include\list.h)(0x69E9C61C)
-I (FreeRTOS\Include\queue.h)(0x69E9C61C)
-I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-F (.\User\Src\freertos_hook.c)(0x6A0ACA8D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./freertos_hook.o -MMD)
-I (User\Inc\freertos_hook.h)(0x6A05AC1A)
-I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
-I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
-I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
-I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
-I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -559,16 +356,19 @@ I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
 I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
 I (FreeRTOS\Include\task.h)(0x69E9C61C)
 I (FreeRTOS\Include\list.h)(0x69E9C61C)
-I (User\Inc\debug_log.h)(0x6A05AC1A)
-I (User\Inc\bsp_debug_uart.h)(0x6A05AC1A)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
-I (User\Inc\app_types.h)(0x6A069D97)
+I (User\Inc\app_types.h)(0x6A0BC12D)
+I (User\Inc\mpu9250_driver.h)(0x6A0D160A)
+I (User\Inc\bsp_i2c_soft.h)(0x6A0BC12D)
+I (User\Inc\debug_log.h)(0x6A0BC12D)
+I (User\Inc\bsp_debug_uart.h)(0x6A0BC12D)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
 I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
 I (FreeRTOS\Include\timers.h)(0x69E9C61C)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-F (.\User\Src\app_status.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./app_status.o -MMD)
-I (User\Inc\app_status.h)(0x6A05AC19)
+I (User\Inc\app_config.h)(0x6A0BC12D)
+F (.\User\Src\modem_service.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./modem_service.o -MMD)
+I (User\Inc\modem_service.h)(0x6A0BC12D)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
@@ -577,7 +377,207 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
+I (FreeRTOS\Include\projdefs.h)(0x69E9C61C)
+I (FreeRTOS\Include\portable.h)(0x69E9C61C)
+I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
+I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
+I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
+I (User\Inc\app_types.h)(0x6A0BC12D)
+I (User\Inc\debug_log.h)(0x6A0BC12D)
+I (User\Inc\bsp_debug_uart.h)(0x6A0BC12D)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
+I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
+I (FreeRTOS\Include\timers.h)(0x69E9C61C)
+I (FreeRTOS\Include\task.h)(0x69E9C61C)
+I (FreeRTOS\Include\list.h)(0x69E9C61C)
+I (FreeRTOS\Include\queue.h)(0x69E9C61C)
+I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
+I (User\Inc\app_config.h)(0x6A0BC12D)
+F (.\User\Src\telemetry_service.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./telemetry_service.o -MMD)
+I (User\Inc\telemetry_service.h)(0x6A0BC12D)
+I (User\Inc\app_types.h)(0x6A0BC12D)
+I (User\Inc\app_config.h)(0x6A0BC12D)
+F (.\User\Src\led_service.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./led_service.o -MMD)
+I (User\Inc\led_service.h)(0x6A0BC12D)
+I (User\Inc\bsp_led.h)(0x6A0BC12D)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
+I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
+I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
+F (.\User\Src\debug_service.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./debug_service.o -MMD)
+I (User\Inc\debug_service.h)(0x6A0BC12D)
+I (User\Inc\bsp_debug_uart.h)(0x6A0BC12D)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
+I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
+I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
+F (.\User\Src\freertos_objects.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./freertos_objects.o -MMD)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
+I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
+I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
+I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
+I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
+I (FreeRTOS\Include\projdefs.h)(0x69E9C61C)
+I (FreeRTOS\Include\portable.h)(0x69E9C61C)
+I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
+I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
+I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
+I (User\Inc\app_types.h)(0x6A0BC12D)
+I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
+I (FreeRTOS\Include\timers.h)(0x69E9C61C)
+I (FreeRTOS\Include\task.h)(0x69E9C61C)
+I (FreeRTOS\Include\list.h)(0x69E9C61C)
+I (FreeRTOS\Include\queue.h)(0x69E9C61C)
+I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
+F (.\User\Src\freertos_hook.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./freertos_hook.o -MMD)
+I (User\Inc\freertos_hook.h)(0x6A0BC12D)
+I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
+I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
+I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
+I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
+I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
+I (FreeRTOS\Include\projdefs.h)(0x69E9C61C)
+I (FreeRTOS\Include\portable.h)(0x69E9C61C)
+I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
+I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
+I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
+I (FreeRTOS\Include\task.h)(0x69E9C61C)
+I (FreeRTOS\Include\list.h)(0x69E9C61C)
+I (User\Inc\debug_log.h)(0x6A0BC12D)
+I (User\Inc\bsp_debug_uart.h)(0x6A0BC12D)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
+I (User\Inc\app_types.h)(0x6A0BC12D)
+I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
+I (FreeRTOS\Include\timers.h)(0x69E9C61C)
+I (FreeRTOS\Include\queue.h)(0x69E9C61C)
+I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
+F (.\User\Src\app_status.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./app_status.o -MMD)
+I (User\Inc\app_status.h)(0x6A0BC12D)
+I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
+I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
+I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
+I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
+I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -607,19 +607,19 @@ I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
 I (FreeRTOS\Include\timers.h)(0x69E9C61C)
 I (FreeRTOS\Include\task.h)(0x69E9C61C)
 I (FreeRTOS\Include\list.h)(0x69E9C61C)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
-I (User\Inc\app_types.h)(0x6A069D97)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
+I (User\Inc\app_types.h)(0x6A0BC12D)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-F (.\User\Src\bsp_led.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./bsp_led.o -MMD)
-I (User\Inc\bsp_led.h)(0x6A05AC1A)
+F (.\User\Src\bsp_led.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./bsp_led.o -MMD)
+I (User\Inc\bsp_led.h)(0x6A0BC12D)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
 I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -640,15 +640,15 @@ I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-F (.\User\Src\bsp_debug_uart.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./bsp_debug_uart.o -MMD)
-I (User\Inc\bsp_debug_uart.h)(0x6A05AC1A)
+F (.\User\Src\bsp_debug_uart.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./bsp_debug_uart.o -MMD)
+I (User\Inc\bsp_debug_uart.h)(0x6A0BC12D)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
 I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -669,8 +669,8 @@ I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-F (.\User\Src\debug_log.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./debug_log.o -MMD)
-I (User\Inc\debug_log.h)(0x6A05AC1A)
+F (.\User\Src\debug_log.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./debug_log.o -MMD)
+I (User\Inc\debug_log.h)(0x6A0BC12D)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
@@ -679,7 +679,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -705,24 +705,24 @@ I (FreeRTOS\Include\portable.h)(0x69E9C61C)
 I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
 I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
 I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
-I (User\Inc\bsp_debug_uart.h)(0x6A05AC1A)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
-I (User\Inc\app_types.h)(0x6A069D97)
+I (User\Inc\bsp_debug_uart.h)(0x6A0BC12D)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
+I (User\Inc\app_types.h)(0x6A0BC12D)
 I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
 I (FreeRTOS\Include\timers.h)(0x69E9C61C)
 I (FreeRTOS\Include\task.h)(0x69E9C61C)
 I (FreeRTOS\Include\list.h)(0x69E9C61C)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-F (.\User\Src\delay.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./delay.o -MMD)
-I (User\Inc\delay.h)(0x6A05AC1A)
+F (.\User\Src\delay.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./delay.o -MMD)
+I (User\Inc\delay.h)(0x6A0BC12D)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
 I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -743,15 +743,15 @@ I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-F (.\User\Src\bsp_i2c_soft.c)(0x6A05C84A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./bsp_i2c_soft.o -MMD)
-I (User\Inc\bsp_i2c_soft.h)(0x6A05AC1A)
+F (.\User\Src\bsp_i2c_soft.c)(0x6A0BC12D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./bsp_i2c_soft.o -MMD)
+I (User\Inc\bsp_i2c_soft.h)(0x6A0BC12D)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
 I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -772,16 +772,16 @@ I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-F (.\User\Src\mpu9250_driver.c)(0x6A0B0B59)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./mpu9250_driver.o -MMD)
-I (User\Inc\mpu9250_driver.h)(0x6A068A74)
-I (User\Inc\bsp_i2c_soft.h)(0x6A05AC1A)
+F (.\User\Src\mpu9250_driver.c)(0x6A0D14DA)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./mpu9250_driver.o -MMD)
+I (User\Inc\mpu9250_driver.h)(0x6A0D160A)
+I (User\Inc\bsp_i2c_soft.h)(0x6A0BC12D)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
 I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -802,7 +802,7 @@ I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-I (User\Inc\debug_log.h)(0x6A05AC1A)
+I (User\Inc\debug_log.h)(0x6A0BC12D)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
 I (FreeRTOS\Include\projdefs.h)(0x69E9C61C)
@@ -810,16 +810,16 @@ I (FreeRTOS\Include\portable.h)(0x69E9C61C)
 I (FreeRTOS\Include\deprecated_definitions.h)(0x69E9C61C)
 I (FreeRTOS\Portable\GCC\ARM_CM4F\portmacro.h)(0x69E9C61D)
 I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
-I (User\Inc\bsp_debug_uart.h)(0x6A05AC1A)
-I (User\Inc\freertos_objects.h)(0x6A05AC1A)
-I (User\Inc\app_types.h)(0x6A069D97)
+I (User\Inc\bsp_debug_uart.h)(0x6A0BC12D)
+I (User\Inc\freertos_objects.h)(0x6A0BC12D)
+I (User\Inc\app_types.h)(0x6A0BC12D)
 I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
 I (FreeRTOS\Include\timers.h)(0x69E9C61C)
 I (FreeRTOS\Include\task.h)(0x69E9C61C)
 I (FreeRTOS\Include\list.h)(0x69E9C61C)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-I (User\Inc\app_config.h)(0x6A0ACA7F)
+I (User\Inc\app_config.h)(0x6A0BC12D)
 F (.\FreeRTOS\Source\event_groups.c)(0x69E9C61C)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./event_groups.o -MMD)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
@@ -829,7 +829,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -868,7 +868,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -904,7 +904,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -942,7 +942,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -980,7 +980,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -1019,7 +1019,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -1058,7 +1058,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
@@ -1095,7 +1095,7 @@ I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmFunc.h)(0x69E88B64)
 I (Lib\Libraries\CMSIS\Include\core_cmSimd.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x69D865EB)
-I (User\Inc\stm32f4xx_conf.h)(0x6A052BC4)
+I (User\Inc\stm32f4xx_conf.h)(0x6A0BC12D)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x69D86607)
