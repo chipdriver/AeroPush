@@ -1,21 +1,20 @@
-/* header file inclusion */ // 头文件包含区域
-#include "app_main.h" // 引入 app_main.h 提供的接口、宏和类型定义
-#include "app_tasks.h" // 引入 app_tasks.h 提供的接口、宏和类型定义
-#include "FreeRTOS.h" // 引入 FreeRTOS.h 提供的接口、宏和类型定义
-#include "task.h" // 引入 task.h 提供的接口、宏和类型定义
+#include "app_main.h" // 提供应用层主入口声明
+#include "app_tasks.h" // 提供应用任务创建接口
+#include "FreeRTOS.h" // 提供 FreeRTOS 基础定义
+#include "task.h" // 提供 FreeRTOS 任务调度接口
 
 /**
  * @brief 应用层主入口，创建 RTOS 对象和任务并启动调度器。
  * @retval None
  */
-void APP_Main(void) // 定义APP_Main 函数签名：应用层主入口，创建 RTOS 对象和任务并启动调度器
-{ // 进入当前代码块
-    APP_TasksCreate(); // 调用创建应用层所有 FreeRTOS 任务
+void APP_Main(void) // 启动应用层
+{
+    APP_TasksCreate(); // 创建应用任务
 
-    FreeRTOS_ObjectsCreate(); // 调用创建系统使用的 FreeRTOS 队列、互斥量和事件组
+    FreeRTOS_ObjectsCreate(); // 创建队列、互斥锁和事件组
 
-    vTaskStartScheduler(); // 启动 FreeRTOS 任务调度器
+    vTaskStartScheduler(); // 启动 FreeRTOS 调度器
 
-    while (1) // 当 1 成立时持续执行循环体
-        ; // 执行 ;，完成当前上下文中的具体处理
-} // 结束当前代码块
+    while (1) // 调度器异常返回时停留在这里
+        ; // 等待调试
+}

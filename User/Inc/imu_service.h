@@ -1,40 +1,43 @@
-#ifndef __IMU_SERVICE_H__ // 检查 __IMU_SERVICE_H__ 是否未定义，防止头文件重复包含
-#define __IMU_SERVICE_H__ // 定义 __IMU_SERVICE_H__ 变量
+#ifndef __IMU_SERVICE_H__ // 防止头文件重复包含
+#define __IMU_SERVICE_H__
 
-#include <stdint.h> // 引入 stdint.h 提供的接口、宏和类型定义
-#include <string.h> // 引入 string.h 提供的接口、宏和类型定义
-#include "FreeRTOS.h" // 引入 FreeRTOS.h 提供的接口、宏和类型定义
-#include "task.h" // 引入 task.h 提供的接口、宏和类型定义
-#include "app_types.h" // 引入 app_types.h 提供的接口、宏和类型定义
-#include "mpu9250_driver.h" // 引入 mpu9250_driver.h 提供的接口、宏和类型定义
+#include <stdint.h> // 提供固定宽度整数类型
+#include <string.h> // 提供 memset
+#include "FreeRTOS.h" // 提供 FreeRTOS 基础类型
+#include "task.h" // 提供 tick 计数接口
+#include "app_types.h" // 提供姿态数据结构
+#include "mpu9250_driver.h" // 提供 MPU9250/AK8963 驱动接口
 
-#define IMU_SERVICE_READ_FAIL 0U // 定义 IMU_SERVICE_READ_FAIL 变量为 0U
-#define IMU_SERVICE_READ_9AXIS_OK 1U // 定义 IMU_SERVICE_READ_9AXIS_OK 变量为 1U
-#define IMU_SERVICE_READ_6AXIS_OK 2U // 定义 IMU_SERVICE_READ_6AXIS_OK 变量为 2U
+#define IMU_SERVICE_READ_FAIL 0U // IMU 读取失败
+#define IMU_SERVICE_READ_9AXIS_OK 1U // 六轴和磁力计读取成功
+#define IMU_SERVICE_READ_6AXIS_OK 2U // 只有六轴读取成功
 
 /**
  * @brief 初始化 IMU 服务并调用底层 MPU9250 驱动。
- * @retval 函数执行结果或计算得到的返回值。
+ * @retval 1 初始化成功；0 初始化失败。
  */
-uint8_t ImuService_Init(void); // 声明ImuService_Init 函数签名：初始化 IMU 服务并调用底层 MPU9250 驱动
+uint8_t ImuService_Init(void); // 初始化 IMU 服务
+
 /**
- * @brief ImuService_BuildSimAttitude 函数。
- * @param attitude 姿态数据结构体。
+ * @brief 构造一组模拟姿态数据。
+ * @param attitude 输出姿态数据。
  * @retval None
  */
-void ImuService_BuildSimAttitude(AttitudeData_t *attitude); // 声明ImuService_BuildSimAttitude 函数签名：ImuService_BuildSimAttitude 函数
+void ImuService_BuildSimAttitude(AttitudeData_t *attitude); // 构造模拟姿态
+
 /**
  * @brief 读取 MPU9250 六轴原始数据。
- * @param raw 传感器原始采样数据结构体。
+ * @param raw 输出传感器原始采样数据。
  * @retval None
  */
-void ImuService_ReadRaw(MPU9250_raw_Data *raw); // 声明ImuService_ReadRaw 函数签名：读取 MPU9250 六轴原始数据
+void ImuService_ReadRaw(MPU9250_raw_Data *raw); // 读取 IMU 原始值
+
 /**
  * @brief 读取 MPU9250 六轴和 AK8963 磁力计物理量。
- * @param phys MPU9250 六轴物理量数据。
- * @param mag AK8963 磁力计物理量数据。
- * @retval 函数执行结果或计算得到的返回值。
+ * @param phys 输出 MPU9250 六轴物理量。
+ * @param mag 输出 AK8963 磁力计物理量。
+ * @retval IMU_SERVICE_READ_9AXIS_OK、IMU_SERVICE_READ_6AXIS_OK 或 IMU_SERVICE_READ_FAIL。
  */
-uint8_t ImuService_ReadPhys(MPU9250_Physical_Data *phys, AK8963_Physical_Data *mag); // 声明ImuService_ReadPhys 函数签名：读取 MPU9250 六轴和 AK8963 磁力计物理量
+uint8_t ImuService_ReadPhys(MPU9250_Physical_Data *phys, AK8963_Physical_Data *mag); // 读取 IMU 物理量
 
-#endif // 结束当前条件编译或头文件保护范围
+#endif // __IMU_SERVICE_H__

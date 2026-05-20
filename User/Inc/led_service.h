@@ -1,27 +1,30 @@
-#ifndef __LED_SERVICE_H__ // 检查 __LED_SERVICE_H__ 是否未定义，防止头文件重复包含
-#define __LED_SERVICE_H__ // 定义 __LED_SERVICE_H__ 变量
+#ifndef __LED_SERVICE_H__ // 防止头文件重复包含
+#define __LED_SERVICE_H__
 
-#include "bsp_led.h" // 引入 bsp_led.h 提供的接口、宏和类型定义
+#include "bsp_led.h" // 提供底层 LED 控制接口
 
 /**
  * @brief 初始化 LED 服务。
  * @retval None
  */
-void LedService_Init(void); // 声明LedService_Init 函数签名：初始化 LED 服务
+void LedService_Init(void); // 初始化 LED 服务
+
 /**
- * @brief LedService_On 函数。
+ * @brief 打开 LED。
  * @retval None
  */
-void LedService_On(void); // 声明LedService_On 函数签名：LedService_On 函数
+void LedService_On(void); // 打开 LED
+
 /**
- * @brief LedService_Off 函数。
+ * @brief 关闭 LED。
  * @retval None
  */
-void LedService_Off(void); // 声明LedService_Off 函数签名：LedService_Off 函数
+void LedService_Off(void); // 关闭 LED
+
 /**
  * @brief 翻转 LED 当前亮灭状态。
  * @retval None
  */
-void LedService_Toggle(void); // 声明LedService_Toggle 函数签名：翻转 LED 当前亮灭状态
+void LedService_Toggle(void); // 翻转 LED
 
-#endif // 结束当前条件编译或头文件保护范围
+#endif // __LED_SERVICE_H__

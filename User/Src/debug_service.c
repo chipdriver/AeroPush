@@ -1,10 +1,10 @@
-#include "debug_service.h" // 引入 debug_service.h 提供的接口、宏和类型定义
+#include "debug_service.h" // 提供调试服务接口
 
 /**
- * @brief DebugService_Init 函数。
+ * @brief 初始化调试服务。
  * @retval None
  */
-void DebugService_Init(void) // 定义DebugService_Init 函数签名：DebugService_Init 函数
-{ // 进入当前代码块
-    BSP_DebugUart_Init(); // 调用初始化底层调试串口外设
-} // 结束当前代码块
+void DebugService_Init(void) // 初始化调试串口服务
+{
+    BSP_DebugUart_Init(); // 初始化底层调试串口
+}

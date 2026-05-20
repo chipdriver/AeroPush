@@ -1,34 +1,35 @@
-#include "freertos_hook.h" // 引入 freertos_hook.h 提供的接口、宏和类型定义
-#include "debug_log.h" // 引入 debug_log.h 提供的接口、宏和类型定义
+#include "freertos_hook.h" // 提供 FreeRTOS 钩子函数声明
+#include "debug_log.h" // 提供调试日志输出接口
 
 /**
- * @brief vApplicationMallocFailedHook 函数。
+ * @brief FreeRTOS 内存申请失败钩子。
  * @retval None
  */
-void vApplicationMallocFailedHook(void) // 定义vApplicationMallocFailedHook 函数签名：vApplicationMallocFailedHook 函数
-{ // 进入当前代码块
-    taskDISABLE_INTERRUPTS(); // 调用taskDISABLE_INTERRUPTS 函数
-    while (1) // 当 1 成立时持续执行循环体
-    { // 进入当前代码块
-    } // 结束当前代码块
-} // 结束当前代码块
+void vApplicationMallocFailedHook(void) // 处理堆内存申请失败
+{
+    taskDISABLE_INTERRUPTS(); // 关闭中断，停止系统继续运行
+    while (1) // 停在现场等待调试
+    {
+    }
+}
 
 /**
- * @brief vApplicationStackOverflowHook 函数。
- * @param xTask xTask 变量。
- * @param pcTaskName pcTaskName 变量。
+ * @brief FreeRTOS 任务栈溢出钩子。
+ * @param xTask 发生栈溢出的任务句柄。
+ * @param pcTaskName 发生栈溢出的任务名。
  * @retval None
  */
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) // 定义vApplicationStackOverflowHook 函数签名：vApplicationStackOverflowHook 函数
-{ // 进入当前代码块
-    (void)xTask; // 标记 xTask 变量 当前未使用，避免编译器告警
-    if (pcTaskName != 0) // 判断 pcTaskName != 0 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        Debug_Printf("[FreeRTOS] stack overflow task=%s\r\n", pcTaskName); // 调用格式化并通过调试串口输出调试信息，参数为 "[FreeRTOS] stack overflow task=%s\r\n", pcTaskName
-    } // 结束当前代码块
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) // 处理任务栈溢出
+{
+    (void)xTask; // 当前只打印任务名
 
-    taskDISABLE_INTERRUPTS(); // 调用taskDISABLE_INTERRUPTS 函数
-    while (1) // 当 1 成立时持续执行循环体
-    { // 进入当前代码块
-    } // 结束当前代码块
-} // 结束当前代码块
+    if (pcTaskName != 0) // 任务名有效
+    {
+        Debug_Printf("[FreeRTOS] stack overflow task=%s\r\n", pcTaskName); // 输出栈溢出任务名
+    }
+
+    taskDISABLE_INTERRUPTS(); // 关闭中断，停止系统继续运行
+    while (1) // 停在现场等待调试
+    {
+    }
+}

@@ -1,57 +1,56 @@
-#include "debug_log.h" // 引入 debug_log.h 提供的接口、宏和类型定义
+#include "debug_log.h" // 提供调试日志输出接口
 
-#define DEBUG_LOG_BUF_SIZE 256 // 定义 DEBUG_LOG_BUF_SIZE 变量为 256
+#define DEBUG_LOG_BUF_SIZE 256 // 格式化日志缓冲区长度
 
 /**
  * @brief 通过调试串口输出字符串。
- * @param str str 变量。
+ * @param str 待输出字符串。
  * @retval None
  */
-void Debug_Print(const char *str) // 定义Debug_Print 函数签名：通过调试串口输出字符串
-{ // 进入当前代码块
-    if (str == NULL) // 判断 str == NULL 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        return; // 当前条件不满足继续处理，直接返回调用者
-    } // 结束当前代码块
+void Debug_Print(const char *str) // 输出调试字符串
+{
+    if (str == NULL) // 检查字符串指针
+    {
+        return; // 空指针不输出
+    }
 
-    if (mutexUart6log != NULL) // 判断 mutexUart6log != NULL 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        xSemaphoreTakeRecursive(mutexUart6log, // 调用xSemaphoreTakeRecursive 函数，参数为 mutexUart6log,
-                                portMAX_DELAY); // 执行 portMAX_DELAY);，完成当前上下文中的具体处理
-    } // 结束当前代码块
+    if (mutexUart6log != NULL) // 串口日志互斥锁已创建
+    {
+        xSemaphoreTakeRecursive(mutexUart6log, // 获取递归互斥锁
+                                portMAX_DELAY); // 一直等待到拿到锁
+    }
 
-    BSP_DebugUart_SendString(str); // 调用通过调试串口发送字符串，参数为 str
+    BSP_DebugUart_SendString(str); // 通过底层串口发送字符串
 
-    if (mutexUart6log != NULL) // 判断 mutexUart6log != NULL 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        xSemaphoreGiveRecursive(mutexUart6log); // 调用xSemaphoreGiveRecursive 函数，参数为 mutexUart6log
-    } // 结束当前代码块
-} // 结束当前代码块
+    if (mutexUart6log != NULL) // 串口日志互斥锁已创建
+    {
+        xSemaphoreGiveRecursive(mutexUart6log); // 释放递归互斥锁
+    }
+}
 
 /**
  * @brief 格式化并通过调试串口输出调试信息。
- * @param fmt fmt 变量。
+ * @param fmt printf 风格格式字符串。
  * @retval None
  */
-void Debug_Printf(const char *fmt, ...) // 定义Debug_Printf 函数签名：格式化并通过调试串口输出调试信息
-{ // 进入当前代码块
-    if (fmt == NULL) // 判断 fmt == NULL 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        return; // 当前条件不满足继续处理，直接返回调用者
-    } // 结束当前代码块
+void Debug_Printf(const char *fmt, ...) // 输出格式化调试日志
+{
+    if (fmt == NULL) // 检查格式字符串指针
+    {
+        return; // 空指针不输出
+    }
 
-    char log_buf[DEBUG_LOG_BUF_SIZE]; // 声明 log_buf 变量，供后续计算、状态保存或模块间传递使用
+    char log_buf[DEBUG_LOG_BUF_SIZE]; // 格式化输出缓冲区
+    va_list args; // 可变参数列表
 
-    va_list args; // 执行 va_list args;，完成当前上下文中的具体处理
+    va_start(args, fmt); // 开始读取可变参数
 
-    va_start(args, fmt); // 调用va_start 函数，参数为 args, fmt
+    vsnprintf(log_buf, // 输出到本地缓冲区
+              sizeof(log_buf), // 限制最大写入长度
+              fmt, // 使用调用方格式字符串
+              args); // 使用调用方参数列表
 
-    vsnprintf(log_buf, // 调用vsnprintf 函数，参数为 log_buf,
-              sizeof(log_buf), // 调用sizeof 函数，参数为 log_buf),
-              fmt, // 继续传入 fmt 变量，作为当前多行调用或初始化列表的一项
-              args); // 执行 args);，完成当前上下文中的具体处理
+    va_end(args); // 结束读取可变参数
 
-    va_end(args); // 调用va_end 函数，参数为 args
-
-    Debug_Print(log_buf); // 调用通过调试串口输出字符串，参数为 log_buf
-} // 结束当前代码块
+    Debug_Print(log_buf); // 复用串口字符串输出
+}

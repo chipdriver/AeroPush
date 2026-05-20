@@ -1,38 +1,37 @@
-#include "delay.h" // 引入 delay.h 提供的接口、宏和类型定义
+#include "delay.h" // 提供 SysTick 延时接口
 
-static __IO uint32_t TimingDelay = 0; // 执行 static __IO uint32_t TimingDelay = 0;，完成当前上下文中的具体处理
-
-/**
- * @brief Delay_Init 函数。
- * @retval None
- */
-void Delay_Init(void) // 定义Delay_Init 函数签名：Delay_Init 函数
-{ // 进入当前代码块
-    SysTick_Config(SystemCoreClock / 1000); // 调用SysTick_Config 函数，参数为 SystemCoreClock / 1000
-} // 结束当前代码块
+static __IO uint32_t TimingDelay = 0; // 毫秒延时倒计数
 
 /**
- * @brief Delay_ms 函数。
- * @param ms ms 变量。
+ * @brief 初始化 SysTick 为 1ms 节拍。
  * @retval None
  */
-void Delay_ms(uint32_t ms) // 定义Delay_ms 函数签名：Delay_ms 函数
-{ // 进入当前代码块
-    TimingDelay = ms; // 把 ms 变量 写入 TimingDelay 变量
-    while (TimingDelay != 0) // 当 TimingDelay != 0 成立时持续执行循环体
-    { // 进入当前代码块
-
-    } // 结束当前代码块
-} // 结束当前代码块
+void Delay_Init(void) // 初始化阻塞延时模块
+{
+    SysTick_Config(SystemCoreClock / 1000); // 配置 SysTick 每 1ms 触发一次
+}
 
 /**
- * @brief TimingDelay_Decrement 函数。
+ * @brief 阻塞延时指定毫秒数。
+ * @param ms 延时毫秒数。
  * @retval None
  */
-void TimingDelay_Decrement(void) // 定义TimingDelay_Decrement 函数签名：TimingDelay_Decrement 函数
-{ // 进入当前代码块
-    if (TimingDelay != 0) // 判断 TimingDelay != 0 是否成立，以选择后续执行路径
-    { // 进入当前代码块
-        TimingDelay--; // 执行 TimingDelay--;，完成当前上下文中的具体处理
-    } // 结束当前代码块
-} // 结束当前代码块
+void Delay_ms(uint32_t ms) // 毫秒阻塞延时
+{
+    TimingDelay = ms; // 设置延时倒计数
+    while (TimingDelay != 0) // 等待 SysTick 中断递减到 0
+    {
+    }
+}
+
+/**
+ * @brief 在 SysTick 中断中递减延时计数。
+ * @retval None
+ */
+void TimingDelay_Decrement(void) // 递减延时计数
+{
+    if (TimingDelay != 0) // 当前仍处于延时中
+    {
+        TimingDelay--; // 递减 1ms
+    }
+}

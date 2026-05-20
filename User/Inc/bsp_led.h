@@ -1,32 +1,35 @@
-#ifndef __BSP_LED_H__ // 检查 __BSP_LED_H__ 是否未定义，防止头文件重复包含
-#define __BSP_LED_H__ // 定义 __BSP_LED_H__ 变量
+#ifndef __BSP_LED_H__ // 防止头文件重复包含
+#define __BSP_LED_H__
 
-#include "stm32f4xx.h" // 引入 stm32f4xx.h 提供的接口、宏和类型定义
+#include "stm32f4xx.h" // 提供 STM32F4 GPIO 定义
 
-#define LED_RED_Port GPIOA // 定义 LED_RED_Port 变量为 GPIOA
-#define LED_RED_Pin GPIO_Pin_1 // 定义 LED_RED_Pin 变量为 GPIO_Pin_1
-#define LED_GREEN_Port GPIOA // 定义 LED_GREEN_Port 变量为 GPIOA
-#define LED_GREEN_Pin GPIO_Pin_2 // 定义 LED_GREEN_Pin 变量为 GPIO_Pin_2
+#define LED_RED_Port GPIOA // 红灯 GPIO 端口
+#define LED_RED_Pin GPIO_Pin_1 // 红灯 GPIO 引脚
+#define LED_GREEN_Port GPIOA // 绿灯 GPIO 端口
+#define LED_GREEN_Pin GPIO_Pin_2 // 绿灯 GPIO 引脚
 
 /**
- * @brief BSP_LED_Init 函数。
+ * @brief 初始化 LED GPIO。
  * @retval None
  */
-void BSP_LED_Init(void); // 声明BSP_LED_Init 函数签名：BSP_LED_Init 函数
-/**
- * @brief BSP_LED_On 函数。
- * @retval None
- */
-void BSP_LED_On(void); // 声明BSP_LED_On 函数签名：BSP_LED_On 函数
-/**
- * @brief BSP_LED_Off 函数。
- * @retval None
- */
-void BSP_LED_Off(void); // 声明BSP_LED_Off 函数签名：BSP_LED_Off 函数
-/**
- * @brief BSP_LED_Toggle 函数。
- * @retval None
- */
-void BSP_LED_Toggle(void); // 声明BSP_LED_Toggle 函数签名：BSP_LED_Toggle 函数
+void BSP_LED_Init(void); // 初始化 LED
 
-#endif // 结束当前条件编译或头文件保护范围
+/**
+ * @brief 打开 LED。
+ * @retval None
+ */
+void BSP_LED_On(void); // 打开 LED
+
+/**
+ * @brief 关闭 LED。
+ * @retval None
+ */
+void BSP_LED_Off(void); // 关闭 LED
+
+/**
+ * @brief 翻转 LED。
+ * @retval None
+ */
+void BSP_LED_Toggle(void); // 翻转 LED
+
+#endif // __BSP_LED_H__

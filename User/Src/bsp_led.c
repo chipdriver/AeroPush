@@ -1,58 +1,53 @@
-#include "bsp_led.h" // 引入 bsp_led.h 提供的接口、宏和类型定义
+#include "bsp_led.h" // 提供 LED GPIO 宏和底层控制接口
 
 /**
- * @brief BSP_LED_Init 函数。
+ * @brief 初始化红绿 LED 对应 GPIO。
  * @retval None
  */
-void BSP_LED_Init(void) // 定义BSP_LED_Init 函数签名：BSP_LED_Init 函数
-{ // 进入当前代码块
-    GPIO_InitTypeDef GPIO_InitStructure; // 执行 GPIO_InitTypeDef GPIO_InitStructure;，完成当前上下文中的具体处理
+void BSP_LED_Init(void) // 初始化 LED GPIO
+{
+    GPIO_InitTypeDef GPIO_InitStructure; // GPIO 初始化结构体
 
-    // 1.使能时钟
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE); // 调用RCC_AHB1PeriphClockCmd 函数，参数为 RCC_AHB1Periph_GPIOA, ENABLE
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE); // 使能 GPIOA 时钟
 
-    // 2.构建结构体
-    GPIO_InitStructure.GPIO_Pin = LED_RED_Pin | LED_GREEN_Pin; // 把 LED_RED_Pin | LED_GREEN_Pin 写入 GPIO_InitStructure.GPIO_Pin 字段值
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // 把 GPIO_Mode_OUT 变量 写入 GPIO_InitStructure.GPIO_Mode 字段值
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; // 把 GPIO_OType_PP 变量 写入 GPIO_InitStructure.GPIO_OType 字段值
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; // 把 GPIO_Speed_50MHz 变量 写入 GPIO_InitStructure.GPIO_Speed 字段值
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; // 把 GPIO_PuPd_NOPULL 变量 写入 GPIO_InitStructure.GPIO_PuPd 字段值
+    GPIO_InitStructure.GPIO_Pin = LED_RED_Pin | LED_GREEN_Pin; // 配置红灯和绿灯引脚
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT; // 配置为普通输出
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; // 配置为推挽输出
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; // 配置 GPIO 翻转速度
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; // 不使用内部上下拉
 
-    GPIO_Init(LED_RED_Port, &GPIO_InitStructure); // 调用GPIO_Init 函数，参数为 LED_RED_Port, &GPIO_InitStructure
-    GPIO_Init(LED_GREEN_Port, &GPIO_InitStructure); // 调用GPIO_Init 函数，参数为 LED_GREEN_Port, &GPIO_InitStructure
+    GPIO_Init(LED_RED_Port, &GPIO_InitStructure); // 初始化红灯 GPIO
+    GPIO_Init(LED_GREEN_Port, &GPIO_InitStructure); // 初始化绿灯 GPIO
 
-    // 3.设置 LED 初始状态
-    BSP_LED_Off(); // 调用BSP_LED_Off 函数
-
-} // 结束当前代码块
+    BSP_LED_Off(); // 默认关闭 LED
+}
 
 /**
- * @brief BSP_LED_On 函数。
+ * @brief 打开红绿 LED。
  * @retval None
  */
-void BSP_LED_On(void) // 定义BSP_LED_On 函数签名：BSP_LED_On 函数
-{ // 进入当前代码块
-    GPIO_SetBits(LED_RED_Port, LED_RED_Pin); // 调用GPIO_SetBits 函数，参数为 LED_RED_Port, LED_RED_Pin
-    GPIO_WriteBit(LED_GREEN_Port, LED_GREEN_Pin, Bit_SET); // 调用GPIO_WriteBit 函数，参数为 LED_GREEN_Port, LED_GREEN_Pin, Bit_SET
-} // 结束当前代码块
+void BSP_LED_On(void) // 打开 LED
+{
+    GPIO_SetBits(LED_RED_Port, LED_RED_Pin); // 置位红灯引脚
+    GPIO_WriteBit(LED_GREEN_Port, LED_GREEN_Pin, Bit_SET); // 置位绿灯引脚
+}
 
 /**
- * @brief BSP_LED_Off 函数。
+ * @brief 关闭红绿 LED。
  * @retval None
  */
-void BSP_LED_Off(void) // 定义BSP_LED_Off 函数签名：BSP_LED_Off 函数
-{ // 进入当前代码块
-    // GPIO_SetBits(LED_Port,LED_Pin);  方式1
-    GPIO_WriteBit(LED_RED_Port, LED_RED_Pin, Bit_RESET); // 调用GPIO_WriteBit 函数，参数为 LED_RED_Port, LED_RED_Pin, Bit_RESET
-    GPIO_ResetBits(LED_GREEN_Port, LED_GREEN_Pin); // 调用GPIO_ResetBits 函数，参数为 LED_GREEN_Port, LED_GREEN_Pin
-} // 结束当前代码块
+void BSP_LED_Off(void) // 关闭 LED
+{
+    GPIO_WriteBit(LED_RED_Port, LED_RED_Pin, Bit_RESET); // 复位红灯引脚
+    GPIO_ResetBits(LED_GREEN_Port, LED_GREEN_Pin); // 复位绿灯引脚
+}
 
 /**
- * @brief BSP_LED_Toggle 函数。
+ * @brief 翻转红绿 LED。
  * @retval None
  */
-void BSP_LED_Toggle(void) // 定义BSP_LED_Toggle 函数签名：BSP_LED_Toggle 函数
-{ // 进入当前代码块
-    LED_RED_Port->ODR ^= LED_RED_Pin; // 执行 LED_RED_Port->ODR ^= LED_RED_Pin;，完成当前上下文中的具体处理
-    LED_GREEN_Port->ODR ^= LED_GREEN_Pin; // 执行 LED_GREEN_Port->ODR ^= LED_GREEN_Pin;，完成当前上下文中的具体处理
-} // 结束当前代码块
+void BSP_LED_Toggle(void) // 翻转 LED 状态
+{
+    LED_RED_Port->ODR ^= LED_RED_Pin; // 翻转红灯输出位
+    LED_GREEN_Port->ODR ^= LED_GREEN_Pin; // 翻转绿灯输出位
+}

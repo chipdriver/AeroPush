@@ -1,24 +1,24 @@
-#ifndef __APP_TASKS_H__ // 检查 __APP_TASKS_H__ 是否未定义，防止头文件重复包含
-#define __APP_TASKS_H__ // 定义 __APP_TASKS_H__ 变量
+#ifndef __APP_TASKS_H__ // 防止头文件重复包含
+#define __APP_TASKS_H__
 
-#include <stdio.h> // 引入 stdio.h 提供的接口、宏和类型定义
-#include <string.h> // 引入 string.h 提供的接口、宏和类型定义
-#include "FreeRTOS.h" // 引入 FreeRTOS.h 提供的接口、宏和类型定义
-#include "task.h" // 引入 task.h 提供的接口、宏和类型定义
-#include "app_config.h" // 引入 app_config.h 提供的接口、宏和类型定义
-#include "app_status.h" // 引入 app_status.h 提供的接口、宏和类型定义
-#include "debug_service.h" // 引入 debug_service.h 提供的接口、宏和类型定义
-#include "debug_log.h" // 引入 debug_log.h 提供的接口、宏和类型定义
-#include "freertos_objects.h" // 引入 freertos_objects.h 提供的接口、宏和类型定义
-#include "imu_service.h" // 引入 imu_service.h 提供的接口、宏和类型定义
-#include "led_service.h" // 引入 led_service.h 提供的接口、宏和类型定义
-#include "modem_service.h" // 引入 modem_service.h 提供的接口、宏和类型定义
-#include "telemetry_service.h" // 引入 telemetry_service.h 提供的接口、宏和类型定义
+#include <stdio.h> // 提供 snprintf
+#include <string.h> // 提供 memset
+#include "FreeRTOS.h" // 提供 FreeRTOS 基础类型
+#include "task.h" // 提供任务创建和延时接口
+#include "app_config.h" // 提供任务栈、优先级和周期配置
+#include "app_status.h" // 提供系统状态位接口
+#include "debug_service.h" // 提供调试服务初始化接口
+#include "debug_log.h" // 提供调试日志接口
+#include "freertos_objects.h" // 提供队列、互斥锁和事件组对象
+#include "imu_service.h" // 提供 IMU 服务接口
+#include "led_service.h" // 提供 LED 服务接口
+#include "modem_service.h" // 提供通信服务接口
+#include "telemetry_service.h" // 提供遥测组包接口
 
 /**
  * @brief 创建应用层所有 FreeRTOS 任务。
  * @retval None
  */
-void APP_TasksCreate(void); // 声明APP_TasksCreate 函数签名：创建应用层所有 FreeRTOS 任务
+void APP_TasksCreate(void); // 创建应用任务
 
-#endif // 结束当前条件编译或头文件保护范围
+#endif // __APP_TASKS_H__

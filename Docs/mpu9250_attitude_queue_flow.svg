@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1980" viewBox="0 0 1800 1980" role="img" aria-labelledby="title desc">
+  <title id="title">AeroPush MPU9250 attitude to queue flow</title>
+  <desc id="desc">Flowchart of the current AeroPush source path from startup and MPU9250 initialization to Mahony attitude fusion and xQueueOverwrite(qAttitude).</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#30485f"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2f6f55"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#a84a3a"/>
+    </marker>
+    <style>
+      .bg { fill: #f6f4ef; }
+      .title { font: 700 42px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #1d2935; }
+      .subtitle { font: 400 20px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #5f6d78; }
+      .lane-title { font: 700 24px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #203040; }
+      .lane-note { font: 400 15px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #697783; }
+      .node { fill: #ffffff; stroke: #9caab5; stroke-width: 2; rx: 12; }
+      .node-init { fill: #fff9e8; stroke: #c8a95a; stroke-width: 2; rx: 12; }
+      .node-read { fill: #edf7ff; stroke: #67a5ce; stroke-width: 2; rx: 12; }
+      .node-fuse { fill: #edf8f1; stroke: #6cad86; stroke-width: 2; rx: 12; }
+      .node-queue { fill: #f6edff; stroke: #9474bb; stroke-width: 2; rx: 12; }
+      .node-warn { fill: #fff0eb; stroke: #d38168; stroke-width: 2; rx: 12; }
+      .decision { fill: #ffffff; stroke: #7893a5; stroke-width: 2; }
+      .decision-green { fill: #f2fbf5; stroke: #6cad86; stroke-width: 2; }
+      .code { font: 700 20px Consolas, "Microsoft YaHei", monospace; fill: #203040; }
+      .body { font: 400 17px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #344454; }
+      .small { font: 400 14px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #667480; }
+      .label { font: 700 15px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #3d5365; }
+      .green-label { font: 700 15px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #2f6f55; }
+      .red-label { font: 700 15px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #a84a3a; }
+      .arrow { fill: none; stroke: #30485f; stroke-width: 3; marker-end: url(#arrow); }
+      .arrow-green { fill: none; stroke: #2f6f55; stroke-width: 3; marker-end: url(#arrow-green); }
+      .arrow-red { fill: none; stroke: #a84a3a; stroke-width: 3; marker-end: url(#arrow-red); }
+      .arrow-dash { fill: none; stroke: #748697; stroke-width: 2.5; stroke-dasharray: 8 7; marker-end: url(#arrow); }
+      .lane { fill: #ffffff; stroke: #d9d3c6; stroke-width: 1.5; rx: 18; opacity: 0.72; }
+      .foot { font: 400 15px "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif; fill: #576674; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1800" height="1980"/>
+
+  <text class="title" x="90" y="78">MPU9250 姿态从启动到写入 qAttitude 的当前源码流程</text>
+  <text class="subtitle" x="90" y="114">范围：AeroPush 当前工程，主线到 `xQueueOverwrite(qAttitude, &amp;attitude)` 为止；不画后续遥测发布。</text>
+
+  <rect class="lane" x="65" y="155" width="510" height="1680"/>
+  <text class="lane-title" x="95" y="197">1. 启动与初始化</text>
+  <text class="lane-note" x="95" y="225">任务、队列、驱动、校准、Mahony 初值</text>
+
+  <rect class="lane" x="645" y="155" width="510" height="1680"/>
+  <text class="lane-title" x="675" y="197">2. 周期采样与融合</text>
+  <text class="lane-note" x="675" y="225">ImuTask 每周期读取六轴/磁力计并更新融合状态</text>
+
+  <rect class="lane" x="1225" y="155" width="510" height="1680"/>
+  <text class="lane-title" x="1255" y="197">3. 姿态结构体与队列</text>
+  <text class="lane-note" x="1255" y="225">融合欧拉角写成 AttitudeData_t，覆盖队列最新值</text>
+
+  <!-- Startup lane -->
+  <rect class="node-init" x="105" y="270" width="430" height="112"/>
+  <text class="code" x="132" y="306">APP_Main()</text>
+  <text class="body" x="132" y="336">创建应用任务、FreeRTOS 对象，启动调度器</text>
+  <text class="small" x="132" y="362">app_main.c：APP_TasksCreate / FreeRTOS_ObjectsCreate / vTaskStartScheduler</text>
+
+  <rect class="node-init" x="105" y="438" width="430" height="118"/>
+  <text class="code" x="132" y="475">APP_TasksCreate()</text>
+  <text class="body" x="132" y="505">创建 InitTask 和 ImuTask</text>
+  <text class="small" x="132" y="531">ImuTask 后面负责采样、融合和姿态入队</text>
+
+  <rect class="node-init" x="105" y="612" width="430" height="118"/>
+  <text class="code" x="132" y="649">FreeRTOS_ObjectsCreate()</text>
+  <text class="body" x="132" y="679">创建 `qAttitude = xQueueCreate(1, sizeof(AttitudeData_t))`</text>
+  <text class="small" x="132" y="705">队列长度为 1，只保留最新姿态</text>
+
+  <rect class="node-init" x="105" y="786" width="430" height="120"/>
+  <text class="code" x="132" y="823">InitTask()</text>
+  <text class="body" x="132" y="853">初始化 LED / Debug 后调用 `ImuService_Init()`</text>
+  <text class="small" x="132" y="879">成功才置位 APP_STATUS_IMU_READY</text>
+
+  <rect class="node-init" x="105" y="962" width="430" height="104"/>
+  <text class="code" x="132" y="999">ImuService_Init()</text>
+  <text class="body" x="132" y="1029">薄封装：直接返回 `MPU9250_Driver_Init()`</text>
+
+  <rect class="node-init" x="105" y="1122" width="430" height="170"/>
+  <text class="code" x="132" y="1159">MPU9250_Driver_Init()</text>
+  <text class="body" x="132" y="1189">初始化软件 I2C</text>
+  <text class="body" x="132" y="1217">检查 MPU9250 WHO_AM_I 并配置六轴</text>
+  <text class="body" x="132" y="1245">初始化 AK8963，进入连续测量</text>
+  <text class="small" x="132" y="1271">失败则 InitTask 标记 IMU_ERROR</text>
+
+  <rect class="node-init" x="105" y="1348" width="430" height="154"/>
+  <text class="code" x="132" y="1385">启动阶段校准</text>
+  <text class="body" x="132" y="1415">`MPU9250_CalibrateGyro(1000,10)`</text>
+  <text class="body" x="132" y="1443">`MPU9250_CalibrateAccel(1000,10)`</text>
+  <text class="body" x="132" y="1471">`AK8963_CalibrateMag(500,20)`</text>
+
+  <rect class="node-init" x="105" y="1558" width="430" height="128"/>
+  <text class="code" x="132" y="1595">IMU_READY + MahonyInit</text>
+  <text class="body" x="132" y="1625">`AppStatus_Set(APP_STATUS_IMU_READY)`</text>
+  <text class="body" x="132" y="1653">`MPU9250_MahonyInit(0.3f, 0.0f)`</text>
+
+  <!-- Runtime lane -->
+  <rect class="node-read" x="685" y="270" width="430" height="118"/>
+  <text class="code" x="712" y="307">ImuTask() 循环</text>
+  <text class="body" x="712" y="337">等待 `APP_STATUS_IMU_READY`</text>
+  <text class="small" x="712" y="363">未就绪时 100ms 延时并 continue</text>
+
+  <rect class="node-read" x="685" y="462" width="430" height="120"/>
+  <text class="code" x="712" y="499">ImuService_ReadPhys(&amp;phys,&amp;mag)</text>
+  <text class="body" x="712" y="529">读取本周期六轴物理量，并尝试读取磁力计</text>
+  <text class="small" x="712" y="555">返回：FAIL / 6AXIS_OK / 9AXIS_OK</text>
+
+  <rect class="node-read" x="685" y="656" width="430" height="150"/>
+  <text class="code" x="712" y="693">MPU9250 六轴路径</text>
+  <text class="body" x="712" y="723">`MPU9250_ReadAxis(&amp;raw)`</text>
+  <text class="body" x="712" y="751">`MPU9250_ConvertToPhysical(&amp;raw,&amp;phys)`</text>
+  <text class="small" x="712" y="779">输出 accel_g / gyro_dps / temp</text>
+
+  <rect class="node-read" x="685" y="880" width="430" height="150"/>
+  <text class="code" x="712" y="917">AK8963 磁力计路径</text>
+  <text class="body" x="712" y="947">`AK8963_Read_Mag_UT(&amp;mag)`</text>
+  <text class="body" x="712" y="975">内部读取原始磁场、转换 uT、应用校准矩阵</text>
+  <text class="small" x="712" y="1003">失败时只保留六轴路径</text>
+
+  <polygon class="decision" points="900,1090 1120,1210 900,1330 680,1210"/>
+  <text class="code" x="765" y="1197">本周期读取结果？</text>
+  <text class="small" x="775" y="1227">FAIL / 6AXIS_OK / 9AXIS_OK</text>
+
+  <rect class="node-warn" x="685" y="1410" width="430" height="112"/>
+  <text class="code" x="712" y="1447">IMU_SERVICE_READ_FAIL</text>
+  <text class="body" x="712" y="1477">跳过本轮姿态刷新</text>
+  <text class="small" x="712" y="1503">不会写入 qAttitude</text>
+
+  <rect class="node-fuse" x="685" y="1588" width="430" height="150"/>
+  <text class="code" x="712" y="1625">Mahony 融合更新</text>
+  <text class="body" x="712" y="1655">9 轴有效：`MPU9250_MahonyUpdate()`</text>
+  <text class="body" x="712" y="1683">仅六轴：`MPU9250_MahonyUpdateIMU()`</text>
+  <text class="small" x="712" y="1711">更新四元数和 `g_euler_fused`</text>
+
+  <!-- Queue lane -->
+  <rect class="node-fuse" x="1265" y="990" width="430" height="142"/>
+  <text class="code" x="1292" y="1027">MPU9250_GetEulerFusedDeg()</text>
+  <text class="body" x="1292" y="1057">读取 Mahony 融合后的欧拉角</text>
+  <text class="body" x="1292" y="1085">输出 roll / pitch / yaw，单位度</text>
+  <text class="small" x="1292" y="1111">这是当前入队姿态的唯一来源</text>
+
+  <rect class="node-queue" x="1265" y="1208" width="430" height="174"/>
+  <text class="code" x="1292" y="1245">填充 AttitudeData_t</text>
+  <text class="body" x="1292" y="1275">`attitude.roll_deg = roll_deg`</text>
+  <text class="body" x="1292" y="1303">`attitude.pitch_deg = pitch_deg`</text>
+  <text class="body" x="1292" y="1331">`attitude.yaw_deg = yaw_deg`</text>
+  <text class="small" x="1292" y="1359">同时写入 timestamp_ms 和 valid = 1</text>
+
+  <rect class="node-queue" x="1265" y="1458" width="430" height="142"/>
+  <text class="code" x="1292" y="1495">xQueueOverwrite(qAttitude)</text>
+  <text class="body" x="1292" y="1525">覆盖姿态队列旧值</text>
+  <text class="body" x="1292" y="1553">队列中始终是最新一帧姿态</text>
+  <text class="small" x="1292" y="1579">后续 TelemetryTask 用 xQueuePeek 读取</text>
+
+  <rect class="node" x="1265" y="1676" width="430" height="118"/>
+  <text class="code" x="1292" y="1713">qAttitude</text>
+  <text class="body" x="1292" y="1743">保存最新 `AttitudeData_t`</text>
+  <text class="small" x="1292" y="1769">本图到此结束，不展开遥测/MQTT</text>
+
+  <!-- Arrows startup -->
+  <path class="arrow" d="M320 382 L320 438"/>
+  <path class="arrow" d="M320 556 L320 612"/>
+  <path class="arrow" d="M320 730 L320 786"/>
+  <path class="arrow" d="M320 906 L320 962"/>
+  <path class="arrow" d="M320 1066 L320 1122"/>
+  <path class="arrow" d="M320 1292 L320 1348"/>
+  <path class="arrow" d="M320 1502 L320 1558"/>
+
+  <!-- Startup to runtime arrows -->
+  <path class="arrow-green" d="M535 496 C590 496 620 329 685 329"/>
+  <text class="green-label" x="554" y="421">创建任务</text>
+  <path class="arrow-green" d="M535 1622 C625 1622 585 329 685 329"/>
+  <text class="green-label" x="552" y="1585">IMU_READY 后 ImuTask 开始有效工作</text>
+
+  <!-- Runtime arrows -->
+  <path class="arrow" d="M900 388 L900 462"/>
+  <path class="arrow" d="M900 582 L900 656"/>
+  <path class="arrow" d="M900 806 L900 880"/>
+  <path class="arrow" d="M900 1030 L900 1090"/>
+  <path class="arrow-red" d="M789 1269 C690 1345 720 1374 805 1410"/>
+  <text class="red-label" x="686" y="1360">FAIL</text>
+  <path class="arrow-green" d="M1011 1269 C1135 1370 1108 1500 1015 1588"/>
+  <text class="green-label" x="1074" y="1384">6AXIS_OK</text>
+  <path class="arrow-green" d="M1120 1210 C1200 1240 1182 1542 1015 1588"/>
+  <text class="green-label" x="1160" y="1296">9AXIS_OK</text>
+  <path class="arrow-dash" d="M900 1522 L900 1588"/>
+  <text class="label" x="917" y="1557">下一周期重试</text>
+
+  <!-- Runtime to queue arrows -->
+  <path class="arrow-green" d="M1115 1663 C1195 1663 1205 1061 1265 1061"/>
+  <text class="green-label" x="1168" y="1608">融合状态已更新</text>
+  <path class="arrow" d="M1480 1132 L1480 1208"/>
+  <path class="arrow" d="M1480 1382 L1480 1458"/>
+  <path class="arrow" d="M1480 1600 L1480 1676"/>
+
+  <!-- Notes -->
+  <rect x="90" y="1870" width="1620" height="62" fill="#ffffff" stroke="#d9d3c6" stroke-width="1.5" rx="12"/>
+  <text class="foot" x="115" y="1896">源码依据：User/Src/app_main.c、freertos_objects.c、app_tasks.c、imu_service.c、mpu9250_driver.c；User/Inc/app_types.h。</text>
+  <text class="foot" x="115" y="1922">结论：当前 `qAttitude` 里的姿态来自 Mahony 融合路径，具体为 `MPU9250_GetEulerFusedDeg()` → `AttitudeData_t` → `xQueueOverwrite(qAttitude, &amp;attitude)`。</text>
+</svg>

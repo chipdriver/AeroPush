@@ -1,37 +1,37 @@
-#include "led_service.h" // 引入 led_service.h 提供的接口、宏和类型定义
+#include "led_service.h" // 提供 LED 服务层接口
 
 /**
  * @brief 初始化 LED 服务。
  * @retval None
  */
-void LedService_Init(void) // 定义LedService_Init 函数签名：初始化 LED 服务
-{ // 进入当前代码块
-    BSP_LED_Init(); // 调用BSP_LED_Init 函数
-} // 结束当前代码块
+void LedService_Init(void) // 初始化 LED 服务
+{
+    BSP_LED_Init(); // 初始化底层 LED GPIO
+}
 
 /**
- * @brief LedService_On 函数。
+ * @brief 打开 LED。
  * @retval None
  */
-void LedService_On(void) // 定义LedService_On 函数签名：LedService_On 函数
-{ // 进入当前代码块
-    BSP_LED_On(); // 调用BSP_LED_On 函数
-} // 结束当前代码块
+void LedService_On(void) // 打开 LED
+{
+    BSP_LED_On(); // 调用底层 LED 打开接口
+}
 
 /**
- * @brief LedService_Off 函数。
+ * @brief 关闭 LED。
  * @retval None
  */
-void LedService_Off(void) // 定义LedService_Off 函数签名：LedService_Off 函数
-{ // 进入当前代码块
-    BSP_LED_Off(); // 调用BSP_LED_Off 函数
-} // 结束当前代码块
+void LedService_Off(void) // 关闭 LED
+{
+    BSP_LED_Off(); // 调用底层 LED 关闭接口
+}
 
 /**
  * @brief 翻转 LED 当前亮灭状态。
  * @retval None
  */
-void LedService_Toggle(void) // 定义LedService_Toggle 函数签名：翻转 LED 当前亮灭状态
-{ // 进入当前代码块
-    BSP_LED_Toggle(); // 调用BSP_LED_Toggle 函数
-} // 结束当前代码块
+void LedService_Toggle(void) // 翻转 LED
+{
+    BSP_LED_Toggle(); // 调用底层 LED 翻转接口
+}
