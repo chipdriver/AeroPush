@@ -273,7 +273,7 @@ static void TelemetryTask(void *argument) // 遥测组包任务
                  gnss.latitude, // 输出纬度
                  gnss.longitude); // 输出经度
 
-        // Debug_Print(log_buf); // 需要观察遥测状态时打开
+        Debug_Print(log_buf); // 需要观察遥测状态时打开
         (void)log_buf; // 当前默认不输出遥测日志
 
         vTaskDelay(pdMS_TO_TICKS(APP_TELEMETRY_TASK_PERIOD_MS)); // 按遥测任务周期休眠

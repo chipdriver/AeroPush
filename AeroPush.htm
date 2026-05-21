@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\AeroPush.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\AeroPush.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Wed May 20 16:58:13 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Thu May 21 09:29:41 2026
 <BR><P>
 <H3>Maximum Stack Usage =       1216 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1065,8 +1065,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_ReadRegs
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_ReadReg
-<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Printf
+<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
 <LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskDelay
 <LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrtf
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sinf
@@ -1152,8 +1152,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetFlagStatus
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SendData
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
-<LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Printf
+<BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Printf
+<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
 </UL>
 
 <P><STRONG><a name="[d3]"></a>BSP_I2C_Soft_Init</STRONG> (Thumb, 90 bytes, Stack size 32 bytes, bsp_i2c_soft.o(.text.BSP_I2C_Soft_Init))
@@ -1214,6 +1214,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AK8963_CalibrateMag
 <LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU9250_Driver_Init
+<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TelemetryTask
 </UL>
 
 <P><STRONG><a name="[b3]"></a>Debug_Printf</STRONG> (Thumb, 78 bytes, Stack size 280 bytes, debug_log.o(.text.Debug_Printf))
@@ -1360,9 +1361,9 @@ Global Symbols
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_ReadReg
 <LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_WriteReg
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BSP_I2C_Soft_Init
-<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Printf
 <LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU9250_ReadAxis
+<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
 <LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskDelay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ImuService_Init
@@ -1859,8 +1860,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskGetCurrentTaskHandle
 <LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
-<LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Printf
+<BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Printf
+<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
 </UL>
 
 <P><STRONG><a name="[fa]"></a>xQueuePeek</STRONG> (Thumb, 332 bytes, Stack size 56 bytes, queue.o(.text.xQueuePeek))
@@ -1923,8 +1924,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueSemaphoreTake
 <LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskGetCurrentTaskHandle
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
-<LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Printf
+<BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Printf
+<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
 </UL>
 
 <P><STRONG><a name="[11f]"></a>xTaskCheckForTimeOut</STRONG> (Thumb, 96 bytes, Stack size 16 bytes, tasks.o(.text.xTaskCheckForTimeOut))
@@ -2364,11 +2365,12 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> app_tasks.o(.text.APP_TasksCreate)
 </UL>
-<P><STRONG><a name="[4b]"></a>TelemetryTask</STRONG> (Thumb, 208 bytes, Stack size 1000 bytes, app_tasks.o(.text.TelemetryTask))
+<P><STRONG><a name="[4b]"></a>TelemetryTask</STRONG> (Thumb, 212 bytes, Stack size 1000 bytes, app_tasks.o(.text.TelemetryTask))
 <BR><BR>[Stack]<UL><LI>Max Depth = 1216 + Unknown Stack Size
 <LI>Call Chain = TelemetryTask &rArr; Telemetry_BuildMqttMsg &rArr; __2snprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Telemetry_BuildMqttMsg
+<BR>[Calls]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_Print
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Telemetry_BuildMqttMsg
 <LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueuePeek
 <LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend
 <LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskDelay
