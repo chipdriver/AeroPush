@@ -1,6 +1,6 @@
 *** Using Compiler 'V6.24', folder: 'D:\Keil_v5\ARM\ARMCLANG\Bin'
 Rebuild target 'Target_1'
-User/Src/modem_service.c(1): warning: In file included from..../User/Inc\modem_service.h(5): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+User/Src/app_main.c(1): warning: In file included from..../User/Inc\app_main.h(4): warning: In file included from..../User/Inc\freertos_objects.h(4): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
 ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
@@ -31,7 +31,7 @@ User/Src/modem_service.c(1): warning: In file included from..../User/Inc\modem_s
  11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
        |          ^
 5 warnings generated.
-compiling modem_service.c...
+compiling app_main.c...
 Lib/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c(77): warning: In file included from..../Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc\stm32f4xx_gpio.h(31): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
@@ -64,9 +64,7 @@ Lib/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c(77): warning: In f
        |          ^
 5 warnings generated.
 compiling stm32f4xx_gpio.c...
-assembling startup_stm32f411xe.s...
-compiling telemetry_service.c...
-User/Src/main.c(1): warning: In file included from..../User/Inc\app_main.h(4): warning: In file included from..../User/Inc\freertos_objects.h(4): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+User/Src/modem_service.c(1): warning: In file included from..../User/Inc\modem_service.h(5): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
 ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
@@ -97,8 +95,8 @@ User/Src/main.c(1): warning: In file included from..../User/Inc\app_main.h(4): w
  11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
        |          ^
 5 warnings generated.
-compiling main.c...
-User/Src/debug_log.c(1): warning: In file included from..../User/Inc\debug_log.h(8): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+compiling modem_service.c...
+User/Src/app_status.c(1): warning: In file included from..../User/Inc\app_status.h(5): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
 ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
@@ -129,71 +127,7 @@ User/Src/debug_log.c(1): warning: In file included from..../User/Inc\debug_log.h
  11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
        |          ^
 5 warnings generated.
-compiling debug_log.c...
-User/Src/led_service.c(1): warning: In file included from..../User/Inc\led_service.h(4): warning: In file included from..../User/Inc\bsp_led.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling led_service.c...
-User/Src/bsp_led.c(1): warning: In file included from..../User/Inc\bsp_led.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling bsp_led.c...
+compiling app_status.c...
 Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c(310): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
@@ -230,7 +164,8 @@ Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c(887)
 Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c(887): note: put the semicolon on a separate line to silence this warning
 6 warnings generated.
 compiling system_stm32f4xx.c...
-User/Src/imu_service.c(5): warning: In file included from..../User/Inc\imu_service.h(6): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+compiling telemetry_service.c...
+User/Src/main.c(1): warning: In file included from..../User/Inc\app_main.h(4): warning: In file included from..../User/Inc\freertos_objects.h(4): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
 ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
@@ -261,39 +196,7 @@ User/Src/imu_service.c(5): warning: In file included from..../User/Inc\imu_servi
  11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
        |          ^
 5 warnings generated.
-compiling imu_service.c...
-User/Src/stm32f4xx_it.c(24): warning: In file included from..../User/Inc\stm32f4xx_it.h(9): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling stm32f4xx_it.c...
+compiling main.c...
 User/Src/debug_service.c(1): warning: In file included from..../User/Inc\debug_service.h(4): warning: In file included from..../User/Inc\bsp_debug_uart.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
@@ -326,7 +229,7 @@ User/Src/debug_service.c(1): warning: In file included from..../User/Inc\debug_s
        |          ^
 5 warnings generated.
 compiling debug_service.c...
-Lib/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c(52): warning: In file included from..../Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc\stm32f4xx_rcc.h(30): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+User/Src/bsp_led.c(1): warning: In file included from..../User/Inc\bsp_led.h(5): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
 ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
@@ -357,8 +260,8 @@ Lib/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c(52): warning: In fi
  11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
        |          ^
 5 warnings generated.
-compiling stm32f4xx_rcc.c...
-User/Src/freertos_objects.c(1): warning: In file included from..../User/Inc\freertos_objects.h(4): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+compiling bsp_led.c...
+User/Src/led_service.c(1): warning: In file included from..../User/Inc\led_service.h(4): warning: In file included from..../User/Inc\bsp_led.h(5): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
 ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
@@ -389,199 +292,7 @@ User/Src/freertos_objects.c(1): warning: In file included from..../User/Inc\free
  11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
        |          ^
 5 warnings generated.
-compiling freertos_objects.c...
-User/Src/freertos_hook.c(1): warning: In file included from..../User/Inc\freertos_hook.h(4): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling freertos_hook.c...
-User/Src/app_main.c(2): warning: In file included from..../User/Inc\app_main.h(4): warning: In file included from..../User/Inc\freertos_objects.h(4): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling app_main.c...
-User/Src/delay.c(1): warning: In file included from..../User/Inc\delay.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling delay.c...
-User/Src/app_status.c(1): warning: In file included from..../User/Inc\app_status.h(5): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling app_status.c...
-User/Src/bsp_debug_uart.c(1): warning: In file included from..../User/Inc\bsp_debug_uart.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling bsp_debug_uart.c...
-Lib/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c(85): warning: In file included from..../Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc\stm32f4xx_usart.h(31): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling stm32f4xx_usart.c...
+compiling led_service.c...
 User/Src/app_tasks.c(1): warning: In file included from..../User/Inc\app_tasks.h(6): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
@@ -614,6 +325,294 @@ User/Src/app_tasks.c(1): warning: In file included from..../User/Inc\app_tasks.h
        |          ^
 5 warnings generated.
 compiling app_tasks.c...
+Lib/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c(85): warning: In file included from..../Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc\stm32f4xx_usart.h(31): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling stm32f4xx_usart.c...
+User/Src/freertos_objects.c(1): warning: In file included from..../User/Inc\freertos_objects.h(4): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling freertos_objects.c...
+User/Src/delay.c(1): warning: In file included from..../User/Inc\delay.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling delay.c...
+User/Src/bsp_debug_uart.c(1): warning: In file included from..../User/Inc\bsp_debug_uart.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling bsp_debug_uart.c...
+Lib/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c(52): warning: In file included from..../Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc\stm32f4xx_rcc.h(30): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling stm32f4xx_rcc.c...
+User/Src/freertos_hook.c(1): warning: In file included from..../User/Inc\freertos_hook.h(4): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling freertos_hook.c...
+User/Src/stm32f4xx_it.c(21): warning: In file included from..../User/Inc\stm32f4xx_it.h(9): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling stm32f4xx_it.c...
+User/Src/imu_service.c(5): warning: In file included from..../User/Inc\imu_service.h(6): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling imu_service.c...
+User/Src/debug_log.c(1): warning: In file included from..../User/Inc\debug_log.h(8): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling debug_log.c...
 User/Src/bsp_i2c_soft.c(5): warning: In file included from..../User/Inc\bsp_i2c_soft.h(5): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
@@ -646,38 +645,6 @@ User/Src/bsp_i2c_soft.c(5): warning: In file included from..../User/Inc\bsp_i2c_
        |          ^
 5 warnings generated.
 compiling bsp_i2c_soft.c...
-FreeRTOS/Source/event_groups.c(38): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling event_groups.c...
 User/Src/mpu9250_driver.c(5): warning: In file included from..../User/Inc\mpu9250_driver.h(5): warning: In file included from..../User/Inc\bsp_i2c_soft.h(5): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
@@ -710,6 +677,39 @@ User/Src/mpu9250_driver.c(5): warning: In file included from..../User/Inc\mpu925
        |          ^
 5 warnings generated.
 compiling mpu9250_driver.c...
+assembling startup_stm32f411xe.s...
+FreeRTOS/Source/event_groups.c(38): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling event_groups.c...
 FreeRTOS/Source/list.c(37): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
@@ -742,38 +742,6 @@ FreeRTOS/Source/list.c(37): warning: In file included from..../FreeRTOS/Include\
        |          ^
 5 warnings generated.
 compiling list.c...
-FreeRTOS/Source/stream_buffer.c(38): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling stream_buffer.c...
 FreeRTOS/Source/queue.c(37): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
@@ -806,38 +774,6 @@ FreeRTOS/Source/queue.c(37): warning: In file included from..../FreeRTOS/Include
        |          ^
 5 warnings generated.
 compiling queue.c...
-FreeRTOS/Source/tasks.c(40): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
- 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
- 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
- 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
- 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
- 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
- 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
- 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
- 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
- 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
-       |          ^
-./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
- 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
-       |          ^
-5 warnings generated.
-compiling tasks.c...
 FreeRTOS/Portable/GCC/ARM_CM4F/port.c(34): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
  11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
        |          ^
@@ -934,7 +870,71 @@ FreeRTOS/Portable/MemMang/heap_4.c(45): warning: In file included from..../FreeR
        |          ^
 5 warnings generated.
 compiling heap_4.c...
+FreeRTOS/Source/stream_buffer.c(38): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling stream_buffer.c...
+FreeRTOS/Source/tasks.c(40): warning: In file included from..../FreeRTOS/Include\FreeRTOS.h(58): warning: In file included from..../FreeRTOS/Config\FreeRTOSConfig.h(4): warning: In file included from..../Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11581): warning: 'DBGMCU_APB2_FZ_DBG_TIM1_STOP' macro redefined [-Wmacro-redefined]
+ 11581 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        DBGMCU_APB1_FZ_DBG_TIM1_STOP    
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11574): note: previous definition is here
+ 11574 | #define  DBGMCU_APB2_FZ_DBG_TIM1_STOP        ((uint32_t)0x00000001)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11582): warning: 'DBGMCU_APB2_FZ_DBG_TIM8_STOP' macro redefined [-Wmacro-redefined]
+ 11582 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        DBGMCU_APB1_FZ_DBG_TIM8_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11575): note: previous definition is here
+ 11575 | #define  DBGMCU_APB2_FZ_DBG_TIM8_STOP        ((uint32_t)0x00000002)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11583): warning: 'DBGMCU_APB2_FZ_DBG_TIM9_STOP' macro redefined [-Wmacro-redefined]
+ 11583 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        DBGMCU_APB1_FZ_DBG_TIM9_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11576): note: previous definition is here
+ 11576 | #define  DBGMCU_APB2_FZ_DBG_TIM9_STOP        ((uint32_t)0x00010000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11584): warning: 'DBGMCU_APB2_FZ_DBG_TIM10_STOP' macro redefined [-Wmacro-redefined]
+ 11584 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       DBGMCU_APB1_FZ_DBG_TIM10_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11577): note: previous definition is here
+ 11577 | #define  DBGMCU_APB2_FZ_DBG_TIM10_STOP       ((uint32_t)0x00020000)
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11585): warning: 'DBGMCU_APB2_FZ_DBG_TIM11_STOP' macro redefined [-Wmacro-redefined]
+ 11585 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       DBGMCU_APB1_FZ_DBG_TIM11_STOP
+       |          ^
+./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include\stm32f4xx.h(11578): note: previous definition is here
+ 11578 | #define  DBGMCU_APB2_FZ_DBG_TIM11_STOP       ((uint32_t)0x00040000)
+       |          ^
+5 warnings generated.
+compiling tasks.c...
 linking...
-Program Size: Code=34816 RO-data=2276 RW-data=68 ZI-data=29080  
+Program Size: Code=35096 RO-data=2332 RW-data=68 ZI-data=29080  
 ".\AeroPush.axf" - 0 Error(s), 146 Warning(s).
 Build Time Elapsed:  00:00:03

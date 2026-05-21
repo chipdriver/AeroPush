@@ -28,6 +28,17 @@ void LedService_Off(void) // 关闭 LED
 }
 
 /**
+ * @brief 分别设置红灯和绿灯亮灭。
+ * @param red_on 红灯是否点亮。
+ * @param green_on 绿灯是否点亮。
+ * @retval None
+ */
+void LedService_Set(uint8_t red_on, uint8_t green_on) // 分别设置红绿 LED
+{
+    BSP_LED_Set(red_on, green_on); // 调用底层红绿灯独立控制接口
+}
+
+/**
  * @brief 翻转 LED 当前亮灭状态。
  * @retval None
  */

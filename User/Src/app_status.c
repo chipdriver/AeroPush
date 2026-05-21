@@ -1,5 +1,7 @@
 #include "app_status.h" // 提供系统状态位操作接口
 
+static volatile AppCalState_t g_app_cal_state = APP_CAL_STATE_IDLE; // 当前校准灯语状态
+
 /**
  * @brief 置位指定系统状态标志。
  * @param status_bits 系统状态位掩码。
@@ -68,4 +70,23 @@ EventBits_t AppStatus_GetAll(void) // 读取全部系统状态位
     }
 
     return xEventGroupGetBits(gSystemEventGroup); // 返回全部状态位
+}
+
+/**
+ * @brief 设置当前校准灯语状态。
+ * @param state 校准灯语状态。
+ * @retval None
+ */
+void AppStatus_SetCalState(AppCalState_t state) // 设置校准灯语状态
+{
+    g_app_cal_state = state; // 保存当前校准状态
+}
+
+/**
+ * @brief 读取当前校准灯语状态。
+ * @retval 当前校准灯语状态。
+ */
+AppCalState_t AppStatus_GetCalState(void) // 读取校准灯语状态
+{
+    return g_app_cal_state; // 返回当前校准状态
 }

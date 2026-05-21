@@ -1,6 +1,7 @@
 #ifndef __BSP_LED_H__ // 防止头文件重复包含
 #define __BSP_LED_H__
 
+#include <stdint.h> // 提供固定宽度整数类型
 #include "stm32f4xx.h" // 提供 STM32F4 GPIO 定义
 
 #define LED_RED_Port GPIOA // 红灯 GPIO 端口
@@ -25,6 +26,14 @@ void BSP_LED_On(void); // 打开 LED
  * @retval None
  */
 void BSP_LED_Off(void); // 关闭 LED
+
+/**
+ * @brief 分别设置红灯和绿灯亮灭。
+ * @param red_on 红灯是否点亮。
+ * @param green_on 绿灯是否点亮。
+ * @retval None
+ */
+void BSP_LED_Set(uint8_t red_on, uint8_t green_on); // 分别设置红绿 LED
 
 /**
  * @brief 翻转 LED。

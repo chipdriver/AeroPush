@@ -204,15 +204,15 @@ I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
 I (User\Inc\app_tasks.h)(0x6A0D54FA)
 I (User\Inc\app_config.h)(0x6A0D54A1)
-I (User\Inc\app_status.h)(0x6A0D54FA)
+I (User\Inc\app_status.h)(0x6A0E7A03)
 I (User\Inc\debug_service.h)(0x6A0D5556)
 I (User\Inc\bsp_debug_uart.h)(0x6A0D551C)
 I (User\Inc\debug_log.h)(0x6A0D553D)
 I (User\Inc\imu_service.h)(0x6A0D551D)
 I (User\Inc\mpu9250_driver.h)(0x6A0D54A2)
 I (User\Inc\bsp_i2c_soft.h)(0x6A0D54F9)
-I (User\Inc\led_service.h)(0x6A0D5557)
-I (User\Inc\bsp_led.h)(0x6A0D551C)
+I (User\Inc\led_service.h)(0x6A0E7A24)
+I (User\Inc\bsp_led.h)(0x6A0E7A1F)
 I (User\Inc\modem_service.h)(0x6A0D553D)
 I (User\Inc\telemetry_service.h)(0x6A0D553E)
 F (.\User\Src\stm32f4xx_it.c)(0x6A0D5442)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./stm32f4xx_it.o -MMD)
@@ -262,7 +262,7 @@ I (FreeRTOS\Include\list.h)(0x69E9C61C)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
 I (User\Inc\delay.h)(0x6A0D553E)
-F (.\User\Src\app_tasks.c)(0x6A0E5931)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./app_tasks.o -MMD)
+F (.\User\Src\app_tasks.c)(0x6A0E7A88)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./app_tasks.o -MMD)
 I (User\Inc\app_tasks.h)(0x6A0D54FA)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
@@ -301,7 +301,7 @@ I (FreeRTOS\Include\mpu_wrappers.h)(0x69E9C61C)
 I (FreeRTOS\Include\task.h)(0x69E9C61C)
 I (FreeRTOS\Include\list.h)(0x69E9C61C)
 I (User\Inc\app_config.h)(0x6A0D54A1)
-I (User\Inc\app_status.h)(0x6A0D54FA)
+I (User\Inc\app_status.h)(0x6A0E7A03)
 I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
 I (FreeRTOS\Include\timers.h)(0x69E9C61C)
 I (User\Inc\freertos_objects.h)(0x6A0D551D)
@@ -314,8 +314,8 @@ I (User\Inc\debug_log.h)(0x6A0D553D)
 I (User\Inc\imu_service.h)(0x6A0D551D)
 I (User\Inc\mpu9250_driver.h)(0x6A0D54A2)
 I (User\Inc\bsp_i2c_soft.h)(0x6A0D54F9)
-I (User\Inc\led_service.h)(0x6A0D5557)
-I (User\Inc\bsp_led.h)(0x6A0D551C)
+I (User\Inc\led_service.h)(0x6A0E7A24)
+I (User\Inc\bsp_led.h)(0x6A0E7A1F)
 I (User\Inc\modem_service.h)(0x6A0D553D)
 I (User\Inc\telemetry_service.h)(0x6A0D553E)
 F (.\User\Src\imu_service.c)(0x6A0D53FA)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./imu_service.o -MMD)
@@ -414,13 +414,13 @@ I (FreeRTOS\Include\list.h)(0x69E9C61C)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
 I (User\Inc\app_config.h)(0x6A0D54A1)
-F (.\User\Src\telemetry_service.c)(0x6A0D53FA)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./telemetry_service.o -MMD)
+F (.\User\Src\telemetry_service.c)(0x6A0E69DC)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./telemetry_service.o -MMD)
 I (User\Inc\telemetry_service.h)(0x6A0D553E)
 I (User\Inc\app_types.h)(0x6A0D54A1)
 I (User\Inc\app_config.h)(0x6A0D54A1)
-F (.\User\Src\led_service.c)(0x6A0D5416)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./led_service.o -MMD)
-I (User\Inc\led_service.h)(0x6A0D5557)
-I (User\Inc\bsp_led.h)(0x6A0D551C)
+F (.\User\Src\led_service.c)(0x6A0E7A2A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./led_service.o -MMD)
+I (User\Inc\led_service.h)(0x6A0E7A24)
+I (User\Inc\bsp_led.h)(0x6A0E7A1F)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
 I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
@@ -567,8 +567,8 @@ I (FreeRTOS\Include\event_groups.h)(0x69E9C61C)
 I (FreeRTOS\Include\timers.h)(0x69E9C61C)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-F (.\User\Src\app_status.c)(0x6A0D5415)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./app_status.o -MMD)
-I (User\Inc\app_status.h)(0x6A0D54FA)
+F (.\User\Src\app_status.c)(0x6A0E7A0E)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./app_status.o -MMD)
+I (User\Inc\app_status.h)(0x6A0E7A03)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
@@ -611,8 +611,8 @@ I (User\Inc\freertos_objects.h)(0x6A0D551D)
 I (User\Inc\app_types.h)(0x6A0D54A1)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
-F (.\User\Src\bsp_led.c)(0x6A0D53AF)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./bsp_led.o -MMD)
-I (User\Inc\bsp_led.h)(0x6A0D551C)
+F (.\User\Src\bsp_led.c)(0x6A0E7A1A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./bsp_led.o -MMD)
+I (User\Inc\bsp_led.h)(0x6A0E7A1F)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
 I (Lib\Libraries\CMSIS\Include\core_cm4.h)(0x69D86606)
 I (Lib\Libraries\CMSIS\Include\core_cmInstr.h)(0x69D86606)
@@ -772,7 +772,7 @@ I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x69D86607)
 I (Lib\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash_ramfunc.h)(0x69D86607)
-F (.\User\Src\mpu9250_driver.c)(0x6A0D74AC)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./mpu9250_driver.o -MMD)
+F (.\User\Src\mpu9250_driver.c)(0x6A0E7A9D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./mpu9250_driver.o -MMD)
 I (User\Inc\mpu9250_driver.h)(0x6A0D54A2)
 I (User\Inc\bsp_i2c_soft.h)(0x6A0D54F9)
 I (Lib\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x69D865EB)
@@ -820,6 +820,7 @@ I (FreeRTOS\Include\list.h)(0x69E9C61C)
 I (FreeRTOS\Include\queue.h)(0x69E9C61C)
 I (FreeRTOS\Include\semphr.h)(0x69E9C61C)
 I (User\Inc\app_config.h)(0x6A0D54A1)
+I (User\Inc\app_status.h)(0x6A0E7A03)
 F (.\FreeRTOS\Source\event_groups.c)(0x69E9C61C)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc -I ./Lib/Libraries/CMSIS/Include -I ./Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I ./User/Inc -I ./FreeRTOS/Include -I ./FreeRTOS/Config -I ./FreeRTOS/Portable/GCC/ARM_CM4F-D__UVISION_VERSION="543" -DSTM32F411xE -DUSE_STDPERIPH_DRIVER -DSTM32F411xE-o ./event_groups.o -MMD)
 I (FreeRTOS\Include\FreeRTOS.h)(0x69E9C61C)
 I (FreeRTOS\Config\FreeRTOSConfig.h)(0x69FDBF62)

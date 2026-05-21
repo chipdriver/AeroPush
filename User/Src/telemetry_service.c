@@ -21,7 +21,9 @@ void Telemetry_BuildMqttMsg(const AttitudeData_t *att, const GnssData_t *gnss, M
 
     snprintf(msg->payload, // 写入 JSON 负载
              MQTT_PAYLOAD_MAX_LEN, // 限制负载最大长度
-             "{\"roll\":%.1f,\"pitch\":%.1f,\"yaw\":%.1f,\"lat\":%.6f,\"lon\":%.6f}", // 遥测 JSON 格式
+             "{\"att_valid\":%u,\"gnss_valid\":%u,\"roll\":%.1f,\"pitch\":%.1f,\"yaw\":%.1f,\"lat\":%.6f,\"lon\":%.6f}", // 遥测 JSON 格式
+             att->valid, // 写入姿态有效标志
+             gnss->fix_valid, // 写入 GNSS 有效标志
              att->roll_deg, // 写入横滚角
              att->pitch_deg, // 写入俯仰角
              att->yaw_deg, // 写入航向角

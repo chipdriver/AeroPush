@@ -248,6 +248,8 @@ static void TelemetryTask(void *argument) // 遥测组包任务
     GnssData_t gnss; // 最新 GNSS 数据
     MqttPublishMsg_t mqtt_msg; // 组装后的 MQTT 消息
     char log_buf[256]; // 遥测调试日志缓存
+    uint8_t att_valid; // 本轮姿态数据是否有效
+    uint8_t gnss_valid; // 本轮 GNSS 数据是否有效
 
     (void)argument; // 当前不使用任务参数
 
@@ -257,8 +259,35 @@ static void TelemetryTask(void *argument) // 遥测组包任务
 
     while (1) // 遥测任务常驻运行
     {
-        xQueuePeek(qAttitude, &attitude, 0); // 读取最新姿态但不移除队列内容
-        xQueuePeek(qGnss, &gnss, 0); // 读取最新 GNSS 但不移除队列内容
+        att_valid = 0U; // 默认本轮没有有效姿态
+        gnss_valid = 0U; // 默认本轮没有有效 GNSS
+
+        if ((AppStatus_IsSet(APP_STATUS_IMU_READY) != 0) &&
+            (xQueuePeek(qAttitude, &attitude, 0) == pdPASS) &&
+            (attitude.valid != 0U)) // IMU 就绪且队列中有有效姿态
+        {
+            att_valid = 1U; // 标记姿态数据可用于遥测
+        }
+        else // 姿态不可用
+        {
+            memset(&attitude, 0, sizeof(attitude)); // 清空姿态，避免沿用旧值
+        }
+
+        if ((xQueuePeek(qGnss, &gnss, 0) == pdPASS) &&
+            (gnss.fix_valid != 0U)) // 队列中有有效 GNSS
+        {
+            gnss_valid = 1U; // 标记 GNSS 数据可用于遥测
+        }
+        else // GNSS 不可用
+        {
+            memset(&gnss, 0, sizeof(gnss)); // 清空 GNSS，避免沿用旧值
+        }
+
+        if ((att_valid == 0U) && (gnss_valid == 0U)) // 两类遥测源都无效
+        {
+            vTaskDelay(pdMS_TO_TICKS(APP_TELEMETRY_TASK_PERIOD_MS)); // 等待下一轮遥测周期
+            continue; // 本轮不组装空遥测数据
+        }
 
         Telemetry_BuildMqttMsg(&attitude, &gnss, &mqtt_msg); // 按当前姿态和定位组装遥测消息
 
@@ -266,7 +295,9 @@ static void TelemetryTask(void *argument) // 遥测组包任务
 
         snprintf(log_buf, // 写入遥测调试字符串
                  sizeof(log_buf), // 限制日志缓冲区长度
-                 "[TelemetryTask] roll=%.1f pitch=%.1f yaw=%.1f lat=%.6f lon=%.6f\r\n", // 遥测日志格式
+                 "[TelemetryTask] att_valid=%u gnss_valid=%u roll=%.1f pitch=%.1f yaw=%.1f lat=%.6f lon=%.6f\r\n", // 遥测日志格式
+                 att_valid, // 输出姿态有效标志
+                 gnss_valid, // 输出 GNSS 有效标志
                  attitude.roll_deg, // 输出横滚角
                  attitude.pitch_deg, // 输出俯仰角
                  attitude.yaw_deg, // 输出航向角
@@ -281,25 +312,74 @@ static void TelemetryTask(void *argument) // 遥测组包任务
 }
 
 /**
- * @brief 根据系统状态周期翻转 LED 指示运行状态。
+ * @brief 根据校准和运行状态显示红绿 LED 灯语。
  * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
 static void LedTask(void *argument) // LED 状态指示任务
 {
+    AppCalState_t cal_state; // 当前校准灯语状态
+    AppCalState_t last_cal_state = APP_CAL_STATE_IDLE; // 上一轮校准灯语状态
+    uint8_t self_check_done = 0U; // 上电自检闪烁是否已执行
+
     (void)argument; // 当前不使用任务参数
 
     while (1) // LED 任务常驻运行
     {
-        LedService_Toggle(); // 翻转 LED 输出状态
-
-        if (AppStatus_IsSet(APP_STATUS_GNSS_FIX) && AppStatus_IsSet(APP_STATUS_MQTT_READY)) // 定位和 MQTT 都正常
+        cal_state = AppStatus_GetCalState(); // 读取当前校准状态
+        if (cal_state != last_cal_state) // 状态发生切换
         {
-            vTaskDelay(pdMS_TO_TICKS(APP_LED_TASK_PERIOD_MS)); // 使用正常状态闪烁周期
+            self_check_done = 0U; // 允许新状态重新执行一次性提示
+            last_cal_state = cal_state; // 记录最新状态
         }
-        else // 关键业务状态未满足
+
+        switch (cal_state) // 根据校准阶段选择灯语
         {
-            vTaskDelay(pdMS_TO_TICKS(100)); // 使用快速闪烁提示异常或未就绪
+            case APP_CAL_STATE_SELF_CHECK: // 上电自检
+                if (self_check_done == 0U) // 只执行一次自检闪烁
+                {
+                    LedService_Set(1U, 1U); // 红绿同时点亮
+                    vTaskDelay(pdMS_TO_TICKS(100)); // 保持短亮
+                    LedService_Set(0U, 0U); // 红绿同时熄灭
+                    self_check_done = 1U; // 标记自检闪烁已完成
+                }
+                vTaskDelay(pdMS_TO_TICKS(100)); // 自检状态保持短周期轮询
+                break;
+
+            case APP_CAL_STATE_STATIC: // 陀螺仪和加速度计静止校准
+                LedService_Set(0U, 1U); // 绿灯点亮
+                vTaskDelay(pdMS_TO_TICKS(500)); // 慢闪亮半周期
+                LedService_Set(0U, 0U); // 绿灯熄灭
+                vTaskDelay(pdMS_TO_TICKS(500)); // 慢闪灭半周期
+                break;
+
+            case APP_CAL_STATE_MAG_ROTATE: // 磁力计旋转校准
+                LedService_Set(0U, 1U); // 绿灯点亮
+                vTaskDelay(pdMS_TO_TICKS(150)); // 快闪亮半周期
+                LedService_Set(0U, 0U); // 绿灯熄灭
+                vTaskDelay(pdMS_TO_TICKS(150)); // 快闪灭半周期
+                break;
+
+            case APP_CAL_STATE_SUCCESS: // 标定成功
+                LedService_Set(0U, 1U); // 绿灯常亮
+                vTaskDelay(pdMS_TO_TICKS(3000)); // 成功提示保持 3 秒
+                AppStatus_SetCalState(APP_CAL_STATE_IDLE); // 成功提示结束后回到正常运行灯语
+                break;
+
+            case APP_CAL_STATE_FAIL: // 标定失败
+                LedService_Set(1U, 0U); // 红灯点亮
+                vTaskDelay(pdMS_TO_TICKS(150)); // 快闪亮半周期
+                LedService_Set(0U, 0U); // 红灯熄灭
+                vTaskDelay(pdMS_TO_TICKS(150)); // 快闪灭半周期
+                break;
+
+            case APP_CAL_STATE_IDLE: // 正常运行
+            default: // 未知状态按正常运行处理
+                LedService_Set(0U, 1U); // 绿灯短亮
+                vTaskDelay(pdMS_TO_TICKS(100)); // 正常运行闪烁亮宽
+                LedService_Set(0U, 0U); // 绿灯熄灭
+                vTaskDelay(pdMS_TO_TICKS(1900)); // 正常运行每 2 秒闪一下
+                break;
         }
     }
 }

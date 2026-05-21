@@ -43,6 +43,18 @@ void BSP_LED_Off(void) // 关闭 LED
 }
 
 /**
+ * @brief 分别设置红灯和绿灯亮灭。
+ * @param red_on 红灯是否点亮。
+ * @param green_on 绿灯是否点亮。
+ * @retval None
+ */
+void BSP_LED_Set(uint8_t red_on, uint8_t green_on) // 分别设置红绿 LED
+{
+    GPIO_WriteBit(LED_RED_Port, LED_RED_Pin, (red_on != 0U) ? Bit_SET : Bit_RESET); // 设置红灯状态
+    GPIO_WriteBit(LED_GREEN_Port, LED_GREEN_Pin, (green_on != 0U) ? Bit_SET : Bit_RESET); // 设置绿灯状态
+}
+
+/**
  * @brief 翻转红绿 LED。
  * @retval None
  */

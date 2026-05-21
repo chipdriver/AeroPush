@@ -4,6 +4,7 @@
  */
 #include "mpu9250_driver.h" // 提供 MPU9250/AK8963 驱动接口和数据结构
 #include "app_config.h" // 提供工程配置宏
+#include "app_status.h" // 提供校准灯语状态接口
 #include <math.h> // 提供 sqrtf、atan2f、sinf、cosf 等数学函数
 
 #define MPU9250_PWR_MGMT_1_REG 0x6BU // 电源管理 1：复位、睡眠、时钟源
@@ -1045,6 +1046,7 @@ void MPU9250_CalibrateGyro(uint16_t samples, uint16_t delay_ms)
 
     if (samples == 0U) // 检查采样次数
     {
+        AppStatus_SetCalState(APP_CAL_STATE_FAIL); // 采样参数异常，提示标定失败
         return; // 无采样请求，直接返回
     }
 
@@ -1078,6 +1080,7 @@ void MPU9250_CalibrateAccel(uint16_t samples, uint16_t delay_ms)
 
     if (samples == 0U) // 检查采样次数
     {
+        AppStatus_SetCalState(APP_CAL_STATE_FAIL); // 采样参数异常，提示标定失败
         return; // 无采样请求，直接返回
     }
 
@@ -1134,6 +1137,7 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms)
 
     if (samples == 0U) // 检查采样次数
     {
+        AppStatus_SetCalState(APP_CAL_STATE_FAIL); // 采样参数异常，提示标定失败
         return; // 无采样请求，直接返回
     }
 
@@ -1153,6 +1157,7 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms)
     vTaskDelay(pdMS_TO_TICKS(1000)); // 等待用户准备
     Debug_Print("[AK8963] start in 1...\r\n"); // 倒计时 1 秒
     vTaskDelay(pdMS_TO_TICKS(1000)); // 等待用户准备
+    AppStatus_SetCalState(APP_CAL_STATE_MAG_ROTATE); // 进入磁力计旋转校准灯语
     Debug_Print("[AK8963] mag calibration begin,  keep moving\r\n"); // 开始采集磁力计点云
 
     for (i = 0U; i < samples; i++) // 按指定次数采集磁力计样本
@@ -1234,6 +1239,7 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms)
     if (valid_count < AK8963_MAG_FIT_MIN_VALID_SAMPLES) // 有效样本太少无法稳定拟合
     {
         Debug_Printf("[AK8963] calibrate mag rejected valid=%u\r\n", valid_count); // 输出样本不足原因
+        AppStatus_SetCalState(APP_CAL_STATE_FAIL); // 提示磁力计标定失败
         return; // 放弃本次校准
     }
 
@@ -1264,6 +1270,7 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms)
                      radius_x,
                      radius_y,
                      radius_z); // 输出被拒绝的三轴半径
+        AppStatus_SetCalState(APP_CAL_STATE_FAIL); // 提示磁力计标定失败
         return; // 放弃本次校准
     }
 
@@ -1280,12 +1287,14 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms)
     if (ak8963_fit_ellipsoid(valid_count, fit_params, &fit_error) == 0U) // 执行椭球拟合
     {
         Debug_Print("[AK8963] calibrate mag rejected fit failed\r\n"); // 输出拟合失败原因
+        AppStatus_SetCalState(APP_CAL_STATE_FAIL); // 提示磁力计标定失败
         return; // 放弃本次校准
     }
 
     if (ak8963_build_softiron_matrix(fit_params, candidate_correction, &fitted_radius_ut) == 0U) // 生成软铁矩阵
     {
         Debug_Print("[AK8963] calibrate mag rejected invalid ellipsoid\r\n"); // 输出椭球参数无效原因
+        AppStatus_SetCalState(APP_CAL_STATE_FAIL); // 提示磁力计标定失败
         return; // 放弃本次校准
     }
 
@@ -1301,6 +1310,7 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms)
                      fit_params[2],
                      fitted_radius_ut,
                      radius_avg); // 输出不可信拟合结果
+        AppStatus_SetCalState(APP_CAL_STATE_FAIL); // 提示磁力计标定失败
         return; // 放弃本次校准
     }
 
@@ -1334,6 +1344,7 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms)
                  g_mag_correction[2][1],
                  g_mag_correction[2][2]); // 输出软铁矩阵第 2 行
     Debug_Print("[AK8963] mag calibration done\r\n"); // 输出磁力计校准完成日志
+    AppStatus_SetCalState(APP_CAL_STATE_SUCCESS); // 提示标定成功
 }
 
 /**
@@ -1349,6 +1360,8 @@ void AK8963_CalibrateMag(uint16_t samples, uint16_t delay_ms)
  */
 uint8_t MPU9250_Driver_Init(void)
 {
+    AppStatus_SetCalState(APP_CAL_STATE_SELF_CHECK); // 进入上电自检灯语
+
     /* 1. 初始化软件 I2C */
     BSP_I2C_Soft_Init(); // 初始化软件 I2C 总线
 
@@ -1356,6 +1369,7 @@ uint8_t MPU9250_Driver_Init(void)
     if (mpu9250_check_device() != 0) // 检查 MPU9250 设备 ID
     {
         Debug_Print("[MPU9250] driver init failed\r\n"); // 输出 MPU9250 检查失败日志
+        AppStatus_SetCalState(APP_CAL_STATE_FAIL); // 提示初始化失败
         return 0U; // MPU9250 检查失败
     }
 
@@ -1364,10 +1378,12 @@ uint8_t MPU9250_Driver_Init(void)
     /* 3. 初始化 AK8963 磁力计 */
     if (ak8963_init() == 0U) // 初始化磁力计并读取灵敏度参数
     {
+        AppStatus_SetCalState(APP_CAL_STATE_FAIL); // 提示磁力计初始化失败
         return 0U; // 磁力计初始化失败
     }
 
     /* 4. 启动阶段校准 */
+    AppStatus_SetCalState(APP_CAL_STATE_STATIC); // 进入陀螺仪和加速度计静止校准灯语
     MPU9250_CalibrateGyro(1000U, 10U); // 校准陀螺仪零偏
     MPU9250_CalibrateAccel(1000U, 10U); // 校准加速度计零偏
     AK8963_CalibrateMag(500U, 20U); // 校准磁力计硬铁和软铁误差
@@ -1831,4 +1847,3 @@ void MPU9250_GetEulerFusedDeg(float *roll_deg, float *pitch_deg, float *yaw_deg)
         *yaw_deg = mpu9250_math_yaw_to_heading_deg(g_euler_fused.yaw * rad2deg); // 输出 0-360 度航向角
     }
 }
-
