@@ -1,0 +1,25 @@
+
+{
+  "cmake.sourceDirectory": "${workspaceFolder}/project_cmake",
+  "cmake.buildDirectory": "${workspaceFolder}/project_cmake/build",
+  "cmake.generator": "Ninja",
+  "cmake.cmakePath": "D:\\STM32CubeIDE\\STM32CubeIDE_2.1.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltools.cmake.win32_1.1.101.202603101401\\tools\\bin\\cmake.exe",
+  "cmake.configureArgs": [
+    "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/project_cmake/cmake/gcc-arm-none-eabi.cmake",
+    "-DARM_NONE_EABI_BIN_DIR=D:/STM32CubeIDE/STM32CubeIDE_2.1.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740/tools/bin",
+    "-DCMAKE_MAKE_PROGRAM=D:/STM32CubeIDE/STM32CubeIDE_2.1.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.ninja.win32_1.1.100.202601091506/tools/bin/ninja.exe",
+    "-DSTM32_PROGRAMMER_CLI=D:/STM32CubeIDE/STM32CubeIDE_2.1.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_2.2.400.202601091506/tools/bin/STM32_Programmer_CLI.exe"
+  ],
+  "cmake.preferredGenerators": [
+    "Ninja"
+  ],
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "stm32.cmakePath": "D:\\STM32CubeIDE\\STM32CubeIDE_2.1.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltools.cmake.win32_1.1.101.202603101401\\tools\\bin\\cmake.exe",
+  "stm32.ninjaPath": "D:\\STM32CubeIDE\\STM32CubeIDE_2.1.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltools.ninja.win32_1.1.100.202601091506\\tools\\bin\\ninja.exe",
+  "stm32.gccBinPath": "D:\\STM32CubeIDE\\STM32CubeIDE_2.1.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.14.3.rel1.win32_1.0.100.202602081740\\tools\\bin",
+  "stm32.programmerPath": "D:\\STM32CubeIDE\\STM32CubeIDE_2.1.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_2.2.400.202601091506\\tools\\bin\\STM32_Programmer_CLI.exe",
+  "files.associations": {
+    "stm32f4xx.h": "c",
+    "FreeRTOS.h": "c"
+  }
+}

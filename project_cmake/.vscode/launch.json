@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "AeroPush ST-LINK Debug",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/AeroPush.elf",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "stlink",
+      "device": "STM32F411CEUx",
+      "interface": "swd",
+      "runToEntryPoint": "main",
+      "gdbPath": "${config:stm32.gdbPath}",
+      "serverpath": "${config:stm32.stlinkGdbServerPath}",
+      "stm32cubeprogrammer": "${config:stm32.programmerBinPath}",
+      "serverArgs": [
+        "-k",
+        "-v"
+      ],
+      "showDevDebugOutput": "raw",
+      "showDevDebugTimestamps": true,
+      "preLaunchTask": "编译"
+    }
+  ]
+}

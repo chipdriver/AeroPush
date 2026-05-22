@@ -64,32 +64,6 @@ static float g_mag_fit_delta[AK8963_MAG_FIT_PARAM_COUNT]; // 椭球拟合参数�
 static float g_mag_fit_candidate[AK8963_MAG_FIT_PARAM_COUNT]; // 椭球拟合候选参数
 
 /**
- * @brief 从 MPU9250 连续两个寄存器读取一个有符号 16 位值。
- * @param reg 高字节寄存器地址。
- * @retval 合成后的 16 位原始值。
- */
-static int16_t mpu9250_read_word(uint8_t reg)
-{
-    uint8_t high_byte = I2C_ReadReg(MPU9250_I2C_ADDR7, reg); // 读取高字节
-    uint8_t low_byte = I2C_ReadReg(MPU9250_I2C_ADDR7, (uint8_t)(reg + 1U)); // 读取低字节
-
-    return (int16_t)(((uint16_t)high_byte << 8U) | (uint16_t)low_byte); // 合成大端格式原始值
-}
-
-/**
- * @brief 从 AK8963 连续两个寄存器读取一个有符号 16 位值。
- * @param low_reg 低字节寄存器地址。
- * @retval 合成后的 16 位原始值。
- */
-static int16_t ak8963_read_word(uint8_t low_reg)
-{
-    uint8_t low_byte = I2C_ReadReg(AK8963_I2C_ADDR7, low_reg); // 读取低字节
-    uint8_t high_byte = I2C_ReadReg(AK8963_I2C_ADDR7, (uint8_t)(low_reg + 1U)); // 读取高字节
-
-    return (int16_t)(((uint16_t)high_byte << 8U) | (uint16_t)low_byte); // 合成小端格式原始值
-}
-
-/**
  * @brief 将 AK8963 原始磁力计值转换为微特斯拉。
  * @param raw AK8963 三轴原始值。
  * @param mag_out 输出的磁场物理量。
@@ -837,18 +811,32 @@ void mpu_set_accel_range(void)
  */
 void MPU9250_ReadAxis(MPU9250_raw_Data *raw)
 {
+    uint8_t frame[14]; // ACCEL_XOUT_H 到 GYRO_ZOUT_L 的连续读取缓存
+
     if (raw == 0) // 检查输出结构体指针
     {
         return; // 参数无效，直接返回
     }
 
-    raw->accel_x = mpu9250_read_word(MPU9250_ACCEL_XOUT_H_REG); // 读取加速度计 X 轴原始值
-    raw->accel_y = mpu9250_read_word(MPU9250_ACCEL_YOUT_H_REG); // 读取加速度计 Y 轴原始值
-    raw->accel_z = mpu9250_read_word(MPU9250_ACCEL_ZOUT_H_REG); // 读取加速度计 Z 轴原始值
-    raw->gyro_x = mpu9250_read_word(MPU9250_GYRO_XOUT_H_REG); // 读取陀螺仪 X 轴原始值
-    raw->gyro_y = mpu9250_read_word(MPU9250_GYRO_YOUT_H_REG); // 读取陀螺仪 Y 轴原始值
-    raw->gyro_z = mpu9250_read_word(MPU9250_GYRO_ZOUT_H_REG); // 读取陀螺仪 Z 轴原始值
-    raw->temp = mpu9250_read_word(MPU9250_TEMP_OUT_H_REG); // 读取温度原始值
+    if (I2C_ReadRegs(MPU9250_I2C_ADDR7, MPU9250_ACCEL_XOUT_H_REG, frame, (uint16_t)sizeof(frame)) != 0) // 一次读取六轴和温度
+    {
+        raw->accel_x = 0; // 读取失败时清空本帧，避免沿用脏数据
+        raw->accel_y = 0;
+        raw->accel_z = 0;
+        raw->gyro_x = 0;
+        raw->gyro_y = 0;
+        raw->gyro_z = 0;
+        raw->temp = 0;
+        return;
+    }
+
+    raw->accel_x = (int16_t)(((uint16_t)frame[0] << 8U) | (uint16_t)frame[1]); // 解析加速度计 X 轴
+    raw->accel_y = (int16_t)(((uint16_t)frame[2] << 8U) | (uint16_t)frame[3]); // 解析加速度计 Y 轴
+    raw->accel_z = (int16_t)(((uint16_t)frame[4] << 8U) | (uint16_t)frame[5]); // 解析加速度计 Z 轴
+    raw->temp = (int16_t)(((uint16_t)frame[6] << 8U) | (uint16_t)frame[7]); // 解析温度原始值
+    raw->gyro_x = (int16_t)(((uint16_t)frame[8] << 8U) | (uint16_t)frame[9]); // 解析陀螺仪 X 轴
+    raw->gyro_y = (int16_t)(((uint16_t)frame[10] << 8U) | (uint16_t)frame[11]); // 解析陀螺仪 Y 轴
+    raw->gyro_z = (int16_t)(((uint16_t)frame[12] << 8U) | (uint16_t)frame[13]); // 解析陀螺仪 Z 轴
 }
 
 /**

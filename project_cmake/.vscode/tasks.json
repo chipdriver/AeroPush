@@ -1,0 +1,65 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CMake 配置",
+      "type": "shell",
+      "command": "${config:stm32.cmakePath}",
+      "args": [
+        "-S",
+        "${workspaceFolder}",
+        "-B",
+        "${workspaceFolder}\\build",
+        "-G",
+        "Ninja",
+        "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}\\cmake\\gcc-arm-none-eabi.cmake",
+        "-DARM_NONE_EABI_BIN_DIR=${config:stm32.gccBinPath}",
+        "-DCMAKE_MAKE_PROGRAM=${config:stm32.ninjaPath}"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "编译",
+      "type": "shell",
+      "command": "${config:stm32.cmakePath}",
+      "args": [
+        "--build",
+        "${workspaceFolder}\\build",
+        "--target",
+        "all"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": "CMake 配置",
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "清理",
+      "type": "shell",
+      "command": "${config:stm32.cmakePath}",
+      "args": [
+        "--build",
+        "${workspaceFolder}\\build",
+        "--target",
+        "clean"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "烧录",
+      "type": "shell",
+      "command": "${config:stm32.cmakePath}",
+      "args": [
+        "--build",
+        "${workspaceFolder}\\build",
+        "--target",
+        "flash"
+      ],
+      "dependsOn": "编译",
+      "problemMatcher": []
+    }
+  ]
+}

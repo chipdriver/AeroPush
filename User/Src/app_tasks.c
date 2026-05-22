@@ -147,6 +147,8 @@ static void ImuTask(void *argument) // IMU 采样、融合和姿态队列更新�
     MPU9250_Physical_Data phys = {0}; // MPU9250 加速度计、陀螺仪物理量
     AK8963_Physical_Data mag_physical = {0}; // AK8963 磁场物理量，9 轴融合时使用
     uint8_t imu_read_ok = 0; // 本轮读取结果：失败、6 轴有效或 9 轴有效
+    uint8_t imu_started = 0U; // 标记 IMU 周期任务是否已经正式开始
+    BaseType_t period_blocked = pdFALSE; // 记录周期延时是否真正阻塞
     const float imu_dt = (float)APP_IMU_TASK_PERIOD_MS * 0.001f; // Mahony 融合步长，单位秒
     float roll_deg = 0.0f; // 融合输出横滚角
     float pitch_deg = 0.0f; // 融合输出俯仰角
@@ -161,15 +163,27 @@ static void ImuTask(void *argument) // IMU 采样、融合和姿态队列更新�
         /* 1. 等待初始化阶段确认 IMU 可用 */
         if (AppStatus_IsSet(APP_STATUS_IMU_READY) == 0) // IMU 尚未就绪
         {
+            imu_started = 0U; // IMU 未正式开始周期运行
             vTaskDelay(pdMS_TO_TICKS(100)); // 降低异常状态下的轮询频率
             continue; // 等待下一轮检查
+        }
+
+        if (imu_started == 0U) // 第一次检测到 IMU ready
+        {
+            lastWakeTime = xTaskGetTickCount(); // 重置周期基准为当前时间
+            imu_started = 1U; // 标记 IMU 已经正式开始
         }
 
         /* 2. 读取本轮传感器物理量，失败时不刷新姿态队列 */
         imu_read_ok = ImuService_ReadPhys(&phys, &mag_physical); // 读取六轴和可选磁力计数据
         if (imu_read_ok == IMU_SERVICE_READ_FAIL) // 本轮 IMU 读取失败
         {
-            vTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 保持 IMU 任务周期
+            period_blocked = xTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 保持 IMU 任务周期
+            if (period_blocked == pdFALSE) // 本轮已经超过配置周期
+            {
+                lastWakeTime = xTaskGetTickCount(); // 重新对齐下一轮周期基准
+                vTaskDelay(pdMS_TO_TICKS(1)); // 主动让低优先级任务获得运行机会
+            }
             continue; // 跳过本轮姿态更新
         }
 
@@ -194,7 +208,12 @@ static void ImuTask(void *argument) // IMU 采样、融合和姿态队列更新�
         xQueueOverwrite(qAttitude, &attitude); // 覆盖姿态队列中的旧数据
 
         /* 5. 使用固定唤醒点维持配置的 IMU 周期 */
-        vTaskDelayUntil(&lastWakeTime,pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 周期由 APP_IMU_TASK_PERIOD_MS 统一配置
+        period_blocked = xTaskDelayUntil(&lastWakeTime, pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 周期由 APP_IMU_TASK_PERIOD_MS 统一配置
+        if (period_blocked == pdFALSE) // 软件 I2C 读数耗时超过 20 ms
+        {
+            lastWakeTime = xTaskGetTickCount(); // 避免后续一直追赶旧唤醒点
+            vTaskDelay(pdMS_TO_TICKS(1)); // 防止高优先级 IMU 任务饿死串口和 LED 任务
+        }
     }
 }
 

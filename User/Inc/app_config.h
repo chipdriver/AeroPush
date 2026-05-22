@@ -1,7 +1,7 @@
 #ifndef __APP_CONFIG_H__ // 防止头文件重复包含
 #define __APP_CONFIG_H__
 
-#define APP_TASK_INIT_STACK_SIZE 768 // 初始化任务栈大小
+#define APP_TASK_INIT_STACK_SIZE 1024 // 初始化任务栈大小
 #define APP_TASK_IMU_STACK_SIZE 256 // IMU 任务栈大小
 #define APP_TASK_MODEM_STACK_SIZE 768 // 通信任务栈大小
 #define APP_TASK_TELEMETRY_STACK_SIZE 768 // 遥测任务栈大小
@@ -15,7 +15,7 @@
 
 #define APP_IMU_TASK_PERIOD_MS 20 // IMU 任务周期，单位 ms
 #define APP_MODEM_TASK_PERIOD_MS 20 // 通信任务周期，单位 ms
-#define APP_TELEMETRY_TASK_PERIOD_MS 1000 // 遥测任务周期，单位 ms
+#define APP_TELEMETRY_TASK_PERIOD_MS 500 // 遥测任务周期，单位 ms
 #define APP_LED_TASK_PERIOD_MS 500 // LED 正常闪烁周期，单位 ms
 
 #define APP_MQTT_TOPIC "aeropush/telemetry" // 遥测 MQTT 主题
@@ -31,6 +31,6 @@
 #define APP_SIM_ATTITUDE_MAX_DEG 360.0f // 模拟姿态角回绕上限，单位度
 
 #define APP_MAG_POINT_CLOUD_DEBUG_ENABLE 1U // 磁力计校准点云调试输出开关
-#define APP_MAG_POINT_CLOUD_PRINT_DIV 1U // 磁力计点云打印分频
+#define APP_MAG_POINT_CLOUD_PRINT_DIV 10U // 磁力计点云打印分频
 
 #endif // __APP_CONFIG_H__

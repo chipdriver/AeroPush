@@ -15,7 +15,7 @@
 static void I2C_Delay(void) // 软件 I2C 时序延时
 {
     volatile uint32_t i; // 延时循环计数
-
+ 
     for (i = 0U; i < I2C_SOFT_DELAY_COUNT; i++) // 按配置次数空转
     {
         __NOP(); // 保持一个 CPU 空操作周期
