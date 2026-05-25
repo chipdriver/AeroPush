@@ -523,6 +523,11 @@
               <FilePath>.\User\Src\bsp_debug_uart.c</FilePath>
             </File>
             <File>
+              <FileName>bsp_a7670e_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Src\bsp_a7670e_uart.c</FilePath>
+            </File>
+            <File>
               <FileName>debug_log.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\User\Src\debug_log.c</FilePath>

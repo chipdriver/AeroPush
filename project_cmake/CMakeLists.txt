@@ -39,6 +39,7 @@ add_executable(${PROJECT_NAME}
   ${PROJECT_ROOT}/User/Src/app_status.c
   ${PROJECT_ROOT}/User/Src/bsp_led.c
   ${PROJECT_ROOT}/User/Src/bsp_debug_uart.c
+  ${PROJECT_ROOT}/User/Src/bsp_a7670e_uart.c
   ${PROJECT_ROOT}/User/Src/debug_log.c
   ${PROJECT_ROOT}/User/Src/delay.c
   ${PROJECT_ROOT}/User/Src/bsp_i2c_soft.c

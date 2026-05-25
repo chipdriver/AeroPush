@@ -10,7 +10,7 @@ static TaskHandle_t TelemetryTaskHandle = NULL; // 遥测任务句柄
 static TaskHandle_t LedTaskHandle = NULL; // LED 任务句柄
 
 /**
- * @brief 完成 LED、调试串口、IMU 等系统初始化。
+ * @brief 完成 LED、调试串口、A7670E 串口、IMU 等系统初始化。
  * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
@@ -94,7 +94,7 @@ void APP_TasksCreate(void) // 创建应用层任务
  * @brief 一次性完成系统启动初始化。
  *
  * 主要做四件事：
- * 1. 初始化 LED 和调试服务；
+ * 1. 初始化 LED、调试服务和 A7670E 串口；
  * 2. 初始化 IMU，并根据结果更新系统状态；
  * 3. 预置 GNSS、MQTT、网络状态；
  * 4. 删除自身，释放初始化任务资源。
@@ -113,6 +113,7 @@ static void InitTask(void *argument)
     /* 1. 基础服务初始化 */
     LedService_Init(); // 初始化 LED 指示灯服务
     DebugService_Init(); // 初始化调试串口服务
+    BSP_A7670E_Uart_Init(); // 初始化 A7670E 使用的 USART1 PA9/PA10
 
 #if APP_ENABLE_IMU
     /* 2. IMU 初始化和姿态融合初始化 */
