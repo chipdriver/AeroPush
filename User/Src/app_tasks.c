@@ -2,7 +2,9 @@
 
 /* 任务句柄只在本文件内使用，便于后续调试或扩展任务控制。 */
 static TaskHandle_t InitTaskHandle = NULL; // 初始化任务句柄
+#if APP_ENABLE_IMU
 static TaskHandle_t IMUTaskHandle = NULL; // IMU 任务句柄
+#endif
 static TaskHandle_t ModemTaskHandle = NULL; // 通信任务句柄
 static TaskHandle_t TelemetryTaskHandle = NULL; // 遥测任务句柄
 static TaskHandle_t LedTaskHandle = NULL; // LED 任务句柄
@@ -19,7 +21,9 @@ static void InitTask(void *argument); // 初始化任务入口
  * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
+#if APP_ENABLE_IMU
 static void ImuTask(void *argument); // IMU 采集和姿态融合任务入口
+#endif
 
 /**
  * @brief 周期构造 GNSS 数据并处理 MQTT 发布队列。
@@ -55,12 +59,14 @@ void APP_TasksCreate(void) // 创建应用层任务
                 APP_TASK_INIT_PRIORITY, // 初始化任务优先级
                 &InitTaskHandle); // 保存初始化任务句柄
 
+#if APP_ENABLE_IMU
     xTaskCreate(ImuTask, // 创建 IMU 任务
                 "ImuTask", // 任务名称用于调试识别
                 APP_TASK_IMU_STACK_SIZE, // IMU 任务栈大小
                 NULL, // IMU 任务不需要入口参数
                 APP_TASK_IMU_PRIORITY, // IMU 任务优先级
                 &IMUTaskHandle); // 保存 IMU 任务句柄
+#endif
 
     xTaskCreate(ModemTask, // 创建通信任务
                 "ModemTask", // 任务名称用于调试识别
@@ -98,7 +104,9 @@ void APP_TasksCreate(void) // 创建应用层任务
  */
 static void InitTask(void *argument)
 {
+#if APP_ENABLE_IMU
     uint8_t imu_ret; // IMU 初始化结果
+#endif
 
     (void)argument; // 当前不使用任务参数
 
@@ -106,6 +114,7 @@ static void InitTask(void *argument)
     LedService_Init(); // 初始化 LED 指示灯服务
     DebugService_Init(); // 初始化调试串口服务
 
+#if APP_ENABLE_IMU
     /* 2. IMU 初始化和姿态融合初始化 */
     imu_ret = ImuService_Init(); // 初始化 IMU 驱动和校准流程
     if (imu_ret == 1) // IMU 初始化成功
@@ -117,6 +126,10 @@ static void InitTask(void *argument)
     {
         AppStatus_Set(APP_STATUS_IMU_ERROR); // 标记 IMU 异常
     }
+#else
+    /* 2. IMU 已通过 APP_ENABLE_IMU 关闭 */
+    AppStatus_Clear(APP_STATUS_IMU_READY); // 保持 IMU 未就绪，遥测只使用 GNSS 数据
+#endif
 
     /* 3. 当前阶段先置位其他业务状态 */
     AppStatus_Set(APP_STATUS_GNSS_READY); // 当前阶段默认 GNSS 服务可用
@@ -140,6 +153,7 @@ static void InitTask(void *argument)
  * @param argument FreeRTOS 任务入口参数，当前未使用。
  * @retval None
  */
+#if APP_ENABLE_IMU
 static void ImuTask(void *argument) // IMU 采样、融合和姿态队列更新任务
 {
     TickType_t lastWakeTime; // vTaskDelayUntil 使用的周期基准 tick
@@ -216,6 +230,7 @@ static void ImuTask(void *argument) // IMU 采样、融合和姿态队列更新�
         }
     }
 }
+#endif
 
 /**
  * @brief 周期构造 GNSS 数据并处理 MQTT 发布队列。
@@ -281,6 +296,7 @@ static void TelemetryTask(void *argument) // 遥测组包任务
         att_valid = 0U; // 默认本轮没有有效姿态
         gnss_valid = 0U; // 默认本轮没有有效 GNSS
 
+#if APP_ENABLE_IMU
         if ((AppStatus_IsSet(APP_STATUS_IMU_READY) != 0) &&
             (xQueuePeek(qAttitude, &attitude, 0) == pdPASS) &&
             (attitude.valid != 0U)) // IMU 就绪且队列中有有效姿态
@@ -291,6 +307,9 @@ static void TelemetryTask(void *argument) // 遥测组包任务
         {
             memset(&attitude, 0, sizeof(attitude)); // 清空姿态，避免沿用旧值
         }
+#else
+        memset(&attitude, 0, sizeof(attitude)); // IMU 关闭时只保留 GNSS 遥测
+#endif
 
         if ((xQueuePeek(qGnss, &gnss, 0) == pdPASS) &&
             (gnss.fix_valid != 0U)) // 队列中有有效 GNSS

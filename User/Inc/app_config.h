@@ -1,6 +1,8 @@
 #ifndef __APP_CONFIG_H__ // 防止头文件重复包含
 #define __APP_CONFIG_H__
 
+#define APP_ENABLE_IMU 0U // 0 关闭 IMU，1 启用 IMU
+
 #define APP_TASK_INIT_STACK_SIZE 1024 // 初始化任务栈大小
 #define APP_TASK_IMU_STACK_SIZE 256 // IMU 任务栈大小
 #define APP_TASK_MODEM_STACK_SIZE 768 // 通信任务栈大小
