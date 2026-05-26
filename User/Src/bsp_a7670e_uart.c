@@ -1,4 +1,5 @@
 #include "bsp_a7670e_uart.h" // 提供 A7670E 串口 GPIO/USART 配置接口
+#include <stddef.h> // 提供 NULL 定义
 
 /**
  * @brief 初始化 A7670E 使用的 USART1 引脚和串口外设。
@@ -31,4 +32,58 @@ void BSP_A7670E_Uart_Init(void) // 初始化 USART1，PA9 发送、PA10 接收
     USART_Init(USART1, &USART_InitStructure); // 应用 USART1 配置
 
     USART_Cmd(USART1, ENABLE); // 使能 USART1
+}
+
+/**
+ * @brief 通过 USART1 向 A7670E 发送 1 个字节。
+ * @param data 待发送字节。
+ * @retval None
+ */
+void BSP_A7670E_Uart_SendByte(uint8_t data) // 发送一个 A7670E 串口字节
+{
+    while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET) // 等待发送数据寄存器为空
+    {
+    } // 串口硬件尚未准备好时保持等待
+
+    USART_SendData(USART1, data); // 写入待发送字节到 USART1
+}
+
+/**
+ * @brief 非阻塞接收 A7670E 通过 USART1 返回的 1 个字节。
+ * @param data 接收字节输出指针。
+ * @retval 1U 表示收到字节，0U 表示无数据或参数无效。
+ */
+uint8_t BSP_A7670E_Uart_ReceiveByte(uint8_t *data) // 非阻塞读取一个 A7670E 串口字节
+{
+    if (data == NULL) // 检查输出指针是否有效
+    {
+        return 0U; // 空指针不接收数据
+    }
+
+    if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == SET) // 检查接收数据寄存器是否非空
+    {
+        *data = (uint8_t)USART_ReceiveData(USART1); // 读取并保存收到的字节
+        return 1U; // 通知调用方本轮收到数据
+    }
+
+    return 0U; // 当前没有收到新数据
+}
+
+/**
+ * @brief 通过 USART1 向 A7670E 发送字符串。
+ * @param str 以 '\0' 结尾的字符串。
+ * @retval None
+ */
+void BSP_A7670E_Uart_SendString(const char *str) // 发送 A7670E 串口字符串
+{
+    if (str == NULL) // 检查字符串指针是否有效
+    {
+        return; // 空指针不发送
+    }
+
+    while (*str != '\0') // 遍历字符串直到结束符
+    {
+        BSP_A7670E_Uart_SendByte((uint8_t)(*str)); // 逐字节发送当前字符
+        str++; // 移动到下一个字符
+    }
 }

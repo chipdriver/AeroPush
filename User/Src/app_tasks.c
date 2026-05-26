@@ -242,14 +242,40 @@ static void ModemTask(void *argument) // 通信任务，当前使用模拟 GNSS 
 {
     GnssData_t gnss; // GNSS 定位数据
     MqttPublishMsg_t mqtt_msg; // 待发布 MQTT 消息
+    TickType_t last_at_tick; // 上一次发送 AT 测试命令的 tick
+    TickType_t now_tick; // 当前任务循环的 tick
+    TickType_t at_rx_start_tick; // AT 测试快速接收窗口起点 tick
+    uint8_t ch; // A7670E 返回的单个字符
 
     (void)argument; // 当前不使用任务参数
 
     memset(&gnss, 0, sizeof(gnss)); // 清空 GNSS 数据缓存
     memset(&mqtt_msg, 0, sizeof(mqtt_msg)); // 清空 MQTT 消息缓存
+    last_at_tick = xTaskGetTickCount(); // 初始化 AT 测试命令发送节拍
 
     while (1) // 通信任务常驻运行
     {
+        now_tick = xTaskGetTickCount(); // 读取当前 FreeRTOS tick
+        if ((now_tick - last_at_tick) >= pdMS_TO_TICKS(3000)) // 每 3000 ms 发送一次 AT 测试命令
+        {
+            Debug_Print("[A7670E] TX: AT\\r\\n\r\n"); // 通过 USART6 提示本轮已发送 AT
+            BSP_A7670E_Uart_SendString("AT\r\n"); // 通过 USART1 发送 AT 指令到 A7670E
+            last_at_tick = now_tick; // 更新最近一次 AT 发送时间
+            at_rx_start_tick = xTaskGetTickCount(); // 记录 AT 发送后的快速接收窗口起点
+            while ((xTaskGetTickCount() - at_rx_start_tick) < pdMS_TO_TICKS(300)) // 在 300 ms 窗口内快速读取返回
+            {
+                while (BSP_A7670E_Uart_ReceiveByte(&ch) == 1U) // 读取当前已到达的 A7670E 返回字节
+                {
+                    BSP_DebugUart_SendChar((char)ch); // 将 A7670E 返回字符转发到 USART6 调试串口
+                }
+            }
+        }
+
+        while (BSP_A7670E_Uart_ReceiveByte(&ch) == 1U) // 非阻塞读取当前已到达的 A7670E 返回字节
+        {
+            BSP_DebugUart_SendChar((char)ch); // 将 A7670E 返回字符转发到 USART6 调试串口
+        }
+
         ModemService_BuildSimGnss(&gnss); // 当前阶段生成模拟 GNSS 数据
 
         if (gnss.fix_valid) // GNSS 当前有有效定位
@@ -343,7 +369,7 @@ static void TelemetryTask(void *argument) // 遥测组包任务
                  gnss.latitude, // 输出纬度
                  gnss.longitude); // 输出经度
 
-        Debug_Print(log_buf); // 需要观察遥测状态时打开
+        // Debug_Print(log_buf); // 需要观察遥测状态时打开
         (void)log_buf; // 当前默认不输出遥测日志
 
         vTaskDelay(pdMS_TO_TICKS(APP_TELEMETRY_TASK_PERIOD_MS)); // 按遥测任务周期休眠
