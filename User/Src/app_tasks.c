@@ -95,9 +95,10 @@ void APP_TasksCreate(void) // 创建应用层任务
  *
  * 主要做四件事：
  * 1. 初始化 LED、调试服务和 A7670E 串口；
- * 2. 初始化 IMU，并根据结果更新系统状态；
- * 3. 预置 GNSS、MQTT、网络状态；
- * 4. 删除自身，释放初始化任务资源。
+ * 2. 打开 A7670E GNSS 电源；
+ * 3. 初始化 IMU，并根据结果更新系统状态；
+ * 4. 预置 MQTT、网络状态；
+ * 5. 删除自身，释放初始化任务资源。
  *
  * @param argument FreeRTOS 任务入口参数，当前未使用。
  * @retval None
@@ -114,6 +115,17 @@ static void InitTask(void *argument)
     LedService_Init(); // 初始化 LED 指示灯服务
     DebugService_Init(); // 初始化调试串口服务
     BSP_A7670E_Uart_Init(); // 初始化 A7670E 使用的 USART1 PA9/PA10
+
+    if (ModemService_GnssInit() == 1U) // 尝试打开 A7670E GNSS 电源
+    {
+        AppStatus_Set(APP_STATUS_GNSS_READY); // 标记 GNSS 电源已打开
+        Debug_Print("[GNSS] power on ok\r\n"); // 输出 GNSS 上电成功
+    }
+    else // GNSS 上电命令未返回成功
+    {
+        AppStatus_Clear(APP_STATUS_GNSS_READY); // 保持 GNSS 未就绪
+        Debug_Print("[GNSS] power on failed\r\n"); // 输出 GNSS 上电失败
+    }
 
 #if APP_ENABLE_IMU
     /* 2. IMU 初始化和姿态融合初始化 */
@@ -132,8 +144,7 @@ static void InitTask(void *argument)
     AppStatus_Clear(APP_STATUS_IMU_READY); // 保持 IMU 未就绪，遥测只使用 GNSS 数据
 #endif
 
-    /* 3. 当前阶段先置位其他业务状态 */
-    AppStatus_Set(APP_STATUS_GNSS_READY); // 当前阶段默认 GNSS 服务可用
+    /* 3. 当前阶段先置位 MQTT 和网络占位状态 */
     AppStatus_Set(APP_STATUS_MQTT_READY); // 当前阶段默认 MQTT 服务可用
     AppStatus_Set(APP_STATUS_NET_READY); // 当前阶段默认网络服务可用
 
@@ -234,51 +245,46 @@ static void ImuTask(void *argument) // IMU 采样、融合和姿态队列更新�
 #endif
 
 /**
- * @brief 周期构造 GNSS 数据并处理 MQTT 发布队列。
+ * @brief 周期查询真实 GNSS 数据并处理遥测发布队列。
  * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
-static void ModemTask(void *argument) // 通信任务，当前使用模拟 GNSS 和占位发布接口
+static void ModemTask(void *argument) // 通信任务，查询真实 GNSS 并输出遥测 JSON
 {
     GnssData_t gnss; // GNSS 定位数据
     MqttPublishMsg_t mqtt_msg; // 待发布 MQTT 消息
-    TickType_t last_at_tick; // 上一次发送 AT 测试命令的 tick
     TickType_t now_tick; // 当前任务循环的 tick
-    uint8_t ch; // A7670E 返回的单个字符
+    TickType_t last_gnss_tick = 0U; // 上一次查询 GNSS 的 tick
 
     (void)argument; // 当前不使用任务参数
 
     memset(&gnss, 0, sizeof(gnss)); // 清空 GNSS 数据缓存
     memset(&mqtt_msg, 0, sizeof(mqtt_msg)); // 清空 MQTT 消息缓存
-    last_at_tick = xTaskGetTickCount(); // 初始化 AT 测试命令发送节拍
 
     while (1) // 通信任务常驻运行
     {
         now_tick = xTaskGetTickCount(); // 读取当前 FreeRTOS tick
-        if ((now_tick - last_at_tick) >= pdMS_TO_TICKS(3000)) // 每 3000 ms 发送一次 AT 测试命令
+        if ((now_tick - last_gnss_tick) >= pdMS_TO_TICKS(APP_GNSS_QUERY_PERIOD_MS)) // 按配置周期查询 GNSS
         {
-            Debug_Print("[A7670E] TX: AT\\r\\n\r\n"); // 通过 USART6 提示本轮已发送 AT
-            BSP_A7670E_Uart_SendString("AT\r\n"); // 通过 USART1 发送 AT 指令到 A7670E
-            last_at_tick = now_tick; // 更新最近一次 AT 发送时间
-        }
+            last_gnss_tick = now_tick; // 更新最近一次 GNSS 查询时间
 
-        while (BSP_A7670E_Uart_ReceiveByte(&ch) == 1U) // 从环形缓冲区读取已到达的 A7670E 返回字节
-        {
-            BSP_DebugUart_SendChar((char)ch); // 将 A7670E 返回字符转发到 USART6 调试串口
-        }
+            if (ModemService_ReadGnss(&gnss) == 1U) // 查询并解析真实经纬度
+            {
+                AppStatus_Set(APP_STATUS_GNSS_FIX); // 置位定位有效状态
 
-        ModemService_BuildSimGnss(&gnss); // 当前阶段生成模拟 GNSS 数据
+                xQueueOverwrite(qGnss, &gnss); // 覆盖 GNSS 队列中的旧数据
 
-        if (gnss.fix_valid) // GNSS 当前有有效定位
-        {
-            AppStatus_Set(APP_STATUS_GNSS_FIX); // 置位定位有效状态
-        }
-        else // GNSS 当前无有效定位
-        {
-            AppStatus_Clear(APP_STATUS_GNSS_FIX); // 清除定位有效状态
-        }
+                Debug_Printf("[GNSS] fix lat=%.6f lon=%.6f\r\n", // 输出本轮真实定位
+                             gnss.latitude, // 输出纬度
+                             gnss.longitude); // 输出经度
+            }
+            else // 本轮没有有效定位
+            {
+                AppStatus_Clear(APP_STATUS_GNSS_FIX); // 清除定位有效状态
 
-        xQueueOverwrite(qGnss, &gnss); // 覆盖 GNSS 队列中的旧数据
+                Debug_Print("[GNSS] waiting fix\r\n"); // 输出等待定位提示
+            }
+        }
 
         if (xQueueReceive(qMqttPublish, &mqtt_msg, 0) == pdPASS) // 检查是否有待发布遥测消息
         {

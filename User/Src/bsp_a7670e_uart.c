@@ -141,14 +141,32 @@ uint16_t BSP_A7670E_Uart_RxAvailable(void) // 查询环形缓冲区已有字节�
 }
 
 /**
+ * @brief 读取 A7670E 接收环形缓冲区溢出标志。
+ * @retval 1U 表示发生过接收溢出，0U 表示未溢出。
+ */
+uint8_t BSP_A7670E_Uart_GetOverflow(void) // 返回环形缓冲区溢出状态
+{
+    return s_a7670e_rx_overflow; // 直接返回中断中置位的溢出标志
+}
+
+/**
  * @brief 清空 A7670E 接收环形缓冲区。
  * @retval None
  */
 void BSP_A7670E_Uart_RxClear(void) // 清空环形缓冲区
 {
+    __disable_irq(); // 短暂关闭中断，避免清空时 ISR 同时写入
+
     s_a7670e_rx_read = 0U; // 读指针归零
     s_a7670e_rx_write = 0U; // 写指针归零
     s_a7670e_rx_overflow = 0U; // 清除溢出标志
+
+    while (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) != RESET) // 清掉 USART1 数据寄存器残留字节
+    {
+        (void)USART_ReceiveData(USART1); // 读取 DR 以清除 RXNE
+    }
+
+    __enable_irq(); // 恢复中断响应
 }
 
 /**

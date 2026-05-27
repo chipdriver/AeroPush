@@ -32,7 +32,7 @@ void BSP_DebugUart_Init(void) // 初始化 USART6 调试串口
     USART_Init(USART6, &USART_InitStructure); // 应用 USART6 配置
 
     USART_Cmd(USART6, ENABLE); // 使能 USART6
-}
+} 
 
 /**
  * @brief 通过调试串口发送单个字符。

@@ -15,6 +15,19 @@
 void ModemService_BuildSimGnss(GnssData_t *gnss); // 构造模拟 GNSS
 
 /**
+ * @brief 打开 A7670E GNSS 电源。
+ * @retval 1U 表示 GNSS 上电命令返回成功，0U 表示失败。
+ */
+uint8_t ModemService_GnssInit(void); // 初始化 A7670E GNSS 电源
+
+/**
+ * @brief 读取并解析 A7670E 的真实 GNSS 定位数据。
+ * @param gnss 输出 GNSS 定位数据。
+ * @retval 1U 表示定位有效，0U 表示未定位或解析失败。
+ */
+uint8_t ModemService_ReadGnss(GnssData_t *gnss); // 读取真实 GNSS 数据
+
+/**
  * @brief 处理一条待发布 MQTT 消息。
  * @param msg 待发布 MQTT 消息。
  * @retval None

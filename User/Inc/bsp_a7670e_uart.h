@@ -8,7 +8,7 @@
 #define A7670E_UART_PORT GPIOA // A7670E 串口使用 GPIOA
 #define A7670E_UART_TX_PIN GPIO_Pin_9 // PA9 作为 USART1_TX
 #define A7670E_UART_RX_PIN GPIO_Pin_10 // PA10 作为 USART1_RX
-#define A7670E_UART_RX_BUF_SIZE 256U // A7670E 接收环形缓冲区大小
+#define A7670E_UART_RX_BUF_SIZE 1024U // A7670E 接收环形缓冲区大小
 
 /**
  * @brief 初始化 A7670E 使用的 USART1 引脚和串口外设。
@@ -42,6 +42,12 @@ void BSP_A7670E_Uart_SendString(const char *str); // 发送字符串到 A7670E
  * @retval 当前可读字节数。
  */
 uint16_t BSP_A7670E_Uart_RxAvailable(void); // 查询环形缓冲区已有字节数
+
+/**
+ * @brief 读取 A7670E 接收环形缓冲区溢出标志。
+ * @retval 1U 表示发生过接收溢出，0U 表示未溢出。
+ */
+uint8_t BSP_A7670E_Uart_GetOverflow(void); // 读取接收溢出标志
 
 /**
  * @brief 清空 A7670E 接收环形缓冲区。
