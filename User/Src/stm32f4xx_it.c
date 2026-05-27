@@ -21,6 +21,7 @@
 #include "stm32f4xx_it.h" // 提供中断处理函数声明
 #include "main.h" // 提供工程主头文件
 #include "delay.h" // 提供 SysTick 延时计数接口
+#include "bsp_a7670e_uart.h" // 提供 A7670E USART1 中断处理接口
 
 /**
  * @brief 不可屏蔽中断处理函数。
@@ -86,3 +87,12 @@ void DebugMon_Handler(void) // 处理调试监视异常
  * SVC、PendSV 和 SysTick 当前由 FreeRTOS 接管。
  * 如需启用裸机 SysTick 延时，需要在 FreeRTOS 配置之外重新确认中断归属。
  */
+
+/**
+ * @brief USART1 全局中断处理函数。
+ * @retval None
+ */
+void USART1_IRQHandler(void) // 处理 A7670E 使用的 USART1 中断
+{
+    BSP_A7670E_Uart_IRQHandler(); // 转交 BSP 层处理 USART1 接收数据
+}

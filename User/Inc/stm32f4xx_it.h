@@ -44,6 +44,12 @@ void UsageFault_Handler(void); // UsageFault 异常入口
  */
 void DebugMon_Handler(void); // DebugMon 异常入口
 
+/**
+ * @brief USART1 全局中断处理函数。
+ * @retval None
+ */
+void USART1_IRQHandler(void); // USART1 外设中断入口
+
 #ifdef __cplusplus
 }
 #endif
