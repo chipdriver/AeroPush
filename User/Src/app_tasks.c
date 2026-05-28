@@ -263,7 +263,9 @@ static void ModemTask(void *argument) // 通信任务，更新 GNSS 数据源并
     TickType_t now_tick; // 当前任务循环的 tick
     TickType_t last_gnss_tick = 0U; // 上一次查询 GNSS 的 tick
     TickType_t last_net_retry_tick = 0U; // 上一次尝试初始化 4G 网络的 tick
+    TickType_t last_mqtt_retry_tick = 0U; // 上一次尝试 MQTT 初始化的 tick
     uint8_t net_ready = 0U; // 4G 网络是否已经初始化成功
+    uint8_t mqtt_ready = 0U; // MQTT 是否已经连接服务器，0 表示未连接，1 表示已连接
 
     (void)argument; // 当前不使用任务参数
 
@@ -293,6 +295,29 @@ static void ModemTask(void *argument) // 通信任务，更新 GNSS 数据源并
                     AppStatus_Clear(APP_STATUS_NET_READY); // 清除 4G 网络就绪状态
 
                     Debug_Print("[NET] status not ready\r\n"); // 输出 4G 网络未就绪状态日志
+                }
+            }
+        }
+
+        if ((net_ready != 0U) && (mqtt_ready == 0U)) // 只有 4G 网络 ready 后，才尝试连接 MQTT
+        {
+            if ((now_tick - last_mqtt_retry_tick) >= pdMS_TO_TICKS(APP_MQTT_INIT_RETRY_PERIOD_MS)) // 判断是否到达 MQTT 重试时间
+            {
+                last_mqtt_retry_tick = now_tick; // 更新最近一次 MQTT 初始化尝试时间
+
+                if (ModemService_MqttInit() == 1U) // 执行 MQTT 初始化并连接服务器
+                {
+                    mqtt_ready = 1U; // 标记 MQTT 已经连接成功
+
+                    AppStatus_Set(APP_STATUS_MQTT_READY); // 置位 MQTT_READY 状态
+
+                    Debug_Print("[MQTT] status ready\r\n"); // 输出 MQTT 状态就绪日志
+                }
+                else // MQTT 初始化或连接失败
+                {
+                    AppStatus_Clear(APP_STATUS_MQTT_READY); // 清除 MQTT_READY 状态
+
+                    Debug_Print("[MQTT] status not ready\r\n"); // 输出 MQTT 状态未就绪日志
                 }
             }
         }

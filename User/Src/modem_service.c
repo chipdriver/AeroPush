@@ -269,6 +269,142 @@ uint8_t ModemService_NetInit(void)
 }
 
 /**
+ * @brief 启动 A7670E MQTT 服务。
+ * @retval 1U 表示 MQTT 服务启动成功，0U 表示启动失败。
+ */
+static uint8_t ModemService_MqttStart(void)
+{
+    char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 AT+CMQTTSTART 原始响应
+
+    if (ModemService_SendCmdReadResp("AT+CMQTTSTART", resp, sizeof(resp), 10000U, 500U) == 0U) // 发送 MQTT 服务启动指令并读取响应
+    {
+        return 0U; // 没有响应时认为 MQTT 服务启动失败
+    }
+
+    if (strstr(resp, "+CMQTTSTART: 0") != NULL) // 模块返回 MQTT 服务启动成功事件
+    {
+        Debug_Print("[MQTT] start ok\r\n"); // 输出 MQTT 服务启动成功日志
+
+        return 1U; // MQTT 服务启动成功
+    }
+
+    if ((strstr(resp, "OK") != NULL) &&
+        (strstr(resp, "ERROR") == NULL)) // 当前阶段允许只返回 OK 且没有 ERROR 的启动响应
+    {
+        Debug_Print("[MQTT] start ok\r\n"); // 输出 MQTT 服务启动成功日志
+
+        return 1U; // 暂时认为 MQTT 服务已经启动
+    }
+
+    return 0U; // 响应中没有成功标志
+}
+
+/**
+ * @brief 申请 A7670E MQTT 客户端 0。
+ * @retval 1U 表示客户端申请成功，0U 表示客户端申请失败。
+ */
+static uint8_t ModemService_MqttAcquireClient(void)
+{
+    char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 AT+CMQTTACCQ 原始响应
+    char cmd[96]; // 保存 MQTT 客户端申请指令
+    int cmd_len; // snprintf 返回的指令长度
+
+    cmd_len = snprintf(cmd, sizeof(cmd), "AT+CMQTTACCQ=0,\"%s\"", APP_MQTT_CLIENT_ID); // 使用配置的客户端 ID 组合 ACCQ 指令
+
+    if ((cmd_len <= 0) || ((uint32_t)cmd_len >= sizeof(cmd))) // 检查客户端申请指令是否完整写入缓冲区
+    {
+        Debug_Print("[MQTT] ACCQ command overflow\r\n"); // 输出客户端申请指令组合失败日志
+
+        return 0U; // 指令组合失败时不发送到模块
+    }
+
+    if (ModemService_SendCmdAndWait(cmd, "OK", resp, sizeof(resp), 5000U, 300U) == 0U) // 发送 MQTT 客户端申请指令并等待 OK
+    {
+        return 0U; // 响应不包含 OK 时认为客户端申请失败
+    }
+
+    Debug_Print("[MQTT] acquire ok\r\n"); // 输出 MQTT 客户端申请成功日志
+
+    return 1U; // MQTT 客户端申请成功
+}
+
+/**
+ * @brief 连接 A7670E MQTT 客户端到服务器。
+ * @retval 1U 表示 MQTT 服务器连接成功，0U 表示连接失败。
+ */
+static uint8_t ModemService_MqttConnectServer(void)
+{
+    char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 AT+CMQTTCONNECT 原始响应
+    char cmd[180]; // 保存 MQTT 服务器连接指令
+    int cmd_len; // snprintf 返回的指令长度
+
+    cmd_len = snprintf(cmd, // 组合 MQTT 服务器连接指令
+                       sizeof(cmd), // 限制写入连接指令缓冲区的长度
+                       "AT+CMQTTCONNECT=0,\"%s\",%lu,%lu,\"%s\",\"%s\"", // A7670E MQTT 连接指令格式
+                       APP_MQTT_BROKER_ADDR, // 写入 MQTT 服务器地址和端口
+                       (unsigned long)APP_MQTT_KEEPALIVE_SEC, // 写入 keepalive 秒数
+                       (unsigned long)APP_MQTT_CLEAN_SESSION, // 写入 clean session 标志
+                       APP_MQTT_USERNAME, // 写入 MQTT 用户名
+                       APP_MQTT_PASSWORD); // 写入 MQTT 密码
+
+    if ((cmd_len <= 0) || ((uint32_t)cmd_len >= sizeof(cmd))) // 检查 MQTT 连接指令是否完整写入缓冲区
+    {
+        Debug_Print("[MQTT] CONNECT command overflow\r\n"); // 输出 MQTT 连接指令组合失败日志
+
+        return 0U; // 指令组合失败时不发送到模块
+    }
+
+    if (ModemService_SendCmdReadResp(cmd, resp, sizeof(resp), 20000U, 500U) == 0U) // 发送 MQTT 连接指令并读取模块响应
+    {
+        return 0U; // 没有响应时认为 MQTT 连接失败
+    }
+
+    if (strstr(resp, "+CMQTTCONNECT: 0,0") != NULL) // A7670E 返回 0,0 表示客户端 0 连接服务器成功
+    {
+        Debug_Print("[MQTT] connect ok\r\n"); // 输出 MQTT 服务器连接成功日志
+
+        return 1U; // MQTT 服务器连接成功
+    }
+
+    return 0U; // 响应中没有连接成功事件
+}
+
+/**
+ * @brief 初始化并连接 A7670E MQTT 客户端。
+ * @retval 1U 表示 MQTT 连接服务器成功。
+ * @retval 0U 表示 MQTT 初始化或连接失败。
+ */
+uint8_t ModemService_MqttInit(void)
+{
+    Debug_Print("[MQTT] init start\r\n"); // 输出 MQTT 初始化开始日志
+
+    if (ModemService_MqttStart() == 0U) // 启动 A7670E MQTT 服务
+    {
+        Debug_Print("[MQTT] start failed\r\n"); // 输出 MQTT 服务启动失败日志
+
+        return 0U; // MQTT 服务启动失败时停止后续流程
+    }
+
+    if (ModemService_MqttAcquireClient() == 0U) // 申请 MQTT 客户端 0
+    {
+        Debug_Print("[MQTT] acquire failed\r\n"); // 输出 MQTT 客户端申请失败日志
+
+        return 0U; // 客户端申请失败时停止后续流程
+    }
+
+    if (ModemService_MqttConnectServer() == 0U) // 连接 MQTT 服务器
+    {
+        Debug_Print("[MQTT] connect failed\r\n"); // 输出 MQTT 服务器连接失败日志
+
+        return 0U; // MQTT 服务器连接失败时返回失败
+    }
+
+    Debug_Print("[MQTT] ready\r\n"); // 输出 MQTT 连接服务器成功日志
+
+    return 1U; // MQTT 初始化并连接服务器成功
+}
+
+/**
  * @brief 将 NMEA 经纬度格式转换为十进制度。
  * @param value NMEA 数值字符串，纬度为 DDMM.MMMM，经度为 DDDMM.MMMM。
  * @param hemi 半球字符，N/E 为正，S/W 为负。
