@@ -276,14 +276,25 @@ static uint8_t ModemService_MqttStart(void)
 {
     char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 AT+CMQTTSTART 原始响应
 
-    /* 1. 先停止旧 MQTT 服务状态 */
-    (void)ModemService_SendCmdReadResp("AT+CMQTTSTOP", // 先尝试停止 MQTT 服务，清理模块内部旧状态
+    (void)ModemService_SendCmdReadResp("AT+CMQTTDISC=0,120", // 先尝试断开客户端 0 的 MQTT 连接，ERROR 也只作为状态清理日志
                                        resp, // 保存模块返回内容
                                        sizeof(resp), // 响应缓冲区大小
                                        5000U, // 最长等待 5000 ms
                                        300U); // 收到数据后 300 ms 无新数据则结束
 
-    vTaskDelay(pdMS_TO_TICKS(500U)); // 等待模块释放 MQTT 内部资源
+    (void)ModemService_SendCmdReadResp("AT+CMQTTREL=0", // 再释放客户端 0，ERROR 也只作为状态清理日志
+                                       resp, // 保存模块返回内容
+                                       sizeof(resp), // 响应缓冲区大小
+                                       5000U, // 最长等待 5000 ms
+                                       300U); // 收到数据后 300 ms 无新数据则结束
+
+    (void)ModemService_SendCmdReadResp("AT+CMQTTSTOP", // 最后停止 MQTT 服务，ERROR 也只作为状态清理日志
+                                       resp, // 保存模块返回内容
+                                       sizeof(resp), // 响应缓冲区大小
+                                       5000U, // 最长等待 5000 ms
+                                       300U); // 收到数据后 300 ms 无新数据则结束
+
+    vTaskDelay(pdMS_TO_TICKS(1000U)); // 等待模块释放 MQTT 内部资源
     
     if (ModemService_SendCmdReadResp("AT+CMQTTSTART", resp, sizeof(resp), 10000U, 500U) == 0U) // 发送 MQTT 服务启动指令并读取响应
     {
@@ -297,13 +308,7 @@ static uint8_t ModemService_MqttStart(void)
         return 1U; // MQTT 服务启动成功
     }
 
-    if ((strstr(resp, "OK") != NULL) &&
-        (strstr(resp, "ERROR") == NULL)) // 当前阶段允许只返回 OK 且没有 ERROR 的启动响应
-    {
-        Debug_Print("[MQTT] start ok\r\n"); // 输出 MQTT 服务启动成功日志
-
-        return 1U; // 暂时认为 MQTT 服务已经启动
-    }
+    Debug_Printf("[MQTT] start resp=%s\r\n", resp); // 输出完整启动响应，重点排查 ERROR 原因
 
     return 0U; // 响应中没有成功标志
 }
@@ -346,15 +351,19 @@ static uint8_t ModemService_MqttConnectServer(void)
     char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 AT+CMQTTCONNECT 原始响应
     char cmd[180]; // 保存 MQTT 服务器连接指令
     int cmd_len; // snprintf 返回的指令长度
+    TickType_t start_tick; // 记录 MQTT 连接等待开始 tick
+    uint8_t ch; // 保存从 A7670E 环形缓冲区读取的当前字节
+    uint16_t resp_len = 0U; // 记录已经写入 resp 的响应长度
+    char *connect_result; // 指向 +CMQTTCONNECT 异步连接结果
+    char *connect_status; // 指向客户端 0 的 MQTT 连接状态前缀
+    char *connect_line_end; // 指向 +CMQTTCONNECT 当前结果行的结束符
 
     cmd_len = snprintf(cmd, // 组合 MQTT 服务器连接指令
                        sizeof(cmd), // 限制写入连接指令缓冲区的长度
-                       "AT+CMQTTCONNECT=0,\"%s\",%lu,%lu,\"%s\",\"%s\"", // A7670E MQTT 连接指令格式
+                       "AT+CMQTTCONNECT=0,\"%s\",%lu,%lu", // A7670E MQTT 连接指令格式
                        APP_MQTT_BROKER_ADDR, // 写入 MQTT 服务器地址和端口
                        (unsigned long)APP_MQTT_KEEPALIVE_SEC, // 写入 keepalive 秒数
-                       (unsigned long)APP_MQTT_CLEAN_SESSION, // 写入 clean session 标志
-                       APP_MQTT_USERNAME, // 写入 MQTT 用户名
-                       APP_MQTT_PASSWORD); // 写入 MQTT 密码
+                       (unsigned long)APP_MQTT_CLEAN_SESSION); // 写入 clean session 标志;
 
     if ((cmd_len <= 0) || ((uint32_t)cmd_len >= sizeof(cmd))) // 检查 MQTT 连接指令是否完整写入缓冲区
     {
@@ -363,19 +372,77 @@ static uint8_t ModemService_MqttConnectServer(void)
         return 0U; // 指令组合失败时不发送到模块
     }
 
-    if (ModemService_SendCmdReadResp(cmd, resp, sizeof(resp), 20000U, 500U) == 0U) // 发送 MQTT 连接指令并读取模块响应
+    memset(resp, 0, sizeof(resp)); // 清空 MQTT 连接响应缓冲区
+
+    BSP_A7670E_Uart_RxClear(); // 清空 A7670E 接收环形缓冲区，避免旧响应干扰本次连接结果
+
+    Debug_Printf("[A7670E] CMD=%s\r\n", cmd); // 输出当前发送的 MQTT 连接指令
+
+    BSP_A7670E_Uart_SendString(cmd); // 发送 MQTT 连接 AT 指令正文
+
+    BSP_A7670E_Uart_SendString("\r\n"); // 发送 MQTT 连接 AT 指令行结束符
+
+    start_tick = xTaskGetTickCount(); // 记录等待 +CMQTTCONNECT 异步结果的起点
+
+    while ((xTaskGetTickCount() - start_tick) < pdMS_TO_TICKS(60000U)) // 最长等待 60000 ms，直到收到 +CMQTTCONNECT 异步事件
     {
-        return 0U; // 没有响应时认为 MQTT 连接失败
+        if (BSP_A7670E_Uart_ReceiveByte(&ch) == 1U) // 持续从 A7670E 环形缓冲区读取响应字节
+        {
+            if (resp_len < (uint16_t)(sizeof(resp) - 1U)) // 预留字符串结束符空间
+            {
+                resp[resp_len] = (char)ch; // 将当前字节追加到响应缓冲区
+                resp_len++; // 更新响应缓冲区有效长度
+                resp[resp_len] = '\0'; // 保持响应缓冲区始终为字符串
+            }
+            else // MQTT 连接响应超过缓冲区容量
+            {
+                Debug_Printf("[MQTT] connect resp overflow=%s\r\n", resp); // 输出已收集到的响应，便于排查超长响应
+
+                return 0U; // 响应缓冲区不足时认为本次连接失败
+            }
+
+            connect_result = strstr(resp, "+CMQTTCONNECT:"); // 每次追加后检查是否收到 MQTT 连接异步结果
+
+            if (connect_result != NULL) // 已经收到 +CMQTTCONNECT 异步事件
+            {
+                if (strstr(resp, "+CMQTTCONNECT: 0,0") != NULL) // A7670E 返回 0,0 表示客户端 0 连接服务器成功
+                {
+                    Debug_Printf("%s\r\n", resp); // 输出包含 +CMQTTCONNECT 成功事件的完整响应
+
+                    Debug_Print("[MQTT] connect ok\r\n"); // 输出 MQTT 服务器连接成功日志
+
+                    return 1U; // MQTT 服务器连接成功
+                }
+
+                connect_status = strstr(resp, "+CMQTTCONNECT: 0,"); // 查找客户端 0 的 MQTT 连接结果前缀
+
+                if ((connect_status != NULL) && (connect_status[sizeof("+CMQTTCONNECT: 0,") - 1U] != '\0')) // 确认结果码已经收到，避免只收到逗号时误判失败
+                {
+                    connect_line_end = strchr(connect_status, '\n'); // 查找异步结果行的换行结束符
+
+                    if (connect_line_end == NULL) // 当前响应行可能还没有收到换行
+                    {
+                        connect_line_end = strchr(connect_status, '\r'); // 再查找异步结果行的回车结束符
+                    }
+
+                    if (connect_line_end != NULL) // 已经收到完整的 +CMQTTCONNECT 结果行
+                    {
+                        Debug_Printf("[MQTT] connect resp=%s\r\n", resp); // 输出完整连接响应，便于分析非 0 结果码
+
+                        return 0U; // 收到客户端 0 的非 0,0 连接结果时认为连接失败
+                    }
+                }
+            }
+        }
+        else // 当前没有新的 A7670E 响应字节
+        {
+            vTaskDelay(pdMS_TO_TICKS(1U)); // 让出 CPU，继续等待后续异步连接事件
+        }
     }
 
-    if (strstr(resp, "+CMQTTCONNECT: 0,0") != NULL) // A7670E 返回 0,0 表示客户端 0 连接服务器成功
-    {
-        Debug_Print("[MQTT] connect ok\r\n"); // 输出 MQTT 服务器连接成功日志
+    Debug_Printf("[MQTT] connect wait timeout resp=%s\r\n", resp); // 超时仍未收到 +CMQTTCONNECT 时输出已收集响应
 
-        return 1U; // MQTT 服务器连接成功
-    }
-
-    return 0U; // 响应中没有连接成功事件
+    return 0U; // 超时未收到 MQTT 连接异步结果
 }
 
 /**
