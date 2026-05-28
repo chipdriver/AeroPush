@@ -276,6 +276,15 @@ static uint8_t ModemService_MqttStart(void)
 {
     char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 AT+CMQTTSTART 原始响应
 
+    /* 1. 先停止旧 MQTT 服务状态 */
+    (void)ModemService_SendCmdReadResp("AT+CMQTTSTOP", // 先尝试停止 MQTT 服务，清理模块内部旧状态
+                                       resp, // 保存模块返回内容
+                                       sizeof(resp), // 响应缓冲区大小
+                                       5000U, // 最长等待 5000 ms
+                                       300U); // 收到数据后 300 ms 无新数据则结束
+
+    vTaskDelay(pdMS_TO_TICKS(500U)); // 等待模块释放 MQTT 内部资源
+    
     if (ModemService_SendCmdReadResp("AT+CMQTTSTART", resp, sizeof(resp), 10000U, 500U) == 0U) // 发送 MQTT 服务启动指令并读取响应
     {
         return 0U; // 没有响应时认为 MQTT 服务启动失败
@@ -621,7 +630,7 @@ void ModemService_Publish(const MqttPublishMsg_t *msg) // 处理 MQTT 发布请�
         return; // 输入指针为空时不处理
     }
 
-    Debug_Printf("[UART6 OUT] topic=%s payload=%s\r\n", // 本阶段只通过 USART6 输出遥测 JSON
-                 msg->topic, // 输出遥测主题
-                 msg->payload); // 输出遥测 JSON 负载
+    // Debug_Printf("[UART6 OUT] topic=%s payload=%s\r\n", // 本阶段只通过 USART6 输出遥测 JSON
+    //              msg->topic, // 输出遥测主题
+    //              msg->payload); // 输出遥测 JSON 负载
 }

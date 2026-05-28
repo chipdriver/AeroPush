@@ -28,7 +28,7 @@
 #define APP_LED_TASK_PERIOD_MS 500 // LED 正常闪烁周期，单位 ms
 
 #define APP_MQTT_TOPIC "aeropush/telemetry" // 遥测 MQTT 主题
-#define APP_MQTT_BROKER_ADDR "tcp://192.168.1.240:1883" // MQTT 服务器地址和端口
+#define APP_MQTT_BROKER_ADDR "mqtt://127.0.0.1:1883" // MQTT 服务器地址和端口
 #define APP_MQTT_CLIENT_ID "aeropush_client" // MQTT 客户端 ID
 #define APP_MQTT_USERNAME "admin" // MQTT 用户名
 #define APP_MQTT_PASSWORD "public" // MQTT 密码

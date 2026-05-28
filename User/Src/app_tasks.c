@@ -350,9 +350,9 @@ static void ModemTask(void *argument) // 通信任务，更新 GNSS 数据源并
 
             xQueueOverwrite(qGnss, &gnss); // 将模拟 GNSS 数据覆盖写入 qGnss 队列
 
-            Debug_Printf("[GNSS] sim lat=%.6f lon=%.6f\r\n", // 输出模拟 GNSS 经纬度
-                         gnss.latitude, // 输出模拟纬度
-                         gnss.longitude); // 输出模拟经度
+            // Debug_Printf("[GNSS] sim lat=%.6f lon=%.6f\r\n", // 输出模拟 GNSS 经纬度
+            //              gnss.latitude, // 输出模拟纬度
+            //              gnss.longitude); // 输出模拟经度
 #else // GNSS 数据来源宏定义配置错误
             #error "Invalid APP_GNSS_SOURCE_MODE" // 编译时报错，提醒检查 APP_GNSS_SOURCE_MODE 配置
 #endif
