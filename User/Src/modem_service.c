@@ -1,6 +1,7 @@
 #include "modem_service.h" // 提供通信服务接口
 #include "app_config.h" // 提供模拟 GNSS 配置
 #include "bsp_a7670e_uart.h" // 提供 A7670E 串口收发接口
+#include <stdio.h> // 提供 snprintf
 #include <stdlib.h> // 提供 atof
 
 #define A7670E_AT_RESP_BUF_SIZE 512U // A7670E AT 响应缓存长度
@@ -61,6 +62,210 @@ static uint16_t ModemService_ReadResponse(char *buf,
     buf[count] = '\0'; // 确保输出以字符串结束
 
     return count; // 返回读取长度
+}
+
+/**
+ * @brief 发送一条 AT 指令并读取原始响应。
+ * @param cmd 不带换行符的 AT 指令字符串。
+ * @param resp 响应字符串输出缓冲区。
+ * @param resp_size 响应字符串输出缓冲区长度。
+ * @param timeout_ms 最大等待响应时间，单位 ms。
+ * @param idle_ms 收到数据后的空闲结束时间，单位 ms。
+ * @retval 1U 表示读取到响应，0U 表示参数无效或未读到响应。
+ */
+static uint8_t ModemService_SendCmdReadResp(const char *cmd,
+                                            char *resp,
+                                            uint16_t resp_size,
+                                            uint32_t timeout_ms,
+                                            uint32_t idle_ms)
+{
+    uint16_t resp_len; // 本次 AT 响应实际读取长度
+
+    if ((cmd == NULL) || (resp == NULL) || (resp_size == 0U)) // 检查 AT 指令和输出缓冲区参数
+    {
+        return 0U; // 参数无效时不访问串口
+    }
+
+    BSP_A7670E_Uart_RxClear(); // 清空 A7670E 接收环形缓冲区，避免旧响应干扰
+
+    Debug_Printf("[A7670E] CMD=%s\r\n", cmd); // 输出当前发送的 AT 指令
+
+    BSP_A7670E_Uart_SendString(cmd); // 发送 AT 指令正文
+
+    BSP_A7670E_Uart_SendString("\r\n"); // 发送 AT 指令行结束符
+
+    resp_len = ModemService_ReadResponse(resp, resp_size, timeout_ms, idle_ms); // 读取 A7670E 原始响应
+
+    Debug_Printf("%s\r\n", resp); // 输出原始响应，便于串口日志直接排查模块状态
+
+    if (resp_len > 0U) // 判断是否读到任意响应字节
+    {
+        return 1U; // 已经读取到响应
+    }
+
+    return 0U; // 超时或没有读取到响应
+}
+
+/**
+ * @brief 发送 AT 指令并等待响应中出现期望关键字。
+ * @param cmd 不带换行符的 AT 指令字符串。
+ * @param expect 期望出现在响应中的关键字。
+ * @param resp 响应字符串输出缓冲区。
+ * @param resp_size 响应字符串输出缓冲区长度。
+ * @param timeout_ms 最大等待响应时间，单位 ms。
+ * @param idle_ms 收到数据后的空闲结束时间，单位 ms。
+ * @retval 1U 表示响应包含期望关键字，0U 表示失败。
+ */
+static uint8_t ModemService_SendCmdAndWait(const char *cmd,
+                                           const char *expect,
+                                           char *resp,
+                                           uint16_t resp_size,
+                                           uint32_t timeout_ms,
+                                           uint32_t idle_ms)
+{
+    if (expect == NULL) // 检查期望关键字指针
+    {
+        return 0U; // 期望关键字无效时不执行匹配
+    }
+
+    if (ModemService_SendCmdReadResp(cmd, resp, resp_size, timeout_ms, idle_ms) == 0U) // 发送指令并读取响应
+    {
+        return 0U; // 没有响应时认为本步失败
+    }
+
+    if (strstr(resp, expect) != NULL) // 查找期望关键字
+    {
+        return 1U; // 响应包含期望关键字
+    }
+
+    return 0U; // 响应内容不符合预期
+}
+
+/**
+ * @brief 等待 LTE 数据域注册成功。
+ * @param retry_count 最大查询次数。
+ * @retval 1U 表示已注册到本地或漫游网络，0U 表示超过重试次数仍未注册。
+ */
+static uint8_t ModemService_WaitLteRegistered(uint32_t retry_count)
+{
+    char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 AT+CEREG? 原始响应
+    uint32_t retry_index = 0U; // 当前注册状态查询次数
+
+    for (retry_index = 0U; retry_index < retry_count; retry_index++) // 按最大次数轮询 LTE 注册状态
+    {
+        ModemService_SendCmdReadResp("AT+CEREG?", resp, sizeof(resp), 3000U, 300U); // 查询 EPS 数据域注册状态
+
+        Debug_Printf("[NET] CEREG resp=%s\r\n", resp); // 输出 CEREG 原始响应，便于判断注册阶段
+
+        if ((strstr(resp, "+CEREG: 0,1") != NULL) ||
+            (strstr(resp, "+CEREG:0,1") != NULL) ||
+            (strstr(resp, "+CEREG: 0,5") != NULL) ||
+            (strstr(resp, "+CEREG:0,5") != NULL)) // 0,1 表示本地注册，0,5 表示漫游注册
+        {
+            return 1U; // LTE 数据域已经注册成功
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(1000U)); // 等待约 1 秒后再次查询注册状态
+    }
+
+    return 0U; // 超过最大查询次数仍未注册
+}
+
+/**
+ * @brief 打开 A7670E 数据网络。
+ * @retval 1U 表示 NETOPEN 成功或网络已经打开，0U 表示失败。
+ */
+static uint8_t ModemService_NetOpen(void)
+{
+    char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 AT+NETOPEN 原始响应
+
+    if (ModemService_SendCmdReadResp("AT+NETOPEN", resp, sizeof(resp), 15000U, 500U) == 0U) // 发送 NETOPEN 并等待模块响应
+    {
+        return 0U; // 没有响应时认为打开网络失败
+    }
+
+    if ((strstr(resp, "OK") != NULL) ||
+        (strstr(resp, "+NETOPEN: 0") != NULL) ||
+        (strstr(resp, "Network is already opened") != NULL)) // OK、NETOPEN 成功事件或已打开提示都认为成功
+    {
+        return 1U; // 数据网络已经可用
+    }
+
+    return 0U; // NETOPEN 响应不符合成功条件
+}
+
+/**
+ * @brief 初始化 A7670E 4G 数据网络。
+ * @retval 1U 表示 4G 网络初始化成功。
+ * @retval 0U 表示 4G 网络初始化失败。
+ */
+uint8_t ModemService_NetInit(void)
+{
+    char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存各阶段 AT 响应
+    char apn_cmd[80]; // 保存按 APN 组合出来的 CGDCONT 指令
+    int apn_cmd_len; // snprintf 返回的指令长度
+
+    Debug_Print("[NET] init start\r\n"); // 输出 4G 网络初始化开始日志
+
+    if (ModemService_SendCmdAndWait("AT", "OK", resp, sizeof(resp), 3000U, 200U) == 0U) // 检查 AT 基础通信是否正常
+    {
+        Debug_Print("[NET] AT failed\r\n"); // 输出 AT 基础通信失败日志
+        return 0U; // 基础通信失败时停止网络初始化
+    }
+
+    if (ModemService_SendCmdAndWait("AT+CMEE=2", "OK", resp, sizeof(resp), 3000U, 200U) == 0U) // 打开详细错误提示
+    {
+        Debug_Print("[NET] CMEE failed\r\n"); // 输出详细错误模式配置失败日志
+        return 0U; // CMEE 配置失败时停止网络初始化
+    }
+
+    if (ModemService_SendCmdAndWait("AT+CPIN?", "+CPIN: READY", resp, sizeof(resp), 3000U, 200U) == 0U) // 检查 SIM 卡是否就绪
+    {
+        Debug_Print("[NET] SIM not ready\r\n"); // 输出 SIM 卡未就绪日志
+        return 0U; // SIM 卡未就绪时停止网络初始化
+    }
+
+    if (ModemService_SendCmdAndWait("AT+CSQ", "+CSQ:", resp, sizeof(resp), 3000U, 200U) == 0U) // 查询并确认信号质量响应存在
+    {
+        Debug_Print("[NET] CSQ failed\r\n"); // 输出信号质量查询失败日志
+        return 0U; // 没有 CSQ 响应时停止网络初始化
+    }
+
+    if (ModemService_WaitLteRegistered(APP_NET_REGISTER_RETRY_COUNT) == 0U) // 等待 LTE 数据域注册成功
+    {
+        Debug_Print("[NET] CEREG failed\r\n"); // 输出 LTE 注册失败日志
+        return 0U; // 注册失败时停止网络初始化
+    }
+
+    apn_cmd_len = snprintf(apn_cmd, sizeof(apn_cmd), "AT+CGDCONT=1,\"IP\",\"%s\"", APP_A7670E_APN); // 使用配置的 APN 组合 PDP 上下文指令
+
+    if ((apn_cmd_len <= 0) || ((uint32_t)apn_cmd_len >= sizeof(apn_cmd))) // 检查 APN 指令是否完整写入缓冲区
+    {
+        Debug_Print("[NET] APN command overflow\r\n"); // 输出 APN 指令组合失败日志
+        return 0U; // APN 指令异常时停止网络初始化
+    }
+
+    if (ModemService_SendCmdAndWait(apn_cmd, "OK", resp, sizeof(resp), 3000U, 200U) == 0U) // 配置 PDP 上下文 APN
+    {
+        Debug_Print("[NET] CGDCONT failed\r\n"); // 输出 PDP 上下文配置失败日志
+        return 0U; // APN 配置失败时停止网络初始化
+    }
+
+    if (ModemService_NetOpen() == 0U) // 打开数据网络
+    {
+        Debug_Print("[NET] NETOPEN failed\r\n"); // 输出数据网络打开失败日志
+        return 0U; // 数据网络打开失败时停止网络初始化
+    }
+
+    if (ModemService_SendCmdAndWait("AT+IPADDR", "+IPADDR:", resp, sizeof(resp), 5000U, 300U) == 0U) // 查询并确认模块获得 IP 地址
+    {
+        Debug_Print("[NET] IPADDR failed\r\n"); // 输出 IP 地址查询失败日志
+        return 0U; // 没有 IP 地址响应时停止网络初始化
+    }
+
+    Debug_Print("[NET] ready\r\n"); // 输出 4G 网络初始化成功日志
+
+    return 1U; // 4G 网络初始化成功
 }
 
 /**

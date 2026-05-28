@@ -21,6 +21,9 @@
 #define APP_GNSS_SOURCE_REAL 1U // GNSS 数据来源：真实 A7670E GNSS
 #define APP_GNSS_SOURCE_SIM 2U // GNSS 数据来源：软件模拟 GNSS
 #define APP_GNSS_SOURCE_MODE APP_GNSS_SOURCE_SIM // 当前阶段默认使用模拟 GNSS，方便测试 4G 和 MQTT
+#define APP_A7670E_APN "ctnet" // A7670E 使用的 APN，当前电信卡使用 ctnet
+#define APP_NET_INIT_RETRY_PERIOD_MS 5000U // 4G 网络初始化失败后的重试间隔，单位 ms
+#define APP_NET_REGISTER_RETRY_COUNT 30U // LTE 数据域注册状态最大查询次数，每次间隔约 1 秒
 #define APP_TELEMETRY_TASK_PERIOD_MS 500 // 遥测任务周期，单位 ms
 #define APP_LED_TASK_PERIOD_MS 500 // LED 正常闪烁周期，单位 ms
 

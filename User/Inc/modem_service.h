@@ -28,6 +28,13 @@ uint8_t ModemService_GnssInit(void); // 初始化 A7670E GNSS 电源
 uint8_t ModemService_ReadGnss(GnssData_t *gnss); // 读取真实 GNSS 数据
 
 /**
+ * @brief 初始化 A7670E 4G 数据网络。
+ * @retval 1U 表示 4G 网络初始化成功。
+ * @retval 0U 表示 4G 网络初始化失败。
+ */
+uint8_t ModemService_NetInit(void); // 初始化 A7670E 4G 网络
+
+/**
  * @brief 处理一条待发布 MQTT 消息。
  * @param msg 待发布 MQTT 消息。
  * @retval None

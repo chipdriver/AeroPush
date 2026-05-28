@@ -151,9 +151,9 @@ static void InitTask(void *argument)
     AppStatus_Clear(APP_STATUS_IMU_READY); // 保持 IMU 未就绪，遥测只使用 GNSS 数据
 #endif
 
-    /* 3. 当前阶段先置位 MQTT 和网络占位状态 */
-    AppStatus_Set(APP_STATUS_MQTT_READY); // 当前阶段默认 MQTT 服务可用
-    AppStatus_Set(APP_STATUS_NET_READY); // 当前阶段默认网络服务可用
+    /* 3. MQTT 和 4G 网络等待后续初始化成功后再置位 */
+    AppStatus_Clear(APP_STATUS_MQTT_READY); // MQTT 尚未初始化，保持未就绪
+    AppStatus_Clear(APP_STATUS_NET_READY); // 4G 网络尚未初始化，保持未就绪
 
     /* 4. InitTask 只运行一次，初始化完成后删除自身 */
     vTaskDelete(NULL); // 删除当前初始化任务
@@ -262,6 +262,8 @@ static void ModemTask(void *argument) // 通信任务，更新 GNSS 数据源并
     MqttPublishMsg_t mqtt_msg; // 待发布 MQTT 消息
     TickType_t now_tick; // 当前任务循环的 tick
     TickType_t last_gnss_tick = 0U; // 上一次查询 GNSS 的 tick
+    TickType_t last_net_retry_tick = 0U; // 上一次尝试初始化 4G 网络的 tick
+    uint8_t net_ready = 0U; // 4G 网络是否已经初始化成功
 
     (void)argument; // 当前不使用任务参数
 
@@ -271,6 +273,30 @@ static void ModemTask(void *argument) // 通信任务，更新 GNSS 数据源并
     while (1) // 通信任务常驻运行
     {
         now_tick = xTaskGetTickCount(); // 读取当前 FreeRTOS tick
+
+        if (net_ready == 0U) // 4G 网络尚未初始化成功
+        {
+            if ((now_tick - last_net_retry_tick) >= pdMS_TO_TICKS(APP_NET_INIT_RETRY_PERIOD_MS)) // 判断是否到达网络初始化重试周期
+            {
+                last_net_retry_tick = now_tick; // 更新最近一次网络初始化尝试时间
+
+                if (ModemService_NetInit() == 1U) // 尝试初始化 A7670E 4G 数据网络
+                {
+                    net_ready = 1U; // 记录网络初始化已经成功
+
+                    AppStatus_Set(APP_STATUS_NET_READY); // 置位 4G 网络就绪状态
+
+                    Debug_Print("[NET] status ready\r\n"); // 输出 4G 网络就绪状态日志
+                }
+                else // 本轮 4G 网络初始化失败
+                {
+                    AppStatus_Clear(APP_STATUS_NET_READY); // 清除 4G 网络就绪状态
+
+                    Debug_Print("[NET] status not ready\r\n"); // 输出 4G 网络未就绪状态日志
+                }
+            }
+        }
+
         if ((now_tick - last_gnss_tick) >= pdMS_TO_TICKS(APP_GNSS_QUERY_PERIOD_MS)) // 判断是否到达 GNSS 更新周期
         {
             last_gnss_tick = now_tick; // 更新最近一次 GNSS 查询或模拟生成时间
