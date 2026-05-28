@@ -18,6 +18,9 @@
 #define APP_IMU_TASK_PERIOD_MS 20 // IMU 任务周期，单位 ms
 #define APP_MODEM_TASK_PERIOD_MS 20 // 通信任务周期，单位 ms
 #define APP_GNSS_QUERY_PERIOD_MS 1000U // A7670E GNSS 查询周期，单位 ms
+#define APP_GNSS_SOURCE_REAL 1U // GNSS 数据来源：真实 A7670E GNSS
+#define APP_GNSS_SOURCE_SIM 2U // GNSS 数据来源：软件模拟 GNSS
+#define APP_GNSS_SOURCE_MODE APP_GNSS_SOURCE_SIM // 当前阶段默认使用模拟 GNSS，方便测试 4G 和 MQTT
 #define APP_TELEMETRY_TASK_PERIOD_MS 500 // 遥测任务周期，单位 ms
 #define APP_LED_TASK_PERIOD_MS 500 // LED 正常闪烁周期，单位 ms
 

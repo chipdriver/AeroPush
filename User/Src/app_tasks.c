@@ -26,7 +26,7 @@ static void ImuTask(void *argument); // IMU 采集和姿态融合任务入口
 #endif
 
 /**
- * @brief 周期构造 GNSS 数据并处理 MQTT 发布队列。
+ * @brief 根据配置更新 GNSS 数据源并处理 MQTT 发布队列。
  * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
@@ -116,16 +116,23 @@ static void InitTask(void *argument)
     DebugService_Init(); // 初始化调试串口服务
     BSP_A7670E_Uart_Init(); // 初始化 A7670E 使用的 USART1 PA9/PA10
 
+#if APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_REAL // 如果当前选择真实 GNSS 数据源
     if (ModemService_GnssInit() == 1U) // 尝试打开 A7670E GNSS 电源
     {
-        AppStatus_Set(APP_STATUS_GNSS_READY); // 标记 GNSS 电源已打开
-        Debug_Print("[GNSS] power on ok\r\n"); // 输出 GNSS 上电成功
+        AppStatus_Set(APP_STATUS_GNSS_READY); // 标记真实 GNSS 电源已打开
+        Debug_Print("[GNSS] power on ok\r\n"); // 输出真实 GNSS 上电成功日志
     }
     else // GNSS 上电命令未返回成功
     {
-        AppStatus_Clear(APP_STATUS_GNSS_READY); // 保持 GNSS 未就绪
-        Debug_Print("[GNSS] power on failed\r\n"); // 输出 GNSS 上电失败
+        AppStatus_Clear(APP_STATUS_GNSS_READY); // 清除 GNSS 就绪状态
+        Debug_Print("[GNSS] power on failed\r\n"); // 输出真实 GNSS 上电失败日志
     }
+#elif APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_SIM // 如果当前选择模拟 GNSS 数据源
+    AppStatus_Set(APP_STATUS_GNSS_READY); // 模拟 GNSS 数据源可用，标记 GNSS 数据源就绪
+    Debug_Print("[GNSS] source sim mode\r\n"); // 输出当前使用模拟 GNSS 的提示
+#else // GNSS 数据来源宏定义配置错误
+    #error "Invalid APP_GNSS_SOURCE_MODE" // 编译时报错，提醒检查 APP_GNSS_SOURCE_MODE 配置
+#endif
 
 #if APP_ENABLE_IMU
     /* 2. IMU 初始化和姿态融合初始化 */
@@ -245,11 +252,11 @@ static void ImuTask(void *argument) // IMU 采样、融合和姿态队列更新�
 #endif
 
 /**
- * @brief 周期查询真实 GNSS 数据并处理遥测发布队列。
+ * @brief 根据配置更新真实或模拟 GNSS 数据，并处理遥测发布队列。
  * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
-static void ModemTask(void *argument) // 通信任务，查询真实 GNSS 并输出遥测 JSON
+static void ModemTask(void *argument) // 通信任务，更新 GNSS 数据源并输出遥测 JSON
 {
     GnssData_t gnss; // GNSS 定位数据
     MqttPublishMsg_t mqtt_msg; // 待发布 MQTT 消息
@@ -264,26 +271,40 @@ static void ModemTask(void *argument) // 通信任务，查询真实 GNSS 并输
     while (1) // 通信任务常驻运行
     {
         now_tick = xTaskGetTickCount(); // 读取当前 FreeRTOS tick
-        if ((now_tick - last_gnss_tick) >= pdMS_TO_TICKS(APP_GNSS_QUERY_PERIOD_MS)) // 按配置周期查询 GNSS
+        if ((now_tick - last_gnss_tick) >= pdMS_TO_TICKS(APP_GNSS_QUERY_PERIOD_MS)) // 判断是否到达 GNSS 更新周期
         {
-            last_gnss_tick = now_tick; // 更新最近一次 GNSS 查询时间
+            last_gnss_tick = now_tick; // 更新最近一次 GNSS 查询或模拟生成时间
 
+#if APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_REAL // 当前配置为真实 GNSS 模式
             if (ModemService_ReadGnss(&gnss) == 1U) // 查询并解析真实经纬度
             {
-                AppStatus_Set(APP_STATUS_GNSS_FIX); // 置位定位有效状态
+                AppStatus_Set(APP_STATUS_GNSS_FIX); // 真实 GNSS 定位有效，置位 GNSS_FIX 状态
 
-                xQueueOverwrite(qGnss, &gnss); // 覆盖 GNSS 队列中的旧数据
+                xQueueOverwrite(qGnss, &gnss); // 将最新真实 GNSS 数据覆盖写入 qGnss 队列
 
-                Debug_Printf("[GNSS] fix lat=%.6f lon=%.6f\r\n", // 输出本轮真实定位
+                Debug_Printf("[GNSS] real fix lat=%.6f lon=%.6f\r\n", // 输出真实 GNSS 经纬度
                              gnss.latitude, // 输出纬度
                              gnss.longitude); // 输出经度
             }
-            else // 本轮没有有效定位
+            else // 本轮真实 GNSS 没有有效定位
             {
-                AppStatus_Clear(APP_STATUS_GNSS_FIX); // 清除定位有效状态
+                AppStatus_Clear(APP_STATUS_GNSS_FIX); // 清除 GNSS_FIX 状态，表示当前无有效定位
 
-                Debug_Print("[GNSS] waiting fix\r\n"); // 输出等待定位提示
+                Debug_Print("[GNSS] real waiting fix\r\n"); // 输出等待真实 GNSS 定位提示
             }
+#elif APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_SIM // 当前配置为模拟 GNSS 模式
+            ModemService_BuildSimGnss(&gnss); // 生成一帧模拟 GNSS 数据
+
+            AppStatus_Set(APP_STATUS_GNSS_FIX); // 模拟 GNSS 始终认为定位有效，方便测试 Telemetry / MQTT
+
+            xQueueOverwrite(qGnss, &gnss); // 将模拟 GNSS 数据覆盖写入 qGnss 队列
+
+            Debug_Printf("[GNSS] sim lat=%.6f lon=%.6f\r\n", // 输出模拟 GNSS 经纬度
+                         gnss.latitude, // 输出模拟纬度
+                         gnss.longitude); // 输出模拟经度
+#else // GNSS 数据来源宏定义配置错误
+            #error "Invalid APP_GNSS_SOURCE_MODE" // 编译时报错，提醒检查 APP_GNSS_SOURCE_MODE 配置
+#endif
         }
 
         if (xQueueReceive(qMqttPublish, &mqtt_msg, 0) == pdPASS) // 检查是否有待发布遥测消息
