@@ -17,12 +17,12 @@ static TaskHandle_t LedTaskHandle = NULL; // LED 任务句柄
 static void InitTask(void *argument); // 初始化任务入口
 
 /**
- * @brief 周期读取 IMU 数据、执行姿态融合并更新姿态队列。
+ * @brief 按配置生成模拟姿态或采样真实 IMU，并更新姿态队列。
  * @param argument FreeRTOS 任务入口参数。
  * @retval None
  */
 #if APP_ENABLE_IMU
-static void ImuTask(void *argument); // IMU 采集和姿态融合任务入口
+static void ImuTask(void *argument); // IMU 姿态数据任务入口
 #endif
 
 /**
@@ -105,8 +105,8 @@ void APP_TasksCreate(void) // 创建应用层任务
  */
 static void InitTask(void *argument)
 {
-#if APP_ENABLE_IMU
-    uint8_t imu_ret; // IMU 初始化结果
+#if APP_ENABLE_IMU && (APP_IMU_SOURCE_MODE == APP_IMU_SOURCE_REAL)
+    uint8_t imu_ret; // 真实 IMU 初始化结果
 #endif
 
     (void)argument; // 当前不使用任务参数
@@ -135,17 +135,25 @@ static void InitTask(void *argument)
 #endif
 
 #if APP_ENABLE_IMU
-    /* 2. IMU 初始化和姿态融合初始化 */
-    imu_ret = ImuService_Init(); // 初始化 IMU 驱动和校准流程
-    if (imu_ret == 1) // IMU 初始化成功
+#if APP_IMU_SOURCE_MODE == APP_IMU_SOURCE_REAL
+    /* 2. 真实 IMU 初始化 */
+    imu_ret = ImuService_Init(); // 初始化真实 MPU9250
+    if (imu_ret == 1U) // 判断真实 IMU 是否初始化成功
     {
-        AppStatus_Set(APP_STATUS_IMU_READY); // 标记 IMU 可用
+        AppStatus_Set(APP_STATUS_IMU_READY); // 标记真实 IMU 就绪
         MPU9250_MahonyInit(0.3f, 0.0f); // 初始化 Mahony 姿态融合参数
     }
-    else // IMU 初始化失败
+    else // 真实 IMU 初始化失败
     {
         AppStatus_Set(APP_STATUS_IMU_ERROR); // 标记 IMU 异常
     }
+#elif APP_IMU_SOURCE_MODE == APP_IMU_SOURCE_SIM
+    /* 2. 模拟 IMU 初始化 */
+    AppStatus_Set(APP_STATUS_IMU_READY); // 模拟 IMU 数据源可用，直接标记 IMU 就绪
+    Debug_Print("[IMU] source sim mode\r\n"); // 输出当前使用模拟 IMU 的提示
+#else
+    #error "Invalid APP_IMU_SOURCE_MODE" // IMU 数据来源配置错误
+#endif
 #else
     /* 2. IMU 已通过 APP_ENABLE_IMU 关闭 */
     AppStatus_Clear(APP_STATUS_IMU_READY); // 保持 IMU 未就绪，遥测只使用 GNSS 数据
@@ -160,14 +168,15 @@ static void InitTask(void *argument)
 }
 
 /**
- * @brief IMU 周期任务：采样传感器、更新 Mahony 融合，并发布最新姿态。
+ * @brief IMU 周期任务：按配置生成模拟姿态或采样真实 IMU，并发布最新姿态。
  *
- * 这段任务主要看五件事：
- * 1. 先等 InitTask 把 APP_STATUS_IMU_READY 置位；
- * 2. ImuService_ReadPhys() 读取六轴物理量，并尽量读取 AK8963 磁场；
- * 3. 磁力计有效时走 9 轴 Mahony，磁力计无效时退回 6 轴 Mahony；
- * 4. qAttitude 只写入 MPU9250_GetEulerFusedDeg() 取出的融合姿态；
- * 5. vTaskDelayUntil() 用固定唤醒点维持 IMU 任务周期。
+ * 这段任务主要看六件事：
+ * 1. 模拟模式下直接生成模拟姿态并写入 qAttitude；
+ * 2. 真实模式下先等 InitTask 把 APP_STATUS_IMU_READY 置位；
+ * 3. ImuService_ReadPhys() 读取六轴物理量，并尽量读取 AK8963 磁场；
+ * 4. 磁力计有效时走 9 轴 Mahony，磁力计无效时退回 6 轴 Mahony；
+ * 5. qAttitude 只写入 MPU9250_GetEulerFusedDeg() 取出的融合姿态；
+ * 6. vTaskDelayUntil() 用固定唤醒点维持真实 IMU 任务周期。
  *
  * @param argument FreeRTOS 任务入口参数，当前未使用。
  * @retval None
@@ -193,6 +202,13 @@ static void ImuTask(void *argument) // IMU 采样、融合和姿态队列更新�
 
     while (1) // IMU 任务常驻运行
     {
+#if APP_IMU_SOURCE_MODE == APP_IMU_SOURCE_SIM
+        ImuService_BuildSimAttitude(&attitude); // 构造一帧模拟姿态数据
+        xQueueOverwrite(qAttitude, &attitude); // 将模拟姿态数据写入姿态队列
+        vTaskDelay(pdMS_TO_TICKS(APP_IMU_TASK_PERIOD_MS)); // 按 IMU 任务周期延时
+        continue; // 模拟模式下跳过真实 IMU 读取和 Mahony 融合
+#endif
+
         /* 1. 等待初始化阶段确认 IMU 可用 */
         if (AppStatus_IsSet(APP_STATUS_IMU_READY) == 0) // IMU 尚未就绪
         {
