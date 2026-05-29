@@ -95,10 +95,9 @@ void APP_TasksCreate(void) // 创建应用层任务
  *
  * 主要做四件事：
  * 1. 初始化 LED、调试服务和 A7670E 串口；
- * 2. 打开 A7670E GNSS 电源；
- * 3. 初始化 IMU，并根据结果更新系统状态；
- * 4. 预置 MQTT、网络状态；
- * 5. 删除自身，释放初始化任务资源。
+ * 2. 初始化 IMU，并根据结果更新系统状态；
+ * 3. 预置 GNSS、MQTT、网络状态；
+ * 4. 删除自身，释放初始化任务资源。
  *
  * @param argument FreeRTOS 任务入口参数，当前未使用。
  * @retval None
@@ -116,20 +115,11 @@ static void InitTask(void *argument)
     DebugService_Init(); // 初始化调试串口服务
     BSP_A7670E_Uart_Init(); // 初始化 A7670E 使用的 USART1 PA9/PA10
 
-#if APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_REAL // 如果当前选择真实 GNSS 数据源
-    if (ModemService_GnssInit() == 1U) // 尝试打开 A7670E GNSS 电源
-    {
-        AppStatus_Set(APP_STATUS_GNSS_READY); // 标记真实 GNSS 电源已打开
-        Debug_Print("[GNSS] power on ok\r\n"); // 输出真实 GNSS 上电成功日志
-    }
-    else // GNSS 上电命令未返回成功
-    {
-        AppStatus_Clear(APP_STATUS_GNSS_READY); // 清除 GNSS 就绪状态
-        Debug_Print("[GNSS] power on failed\r\n"); // 输出真实 GNSS 上电失败日志
-    }
-#elif APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_SIM // 如果当前选择模拟 GNSS 数据源
+#if APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_SIM // 如果当前选择模拟 GNSS 数据源
     AppStatus_Set(APP_STATUS_GNSS_READY); // 模拟 GNSS 数据源可用，标记 GNSS 数据源就绪
     Debug_Print("[GNSS] source sim mode\r\n"); // 输出当前使用模拟 GNSS 的提示
+#elif APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_REAL // 如果当前选择真实 GNSS 数据源
+    AppStatus_Clear(APP_STATUS_GNSS_READY); // 真实 GNSS 上电交给 ModemTask 串行处理
 #else // GNSS 数据来源宏定义配置错误
     #error "Invalid APP_GNSS_SOURCE_MODE" // 编译时报错，提醒检查 APP_GNSS_SOURCE_MODE 配置
 #endif
@@ -278,8 +268,14 @@ static void ModemTask(void *argument) // 通信任务，更新 GNSS 数据源并
     MqttPublishMsg_t mqtt_msg; // 待发布 MQTT 消息
     TickType_t now_tick; // 当前任务循环的 tick
     TickType_t last_gnss_tick = 0U; // 上一次查询 GNSS 的 tick
+#if APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_REAL
+    TickType_t last_gnss_init_retry_tick = 0U; // 上一次尝试打开 GNSS 电源的 tick
+#endif
     TickType_t last_net_retry_tick = 0U; // 上一次尝试初始化 4G 网络的 tick
     TickType_t last_mqtt_retry_tick = 0U; // 上一次尝试 MQTT 初始化的 tick
+#if APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_REAL
+    uint8_t gnss_ready = 0U; // GNSS 电源是否已由 ModemTask 串行打开
+#endif
     uint8_t net_ready = 0U; // 4G 网络是否已经初始化成功
     uint8_t mqtt_ready = 0U; // MQTT 是否已经连接服务器，0 表示未连接，1 表示已连接
 
@@ -291,6 +287,32 @@ static void ModemTask(void *argument) // 通信任务，更新 GNSS 数据源并
     while (1) // 通信任务常驻运行
     {
         now_tick = xTaskGetTickCount(); // 读取当前 FreeRTOS tick
+
+#if APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_REAL
+        if (gnss_ready == 0U) // 真实 GNSS 尚未打开
+        {
+            if ((last_gnss_init_retry_tick == 0U) ||
+                ((now_tick - last_gnss_init_retry_tick) >= pdMS_TO_TICKS(APP_GNSS_INIT_RETRY_PERIOD_MS))) // 到达 GNSS 上电重试周期
+            {
+                last_gnss_init_retry_tick = now_tick; // 更新最近一次 GNSS 上电尝试时间
+
+                if (ModemService_GnssInit() == 1U) // 在 ModemTask 内串行打开 A7670E GNSS 电源
+                {
+                    gnss_ready = 1U; // 记录 GNSS 电源已经打开
+
+                    AppStatus_Set(APP_STATUS_GNSS_READY); // 标记真实 GNSS 电源已打开
+
+                    Debug_Print("[GNSS] power on ok\r\n"); // 输出真实 GNSS 上电成功日志
+                }
+                else // GNSS 上电命令未返回成功
+                {
+                    AppStatus_Clear(APP_STATUS_GNSS_READY | APP_STATUS_GNSS_FIX); // 清除 GNSS 就绪和定位状态
+
+                    Debug_Print("[GNSS] power on failed\r\n"); // 输出真实 GNSS 上电失败日志
+                }
+            }
+        }
+#endif
 
         if (net_ready == 0U) // 4G 网络尚未初始化成功
         {
@@ -343,7 +365,13 @@ static void ModemTask(void *argument) // 通信任务，更新 GNSS 数据源并
             last_gnss_tick = now_tick; // 更新最近一次 GNSS 查询或模拟生成时间
 
 #if APP_GNSS_SOURCE_MODE == APP_GNSS_SOURCE_REAL // 当前配置为真实 GNSS 模式
-            if (ModemService_ReadGnss(&gnss) == 1U) // 查询并解析真实经纬度
+            if (gnss_ready == 0U) // GNSS 电源尚未确认打开
+            {
+                AppStatus_Clear(APP_STATUS_GNSS_FIX); // 保持 GNSS_FIX 未定位状态
+
+                Debug_Print("[GNSS] waiting power ready\r\n"); // 提示先等待 GNSS 上电完成
+            }
+            else if (ModemService_ReadGnss(&gnss) == 1U) // 查询并解析真实经纬度
             {
                 AppStatus_Set(APP_STATUS_GNSS_FIX); // 真实 GNSS 定位有效，置位 GNSS_FIX 状态
 

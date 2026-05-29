@@ -65,6 +65,84 @@ static uint16_t ModemService_ReadResponse(char *buf,
 }
 
 /**
+ * @brief 为 GNSS 诊断读取响应，直到指定关键字出现并空闲结束。
+ * @param buf 响应字符串输出缓冲区。
+ * @param buf_size 输出缓冲区长度。
+ * @param timeout_ms 最大等待时间，单位 ms。
+ * @param idle_ms 读到目标关键字后的空闲结束时间，单位 ms。
+ * @param expect 期望关键字，为空时按普通空闲结束。
+ * @retval 实际读取到的字节数。
+ */
+static uint16_t ModemService_ReadResponseUntil(char *buf,
+                                               uint16_t buf_size,
+                                               uint32_t timeout_ms,
+                                               uint32_t idle_ms,
+                                               const char *expect)
+{
+    TickType_t start_tick; // 本次读取开始 tick
+    TickType_t last_rx_tick; // 最近一次收到字节的 tick
+    uint8_t ch; // 从环形缓冲区取出的字节
+    uint16_t count = 0U; // 已写入响应缓存的字节数
+    uint8_t expect_seen = 0U; // 是否已经读到目标关键字
+
+    if ((buf == NULL) || (buf_size == 0U)) // 检查输出缓冲区
+    {
+        return 0U; // 参数无效时不读取
+    }
+
+    memset(buf, 0, buf_size); // 清空响应缓存
+
+    if (expect == NULL) // 未指定目标关键字
+    {
+        expect_seen = 1U; // 按普通响应读取处理
+    }
+
+    start_tick = xTaskGetTickCount(); // 记录读取起点
+    last_rx_tick = start_tick; // 初始化空闲计时起点
+
+    while ((xTaskGetTickCount() - start_tick) < pdMS_TO_TICKS(timeout_ms)) // 等待直到超时
+    {
+        if (BSP_A7670E_Uart_ReceiveByte(&ch) == 1U) // 环形缓冲区有新字节
+        {
+            last_rx_tick = xTaskGetTickCount(); // 刷新最近接收时间
+
+            if (count < (uint16_t)(buf_size - 1U)) // 给字符串结束符保留空间
+            {
+                buf[count] = (char)ch; // 写入当前字节
+                count++; // 推进写入计数
+                buf[count] = '\0'; // 保持响应缓存始终为字符串
+            }
+
+            if ((expect != NULL) && (strstr(buf, expect) != NULL)) // 找到目标关键字
+            {
+                expect_seen = 1U; // 标记目标响应已经出现
+            }
+
+            if ((strstr(buf, "+CME ERROR") != NULL) ||
+                (strstr(buf, "\r\nERROR") != NULL)) // 模块明确返回错误
+            {
+                break; // 不再等待超时
+            }
+        }
+        else // 当前没有新字节
+        {
+            if ((count > 0U) &&
+                (expect_seen != 0U) &&
+                ((xTaskGetTickCount() - last_rx_tick) >= pdMS_TO_TICKS(idle_ms))) // 目标响应后空闲足够久
+            {
+                break; // 认为本次 AT 响应已结束
+            }
+
+            vTaskDelay(pdMS_TO_TICKS(1)); // 让出 CPU，等待后续串口中断填充缓冲区
+        }
+    }
+
+    buf[count] = '\0'; // 确保输出以字符串结束
+
+    return count; // 返回读取长度
+}
+
+/**
  * @brief 发送一条 AT 指令并读取原始响应。
  * @param cmd 不带换行符的 AT 指令字符串。
  * @param resp 响应字符串输出缓冲区。
@@ -647,19 +725,65 @@ static double ModemService_NmeaToDegree(const char *value, char hemi)
 uint8_t ModemService_GnssInit(void)
 {
     char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 GNSS 上电 AT 响应
+    uint16_t resp_len; // 保存 GNSS 上电响应长度
 
     BSP_A7670E_Uart_RxClear(); // 清掉上一次 AT 响应残留
 
+    Debug_Print("[GNSS INIT] CMD=AT+CGNSSPWR?\r\n"); // 查询 GNSS 当前电源状态
+
+    BSP_A7670E_Uart_SendString("AT+CGNSSPWR?\r\n"); // 查询 A7670E GNSS 电源状态
+
+    resp_len = ModemService_ReadResponseUntil(resp, // 读取 GNSS 电源状态响应
+                                              sizeof(resp),
+                                              3000U,
+                                              300U,
+                                              "+CGNSSPWR:");
+
+    Debug_Printf("[GNSS INIT] status len=%u ovf=%u avail=%u resp=%s\r\n", // 输出 GNSS 电源状态响应
+                 (unsigned int)resp_len,
+                 (unsigned int)BSP_A7670E_Uart_GetOverflow(),
+                 (unsigned int)BSP_A7670E_Uart_RxAvailable(),
+                 resp);
+
+    if ((strstr(resp, "+CGNSSPWR: 1") != NULL) ||
+        (strstr(resp, "+CGNSSPWR: READY") != NULL)) // GNSS 已经处于上电状态
+    {
+        return 1U; // 已经可进入后续定位查询
+    }
+
+    BSP_A7670E_Uart_RxClear(); // 清掉状态查询响应残留
+
+    Debug_Print("[GNSS INIT] CMD=AT+CGNSSPWR=1\r\n"); // 输出 GNSS 上电指令
+
     BSP_A7670E_Uart_SendString("AT+CGNSSPWR=1\r\n"); // 打开 A7670E GNSS 电源
 
-    ModemService_ReadResponse(resp, sizeof(resp), 3000U, 200U); // 等待模块返回
+    resp_len = ModemService_ReadResponseUntil(resp, // 等待 READY 异步上报或超时
+                                              sizeof(resp),
+                                              12000U,
+                                              500U,
+                                              "+CGNSSPWR: READY");
 
-    Debug_Printf("[GNSS INIT] %s\r\n", resp); // 输出 GNSS 初始化原始响应
+    Debug_Printf("[GNSS INIT] len=%u ovf=%u avail=%u resp=%s\r\n", // 输出 GNSS 上电诊断信息
+                 (unsigned int)resp_len,
+                 (unsigned int)BSP_A7670E_Uart_GetOverflow(),
+                 (unsigned int)BSP_A7670E_Uart_RxAvailable(),
+                 resp);
 
-    if ((strstr(resp, "OK") != NULL) ||
-        (strstr(resp, "READY") != NULL)) // OK 或 READY 都认为 GNSS 电源已打开
+    if ((strstr(resp, "+CGNSSPWR: READY") != NULL) ||
+        (strstr(resp, "+CGNSSPWR: 1") != NULL)) // GNSS 内核已经 ready 或已处于上电状态
     {
         return 1U; // GNSS 上电成功
+    }
+
+    if (strstr(resp, "OK") != NULL) // 只收到 OK，没有等到 READY
+    {
+        Debug_Print("[GNSS INIT] only OK, READY not seen yet\r\n"); // 提示 GNSS 内核尚未确认 ready
+        return 0U; // 不把单独 OK 当成 GNSS 可查询，避免过早发送 CGPSINFO
+    }
+
+    if (resp_len == 0U) // 完全没有收到模块响应
+    {
+        Debug_Print("[GNSS INIT] no response\r\n"); // 提示检查串口或模块电源
     }
 
     return 0U; // GNSS 上电失败
@@ -679,6 +803,7 @@ uint8_t ModemService_ReadGnss(GnssData_t *gnss)
     char *field[10]; // +CGPSINFO 字段指针表
     char *token; // strtok 当前字段
     uint32_t line_len; // +CGPSINFO 单行长度
+    uint16_t resp_len; // AT+CGPSINFO 原始响应长度
     uint8_t field_count = 0U; // 已解析字段数
 
     if (gnss == NULL) // 检查输出结构体
@@ -690,14 +815,40 @@ uint8_t ModemService_ReadGnss(GnssData_t *gnss)
 
     BSP_A7670E_Uart_RxClear(); // 清除旧响应，避免影响本次解析
 
+    Debug_Print("[GNSS] CMD=AT+CGPSINFO\r\n"); // 输出本轮 GNSS 查询指令
+
     BSP_A7670E_Uart_SendString("AT+CGPSINFO\r\n"); // 查询当前定位信息
 
-    ModemService_ReadResponse(resp, sizeof(resp), 3000U, 300U); // 等待 +CGPSINFO 响应
+    resp_len = ModemService_ReadResponseUntil(resp, // 等待 +CGPSINFO 响应，避免只读到回显就结束
+                                              sizeof(resp),
+                                              9000U,
+                                              500U,
+                                              "+CGPSINFO:");
+
+    Debug_Printf("[GNSS] cgpsinfo len=%u ovf=%u avail=%u raw=%s\r\n", // 输出原始响应和接收状态
+                 (unsigned int)resp_len,
+                 (unsigned int)BSP_A7670E_Uart_GetOverflow(),
+                 (unsigned int)BSP_A7670E_Uart_RxAvailable(),
+                 resp);
+
+    if (resp_len == 0U) // 本轮没有收到任何响应
+    {
+        Debug_Print("[GNSS] fail=no response\r\n"); // 提示串口、模块或命令响应异常
+        return 0U; // 本轮解析失败
+    }
 
     start = strstr(resp, "+CGPSINFO:"); // 定位到响应正文
     if (start == NULL) // 没有找到响应头
     {
-        Debug_Printf("[GNSS] no +CGPSINFO resp=%s\r\n", resp); // 输出原始响应用于排查
+        if ((strstr(resp, "+CME ERROR") != NULL) ||
+            (strstr(resp, "\r\nERROR") != NULL)) // 模块明确返回错误
+        {
+            Debug_Print("[GNSS] fail=module error\r\n"); // 提示命令不支持或 GNSS 未就绪
+        }
+        else // 没有错误码但也没有定位响应头
+        {
+            Debug_Print("[GNSS] fail=no +CGPSINFO header\r\n"); // 提示响应格式不符合解析器预期
+        }
         return 0U; // 本轮解析失败
     }
 
@@ -710,6 +861,7 @@ uint8_t ModemService_ReadGnss(GnssData_t *gnss)
     line_len = (uint32_t)(end - start); // 计算响应行长度
     if (line_len >= sizeof(line)) // 防止单行超出本地缓存
     {
+        Debug_Printf("[GNSS] fail=line too long len=%lu\r\n", (unsigned long)line_len); // 输出异常行长度
         return 0U; // 响应异常过长
     }
 
@@ -720,6 +872,7 @@ uint8_t ModemService_ReadGnss(GnssData_t *gnss)
     start = strstr(line, ":"); // 找到字段区起点
     if (start == NULL) // 响应行没有冒号
     {
+        Debug_Printf("[GNSS] fail=no colon line=%s\r\n", line); // 输出无法解析的响应行
         return 0U; // 格式不符合预期
     }
 
@@ -732,7 +885,7 @@ uint8_t ModemService_ReadGnss(GnssData_t *gnss)
 
     if (*start == ',') // 第一个字段为空表示还没有定位
     {
-        Debug_Print("[GNSS] no fix\r\n"); // 输出未定位提示
+        Debug_Printf("[GNSS] fail=no fix line=%s\r\n", line); // 输出未定位的完整字段行
         return 0U; // 本轮无有效定位
     }
 
@@ -747,17 +900,20 @@ uint8_t ModemService_ReadGnss(GnssData_t *gnss)
 
     if (field_count < 4U) // 至少需要纬度、南北半球、经度、东西半球
     {
+        Debug_Printf("[GNSS] fail=field count %u line=%s\r\n", (unsigned int)field_count, line); // 输出字段不足信息
         return 0U; // 字段不足
     }
 
     if ((field[0] == NULL) || (field[1] == NULL) ||
         (field[2] == NULL) || (field[3] == NULL)) // 检查关键字段指针
     {
+        Debug_Print("[GNSS] fail=key field null\r\n"); // 输出关键字段缺失
         return 0U; // 关键字段缺失
     }
 
     if ((field[0][0] == '\0') || (field[2][0] == '\0')) // 检查经纬度字符串
     {
+        Debug_Printf("[GNSS] fail=lat lon empty line=%s\r\n", line); // 输出经纬度为空的响应行
         return 0U; // 经纬度为空
     }
 
@@ -777,6 +933,12 @@ uint8_t ModemService_ReadGnss(GnssData_t *gnss)
     gnss->gps_num = 0U; // 本阶段不解析卫星数量
     gnss->fix_valid = 1U; // 经纬度解析成功即认为定位有效
     gnss->timestamp_ms = xTaskGetTickCount(); // 写入当前 tick 时间戳
+
+    Debug_Printf("[GNSS] fix fields=%u lat=%.6f lon=%.6f alt=%.1f\r\n", // 输出解析成功后的定位结果
+                 (unsigned int)field_count,
+                 gnss->latitude,
+                 gnss->longitude,
+                 gnss->altitude_m);
 
     return 1U; // 返回定位有效
 }
