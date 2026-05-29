@@ -481,28 +481,48 @@ uint8_t ModemService_MqttInit(void)
 }
 
 /**
- * @brief 使用固定 topic 和固定 payload 测试 A7670E MQTT 发布功能。
+ * @brief 通过 A7670E MQTT 发布一条已组装好的遥测消息。
+ * @param msg 待发布 MQTT 消息，内部使用 msg->topic 和 msg->payload。
  * @retval 1U 表示 MQTT 发布成功。
  * @retval 0U 表示 MQTT 发布失败。
  */
-static uint8_t ModemService_MqttPublishTest(void)
+static uint8_t ModemService_MqttPublishMsg(const MqttPublishMsg_t *msg)
 {
-    const char *test_topic = "aeropush/telemetry"; // 固定测试 topic，MQTTX 订阅这个主题
-    const char *test_payload = "{\"test\":1,\"lat\":36.000000,\"lon\":120.000000}"; // 固定测试 JSON payload
+    const char *publish_topic; // 指向待发布 MQTT 主题字符串
+    const char *publish_payload; // 指向待发布 MQTT JSON 负载字符串
     char cmd[64]; // 保存 AT 指令字符串
     char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 A7670E 返回响应
     uint32_t topic_len; // 保存 topic 字符串长度
     uint32_t payload_len; // 保存 payload 字符串长度
     int cmd_len; // 保存 snprintf 返回值，用于检查 AT 指令是否拼接成功
 
-    topic_len = strlen(test_topic); // 计算 topic 的长度，A7670E 需要先知道 topic 字节数
-    payload_len = strlen(test_payload); // 计算 payload 的长度，A7670E 需要先知道 payload 字节数
+    if (msg == NULL) // 检查待发布消息指针
+    {
+        Debug_Print("[MQTT PUB] msg null\r\n"); // 输出空消息指针日志
+
+        return 0U; // 消息为空时不能发布
+    }
+
+    publish_topic = msg->topic; // 取出 TelemetryTask 组装好的 MQTT 主题
+    publish_payload = msg->payload; // 取出 TelemetryTask 组装好的 MQTT JSON 负载
+
+    topic_len = strlen(publish_topic); // 计算 topic 的长度，A7670E 需要先知道 topic 字节数
+    payload_len = strlen(publish_payload); // 计算 payload 的长度，A7670E 需要先知道 payload 字节数
 
     if ((topic_len == 0U) || (payload_len == 0U)) // 检查 topic 和 payload 是否为空
     {
-        Debug_Print("[MQTT PUB] test topic or payload empty\r\n"); // 输出测试数据为空日志
+        Debug_Print("[MQTT PUB] topic or payload empty\r\n"); // 输出发布内容为空日志
 
         return 0U; // topic 或 payload 为空时不能发布
+    }
+
+    if ((msg->payload_len != 0U) && (msg->payload_len != (uint16_t)payload_len)) // 检查结构体记录长度是否和字符串长度一致
+    {
+        Debug_Printf("[MQTT PUB] payload len mismatch msg=%u real=%lu\r\n", // 输出长度不一致日志
+                     msg->payload_len, // 输出 TelemetryTask 写入的 payload_len
+                     (unsigned long)payload_len); // 输出当前字符串实际长度
+
+        return 0U; // 长度不一致时避免 A7670E 等待错误字节数
     }
 
     cmd_len = snprintf(cmd, // 将组合后的 AT 指令写入 cmd 缓冲区
@@ -526,7 +546,7 @@ static uint8_t ModemService_MqttPublishTest(void)
 
     BSP_A7670E_Uart_RxClear(); // 清空旧响应，准备接收 topic 写入后的 OK
 
-    BSP_A7670E_Uart_SendString(test_topic); // 发送固定 topic 内容，不额外添加 \r\n
+    BSP_A7670E_Uart_SendString(publish_topic); // 发送 MQTT topic 内容，不额外添加 \r\n
 
     ModemService_ReadResponse(resp, sizeof(resp), 5000U, 300U); // 读取 topic 内容写入后的响应
 
@@ -558,7 +578,7 @@ static uint8_t ModemService_MqttPublishTest(void)
 
     BSP_A7670E_Uart_RxClear(); // 清空旧响应，准备接收 payload 写入后的 OK
 
-    BSP_A7670E_Uart_SendString(test_payload); // 发送固定 JSON payload，不额外添加 \r\n
+    BSP_A7670E_Uart_SendString(publish_payload); // 发送 MQTT JSON payload，不额外添加 \r\n
 
     ModemService_ReadResponse(resp, sizeof(resp), 5000U, 300U); // 读取 payload 内容写入后的响应
 
@@ -581,7 +601,7 @@ static uint8_t ModemService_MqttPublishTest(void)
         return 0U; // 发布失败
     }
 
-    Debug_Print("[MQTT PUB] test publish ok\r\n"); // 输出固定测试消息发布成功日志
+    Debug_Print("[MQTT PUB] msg publish ok\r\n"); // 输出 MQTT 消息发布成功日志
 
     return 1U; // 发布成功
 }
@@ -793,18 +813,16 @@ void ModemService_BuildSimGnss(GnssData_t *gnss) // 构造模拟 GNSS 数据
 
 /**
  * @brief 处理一条待发布 MQTT 消息。
- * @param msg 待发布 MQTT 消息，当前测试阶段暂时不使用其内容。
+ * @param msg 待发布 MQTT 消息。
  * @retval None
  */
 void ModemService_Publish(const MqttPublishMsg_t *msg) // 处理 MQTT 发布请求
 {
-    (void)msg; // 当前阶段先不使用 TelemetryTask 组装的消息，只测试固定 MQTT 发布数据
-
-    if (ModemService_MqttPublishTest() == 1U) // 发布固定 topic 和固定 payload
+    if (ModemService_MqttPublishMsg(msg) == 1U) // 发布 TelemetryTask 组装好的 topic 和 payload
     {
         Debug_Print("[MQTT PUB] publish ok\r\n"); // 输出发布成功日志
     }
-    else // 固定 MQTT 测试消息发布失败
+    else // MQTT 消息发布失败
     {
         Debug_Print("[MQTT PUB] publish failed\r\n"); // 输出发布失败日志
     }
