@@ -4,7 +4,7 @@
 #define APP_ENABLE_IMU 1U // 0 关闭 IMU，1 启用 IMU
 #define APP_IMU_SOURCE_REAL 1U // IMU 数据来源：真实 MPU9250
 #define APP_IMU_SOURCE_SIM 2U // IMU 数据来源：软件模拟姿态
-#define APP_IMU_SOURCE_MODE APP_IMU_SOURCE_SIM // 当前阶段默认使用模拟 IMU 姿态
+#define APP_IMU_SOURCE_MODE APP_IMU_SOURCE_REAL // 当前阶段使用真实 MPU9250 姿态
 
 #define APP_TASK_INIT_STACK_SIZE 1024 // 初始化任务栈大小
 #define APP_TASK_IMU_STACK_SIZE 256 // IMU 任务栈大小

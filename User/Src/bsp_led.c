@@ -28,8 +28,8 @@ void BSP_LED_Init(void) // 初始化 LED GPIO
  */
 void BSP_LED_On(void) // 打开 LED
 {
-    GPIO_SetBits(LED_RED_Port, LED_RED_Pin); // 置位红灯引脚
-    GPIO_WriteBit(LED_GREEN_Port, LED_GREEN_Pin, Bit_SET); // 置位绿灯引脚
+    GPIO_ResetBits(LED_RED_Port, LED_RED_Pin); // 低电平点亮红灯
+    GPIO_WriteBit(LED_GREEN_Port, LED_GREEN_Pin, Bit_RESET); // 低电平点亮绿灯
 }
 
 /**
@@ -38,8 +38,8 @@ void BSP_LED_On(void) // 打开 LED
  */
 void BSP_LED_Off(void) // 关闭 LED
 {
-    GPIO_WriteBit(LED_RED_Port, LED_RED_Pin, Bit_RESET); // 复位红灯引脚
-    GPIO_ResetBits(LED_GREEN_Port, LED_GREEN_Pin); // 复位绿灯引脚
+    GPIO_WriteBit(LED_RED_Port, LED_RED_Pin, Bit_SET); // 高电平关闭红灯
+    GPIO_SetBits(LED_GREEN_Port, LED_GREEN_Pin); // 高电平关闭绿灯
 }
 
 /**
@@ -50,8 +50,8 @@ void BSP_LED_Off(void) // 关闭 LED
  */
 void BSP_LED_Set(uint8_t red_on, uint8_t green_on) // 分别设置红绿 LED
 {
-    GPIO_WriteBit(LED_RED_Port, LED_RED_Pin, (red_on != 0U) ? Bit_SET : Bit_RESET); // 设置红灯状态
-    GPIO_WriteBit(LED_GREEN_Port, LED_GREEN_Pin, (green_on != 0U) ? Bit_SET : Bit_RESET); // 设置绿灯状态
+    GPIO_WriteBit(LED_RED_Port, LED_RED_Pin, (red_on != 0U) ? Bit_RESET : Bit_SET); // 低电平点亮红灯
+    GPIO_WriteBit(LED_GREEN_Port, LED_GREEN_Pin, (green_on != 0U) ? Bit_RESET : Bit_SET); // 低电平点亮绿灯
 }
 
 /**

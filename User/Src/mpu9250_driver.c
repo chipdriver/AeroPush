@@ -40,7 +40,7 @@
 #define MPU9250_GYRO_LSB_PER_DPS 32.8f // 陀螺仪 +-1000dps 量程下每 dps 对应 LSB
 #define AK8963_16BIT_UT_PER_LSB 0.15f // AK8963 16 位模式下每 LSB 对应微特斯拉
 #define AK8963_MAG_RADIUS_MIN_UT 5.0f // 磁场半径有效性下限，过滤异常拟合
-#define AK8963_MAG_CAL_MAX_SAMPLES 500U // 磁力计校准最多采样点数
+#define AK8963_MAG_CAL_MAX_SAMPLES 1000U // 磁力计校准最多采样点数
 #define AK8963_MAG_FIT_PARAM_COUNT 9U // 椭球拟合参数数量
 #define AK8963_MAG_FIT_MAX_ITERATIONS 24U // 椭球拟合最大迭代次数
 #define AK8963_MAG_FIT_MIN_VALID_SAMPLES 64U // 椭球拟合最少有效样本数
@@ -1374,7 +1374,7 @@ uint8_t MPU9250_Driver_Init(void)
     AppStatus_SetCalState(APP_CAL_STATE_STATIC); // 进入陀螺仪和加速度计静止校准灯语
     MPU9250_CalibrateGyro(1000U, 10U); // 校准陀螺仪零偏
     MPU9250_CalibrateAccel(1000U, 10U); // 校准加速度计零偏
-    AK8963_CalibrateMag(500U, 20U); // 校准磁力计硬铁和软铁误差
+    AK8963_CalibrateMag(1000U, 20U); // 校准磁力计硬铁和软铁误差
     Debug_Print("[MPU9250] driver init ok\r\n"); // 输出驱动初始化成功日志
 
     return 1U; // 驱动初始化成功
