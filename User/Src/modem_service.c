@@ -481,6 +481,112 @@ uint8_t ModemService_MqttInit(void)
 }
 
 /**
+ * @brief 使用固定 topic 和固定 payload 测试 A7670E MQTT 发布功能。
+ * @retval 1U 表示 MQTT 发布成功。
+ * @retval 0U 表示 MQTT 发布失败。
+ */
+static uint8_t ModemService_MqttPublishTest(void)
+{
+    const char *test_topic = "aeropush/telemetry"; // 固定测试 topic，MQTTX 订阅这个主题
+    const char *test_payload = "{\"test\":1,\"lat\":36.000000,\"lon\":120.000000}"; // 固定测试 JSON payload
+    char cmd[64]; // 保存 AT 指令字符串
+    char resp[A7670E_AT_RESP_BUF_SIZE]; // 保存 A7670E 返回响应
+    uint32_t topic_len; // 保存 topic 字符串长度
+    uint32_t payload_len; // 保存 payload 字符串长度
+    int cmd_len; // 保存 snprintf 返回值，用于检查 AT 指令是否拼接成功
+
+    topic_len = strlen(test_topic); // 计算 topic 的长度，A7670E 需要先知道 topic 字节数
+    payload_len = strlen(test_payload); // 计算 payload 的长度，A7670E 需要先知道 payload 字节数
+
+    if ((topic_len == 0U) || (payload_len == 0U)) // 检查 topic 和 payload 是否为空
+    {
+        Debug_Print("[MQTT PUB] test topic or payload empty\r\n"); // 输出测试数据为空日志
+
+        return 0U; // topic 或 payload 为空时不能发布
+    }
+
+    cmd_len = snprintf(cmd, // 将组合后的 AT 指令写入 cmd 缓冲区
+                       sizeof(cmd), // 限制 cmd 缓冲区大小，防止越界
+                       "AT+CMQTTTOPIC=0,%lu", // 设置 MQTT topic 长度，客户端编号为 0
+                       (unsigned long)topic_len); // 写入 topic 长度
+
+    if ((cmd_len <= 0) || ((uint32_t)cmd_len >= sizeof(cmd))) // 检查 AT 指令是否完整写入缓冲区
+    {
+        Debug_Print("[MQTT PUB] topic cmd overflow\r\n"); // 输出 topic 指令拼接失败日志
+
+        return 0U; // 指令拼接失败
+    }
+
+    if (ModemService_SendCmdAndWait(cmd, ">", resp, sizeof(resp), 5000U, 300U) == 0U) // 发送 topic 长度并等待 > 提示符
+    {
+        Debug_Printf("[MQTT PUB] topic prompt failed resp=%s\r\n", resp); // 输出 topic 提示符失败响应
+
+        return 0U; // 没有等到 >，发布失败
+    }
+
+    BSP_A7670E_Uart_RxClear(); // 清空旧响应，准备接收 topic 写入后的 OK
+
+    BSP_A7670E_Uart_SendString(test_topic); // 发送固定 topic 内容，不额外添加 \r\n
+
+    ModemService_ReadResponse(resp, sizeof(resp), 5000U, 300U); // 读取 topic 内容写入后的响应
+
+    Debug_Printf("[MQTT PUB] topic resp=%s\r\n", resp); // 打印 topic 写入响应
+
+    if (strstr(resp, "OK") == NULL) // 判断 topic 内容是否写入成功
+    {
+        return 0U; // 没有 OK，说明 topic 写入失败
+    }
+
+    cmd_len = snprintf(cmd, // 将组合后的 AT 指令写入 cmd 缓冲区
+                       sizeof(cmd), // 限制 cmd 缓冲区大小，防止越界
+                       "AT+CMQTTPAYLOAD=0,%lu", // 设置 MQTT payload 长度，客户端编号为 0
+                       (unsigned long)payload_len); // 写入 payload 长度
+
+    if ((cmd_len <= 0) || ((uint32_t)cmd_len >= sizeof(cmd))) // 检查 AT 指令是否完整写入缓冲区
+    {
+        Debug_Print("[MQTT PUB] payload cmd overflow\r\n"); // 输出 payload 指令拼接失败日志
+
+        return 0U; // 指令拼接失败
+    }
+
+    if (ModemService_SendCmdAndWait(cmd, ">", resp, sizeof(resp), 5000U, 300U) == 0U) // 发送 payload 长度并等待 > 提示符
+    {
+        Debug_Printf("[MQTT PUB] payload prompt failed resp=%s\r\n", resp); // 输出 payload 提示符失败响应
+
+        return 0U; // 没有等到 >，发布失败
+    }
+
+    BSP_A7670E_Uart_RxClear(); // 清空旧响应，准备接收 payload 写入后的 OK
+
+    BSP_A7670E_Uart_SendString(test_payload); // 发送固定 JSON payload，不额外添加 \r\n
+
+    ModemService_ReadResponse(resp, sizeof(resp), 5000U, 300U); // 读取 payload 内容写入后的响应
+
+    Debug_Printf("[MQTT PUB] payload resp=%s\r\n", resp); // 打印 payload 写入响应
+
+    if (strstr(resp, "OK") == NULL) // 判断 payload 内容是否写入成功
+    {
+        return 0U; // 没有 OK，说明 payload 写入失败
+    }
+
+    if (ModemService_SendCmdAndWait("AT+CMQTTPUB=0,0,60", // 发布客户端 0 的消息，QoS=0，超时 60 秒
+                                    "+CMQTTPUB: 0,0", // 期望发布成功事件
+                                    resp, // 保存模块响应
+                                    sizeof(resp), // 响应缓冲区大小
+                                    10000U, // 最长等待 10000 ms
+                                    500U) == 0U) // 等待发布结果
+    {
+        Debug_Printf("[MQTT PUB] pub failed resp=%s\r\n", resp); // 输出发布失败响应
+
+        return 0U; // 发布失败
+    }
+
+    Debug_Print("[MQTT PUB] test publish ok\r\n"); // 输出固定测试消息发布成功日志
+
+    return 1U; // 发布成功
+}
+
+/**
  * @brief 将 NMEA 经纬度格式转换为十进制度。
  * @param value NMEA 数值字符串，纬度为 DDMM.MMMM，经度为 DDDMM.MMMM。
  * @param hemi 半球字符，N/E 为正，S/W 为负。
@@ -687,17 +793,19 @@ void ModemService_BuildSimGnss(GnssData_t *gnss) // 构造模拟 GNSS 数据
 
 /**
  * @brief 处理一条待发布 MQTT 消息。
- * @param msg 待发布 MQTT 消息。
+ * @param msg 待发布 MQTT 消息，当前测试阶段暂时不使用其内容。
  * @retval None
  */
 void ModemService_Publish(const MqttPublishMsg_t *msg) // 处理 MQTT 发布请求
 {
-    if (msg == NULL) // 检查输入指针
-    {
-        return; // 输入指针为空时不处理
-    }
+    (void)msg; // 当前阶段先不使用 TelemetryTask 组装的消息，只测试固定 MQTT 发布数据
 
-    // Debug_Printf("[UART6 OUT] topic=%s payload=%s\r\n", // 本阶段只通过 USART6 输出遥测 JSON
-    //              msg->topic, // 输出遥测主题
-    //              msg->payload); // 输出遥测 JSON 负载
+    if (ModemService_MqttPublishTest() == 1U) // 发布固定 topic 和固定 payload
+    {
+        Debug_Print("[MQTT PUB] publish ok\r\n"); // 输出发布成功日志
+    }
+    else // 固定 MQTT 测试消息发布失败
+    {
+        Debug_Print("[MQTT PUB] publish failed\r\n"); // 输出发布失败日志
+    }
 }
