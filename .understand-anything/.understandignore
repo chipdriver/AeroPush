@@ -1,0 +1,36 @@
+# .understandignore - patterns for files/dirs to exclude from analysis
+# Syntax: same as .gitignore.
+#
+# Keep source, headers, project files, CMake files, and Docs visible.
+# Exclude generated Keil/CMake build artifacts so the architecture graph
+# describes the firmware source instead of compiler outputs.
+
+Objects/
+Listings/
+project_cmake/build/
+.understand-anything/
+
+*.o
+*.d
+*.axf
+*.map
+*.lnp
+*.dep
+*.log
+*.build_log.htm
+*.htm
+*.uvguix.*
+
+# Vendor documentation/examples and unused binary library drops.
+Lib/Libraries/CMSIS/Documentation/
+Lib/Libraries/CMSIS/DSP_Lib/
+Lib/Libraries/CMSIS/Lib/
+Lib/Libraries/CMSIS/*.html
+Lib/Libraries/CMSIS/*LICENCE*.rtf
+Lib/Libraries/CMSIS/*license*.txt
+Lib/Libraries/CMSIS/RTOS/Template/
+Lib/STM32F4xx_StdPeriph_Templates/
+Lib/Libraries/*/Release_Notes.html
+
+# Built-in defaults also exclude common folders/files such as:
+# node_modules/, .git/, dist/, build/, obj/, *.lock, *.min.js, media assets.

@@ -1,0 +1,1763 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "AeroPush",
+    "languages": [
+      "c",
+      "asm",
+      "cmake"
+    ],
+    "frameworks": [
+      "STM32F4",
+      "FreeRTOS",
+      "CMSIS",
+      "STM32F4xx StdPeriph"
+    ],
+    "description": "基于 STM32F411、FreeRTOS、MPU9250 IMU 和 A7670E 蜂窝模块的嵌入式遥测固件。Domain 图聚焦实际运行链路。",
+    "analyzedAt": "2026-05-31T02:48:55.730Z",
+    "gitCommitHash": "a58502e2cdd08711f0b295550dc7c9abe3f4030e"
+  },
+  "nodes": [
+    {
+      "id": "domain:firmware-runtime",
+      "type": "domain",
+      "name": "固件启动与任务调度",
+      "summary": "负责从 STM32 入口进入 AeroPush 应用层，创建 FreeRTOS 任务、队列、互斥锁和事件组，并启动调度器。InitTask 在调度开始后完成一次性外设和服务初始化。",
+      "tags": [
+        "startup",
+        "freertos",
+        "runtime"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "main",
+          "APP_Main",
+          "InitTask",
+          "FreeRTOS objects"
+        ],
+        "businessRules": [
+          "所有队列、互斥锁和事件组必须在调度器启动前创建",
+          "InitTask 完成一次性初始化后删除自身"
+        ],
+        "crossDomainInteractions": [
+          "启动 IMU、A7670E 串口、状态位和 LED 服务"
+        ]
+      }
+    },
+    {
+      "id": "domain:attitude-sensing",
+      "type": "domain",
+      "name": "IMU 姿态采集与融合",
+      "summary": "负责获取 MPU9250 和 AK8963 数据，按磁力计有效性选择九轴或六轴 Mahony 融合，并发布最新欧拉角。当前配置启用真实 MPU9250，模拟姿态分支仍作为回退工具保留。",
+      "tags": [
+        "imu",
+        "mpu9250",
+        "mahony"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entities": [
+          "MPU9250",
+          "AK8963",
+          "AttitudeData_t",
+          "qAttitude"
+        ],
+        "businessRules": [
+          "qAttitude 长度为 1，只保留最新姿态",
+          "磁力计不可用时退回六轴融合",
+          "当前 APP_IMU_SOURCE_MODE 为 APP_IMU_SOURCE_REAL"
+        ],
+        "crossDomainInteractions": [
+          "向遥测流程提供横滚角、俯仰角和航向角"
+        ]
+      }
+    },
+    {
+      "id": "domain:positioning",
+      "type": "domain",
+      "name": "GNSS 定位更新",
+      "summary": "负责驱动 A7670E GNSS 上电、查询定位响应并解析经纬度，然后覆盖发布最新定位。当前配置启用真实 GNSS，模拟轨迹构造函数仍保留用于联调。",
+      "tags": [
+        "gnss",
+        "a7670e",
+        "location"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entities": [
+          "GnssData_t",
+          "qGnss",
+          "CGNSSPWR",
+          "CGPSINFO"
+        ],
+        "businessRules": [
+          "真实 GNSS 必须确认 READY 后才能查询定位",
+          "qGnss 长度为 1，只保留最新定位",
+          "当前 APP_GNSS_SOURCE_MODE 为 APP_GNSS_SOURCE_REAL"
+        ],
+        "crossDomainInteractions": [
+          "复用 A7670E 串口事务，向遥测流程提供定位数据"
+        ]
+      }
+    },
+    {
+      "id": "domain:cellular-mqtt",
+      "type": "domain",
+      "name": "4G 网络与 MQTT 发布",
+      "summary": "负责通过 A7670E AT 指令完成 LTE 注册、数据网络打开、MQTT 客户端连接和遥测消息发布。ModemTask 串行执行网络、MQTT、GNSS 和发布处理，避免多个消费者同时读取接收环形缓冲区。",
+      "tags": [
+        "a7670e",
+        "lte",
+        "mqtt"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entities": [
+          "ModemTask",
+          "MqttPublishMsg_t",
+          "qMqttPublish",
+          "A7670E"
+        ],
+        "businessRules": [
+          "LTE 注册成功后才能打开数据网络",
+          "4G 网络就绪后才能初始化 MQTT",
+          "AT 响应由 ModemTask 路径串行消费"
+        ],
+        "crossDomainInteractions": [
+          "消费遥测发布队列，依赖 A7670E 串口传输"
+        ]
+      }
+    },
+    {
+      "id": "domain:modem-transport",
+      "type": "domain",
+      "name": "A7670E 串口传输",
+      "summary": "负责 USART1 初始化、接收中断写入环形缓冲区，以及任务侧逐字节读取 AT 响应。它是 GNSS、LTE 和 MQTT 共用的底层传输通道。",
+      "tags": [
+        "uart",
+        "ring-buffer",
+        "a7670e"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "USART1",
+          "RX ring buffer",
+          "BSP_A7670E_Uart_IRQHandler"
+        ],
+        "businessRules": [
+          "中断只写环形缓冲区，任务侧负责消费",
+          "环形缓冲区满时置位溢出标志并丢弃当前字节"
+        ],
+        "crossDomainInteractions": [
+          "承载 GNSS、LTE 和 MQTT 的 AT 指令与响应"
+        ]
+      }
+    },
+    {
+      "id": "domain:telemetry-status",
+      "type": "domain",
+      "name": "遥测组包与运行状态",
+      "summary": "负责从姿态和 GNSS 最新值队列构造 JSON 遥测消息，并维护运行状态位与 LED 灯语。遥测队列把数据生产与 A7670E 发布节奏解耦。",
+      "tags": [
+        "telemetry",
+        "status",
+        "led"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "TelemetryTask",
+          "AppStatus",
+          "LedTask",
+          "qMqttPublish"
+        ],
+        "businessRules": [
+          "姿态和 GNSS 均无效时不发送空遥测",
+          "qMqttPublish 长度为 4，用于缓冲待发布消息",
+          "LED 灯语由校准状态驱动"
+        ],
+        "crossDomainInteractions": [
+          "读取传感器与定位数据，向 MQTT 发布流程交付消息"
+        ]
+      }
+    },
+    {
+      "id": "flow:firmware-boot",
+      "type": "flow",
+      "name": "启动应用并进入 FreeRTOS",
+      "summary": "从 STM32 main 进入应用层，创建任务和共享 RTOS 对象后启动调度器。",
+      "tags": [
+        "startup",
+        "freertos"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "MCU reset",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:firmware-boot:enter-main",
+      "type": "step",
+      "name": "进入 STM32 主函数",
+      "filePath": "User/Src/main.c",
+      "lineRange": [
+        6,
+        14
+      ],
+      "summary": "SystemInit 完成底层启动后，main 调用 APP_Main。",
+      "tags": [
+        "startup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:firmware-boot:enter-app-main",
+      "type": "step",
+      "name": "进入应用层入口",
+      "filePath": "User/Src/app_main.c",
+      "lineRange": [
+        10,
+        20
+      ],
+      "summary": "APP_Main 组织任务、RTOS 对象和调度器的初始化顺序。",
+      "tags": [
+        "startup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:firmware-boot:create-tasks",
+      "type": "step",
+      "name": "创建应用任务",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        53,
+        91
+      ],
+      "summary": "创建 InitTask、ImuTask、ModemTask、TelemetryTask 和 LedTask。",
+      "tags": [
+        "freertos",
+        "task"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:firmware-boot:create-rtos-objects",
+      "type": "step",
+      "name": "创建共享 RTOS 对象",
+      "filePath": "User/Src/freertos_objects.c",
+      "lineRange": [
+        15,
+        26
+      ],
+      "summary": "创建 qAttitude、qGnss、qMqttPublish、日志递归互斥锁和系统事件组。",
+      "tags": [
+        "freertos",
+        "queue"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:firmware-boot:start-scheduler",
+      "type": "step",
+      "name": "启动任务调度",
+      "filePath": "User/Src/app_main.c",
+      "lineRange": [
+        16,
+        19
+      ],
+      "summary": "vTaskStartScheduler 启动 FreeRTOS，任务开始按优先级运行。",
+      "tags": [
+        "freertos",
+        "scheduler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "flow:service-initialization",
+      "type": "flow",
+      "name": "初始化基础服务",
+      "summary": "InitTask 在启动后执行一次，准备 LED、调试串口、A7670E 串口、数据源状态和 IMU。",
+      "tags": [
+        "startup",
+        "initialization"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "InitTask scheduled",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:service-initialization:init-led-debug",
+      "type": "step",
+      "name": "初始化 LED 与调试串口",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        114,
+        115
+      ],
+      "summary": "初始化板级 LED 和日志串口，便于观察后续 bring-up。",
+      "tags": [
+        "led",
+        "debug"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:service-initialization:init-modem-uart",
+      "type": "step",
+      "name": "初始化 A7670E 串口",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        116,
+        116
+      ],
+      "summary": "初始化 USART1 PA9/PA10 和 RXNE 中断，准备 AT 指令传输。",
+      "tags": [
+        "uart",
+        "a7670e"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:service-initialization:prepare-gnss-state",
+      "type": "step",
+      "name": "准备 GNSS 状态",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        118,
+        125
+      ],
+      "summary": "当前真实 GNSS 路径先清除 GNSS_READY，交由 ModemTask 串行上电。",
+      "tags": [
+        "gnss",
+        "status"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:service-initialization:init-real-imu",
+      "type": "step",
+      "name": "初始化真实 IMU",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        127,
+        146
+      ],
+      "summary": "当前真实 IMU 路径调用 ImuService_Init；成功后置位 IMU_READY 并初始化 Mahony 参数。",
+      "tags": [
+        "imu",
+        "mahony"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:service-initialization:reset-network-state",
+      "type": "step",
+      "name": "重置网络就绪位",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        152,
+        154
+      ],
+      "summary": "清除 MQTT_READY 和 NET_READY，等待 ModemTask 后续 bring-up。",
+      "tags": [
+        "mqtt",
+        "lte",
+        "status"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:service-initialization:delete-init-task",
+      "type": "step",
+      "name": "删除一次性任务",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        156,
+        158
+      ],
+      "summary": "初始化完成后 InitTask 删除自身，释放任务资源。",
+      "tags": [
+        "freertos",
+        "cleanup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "flow:produce-latest-attitude",
+      "type": "flow",
+      "name": "生成最新姿态",
+      "summary": "ImuTask 周期读取真实传感器并覆盖 qAttitude。模拟姿态分支存在，但当前未编译为活动路径。",
+      "tags": [
+        "imu",
+        "mahony",
+        "queue"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entryPoint": "ImuTask every 20 ms",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:produce-latest-attitude:wait-ready",
+      "type": "step",
+      "name": "等待 IMU 就绪",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        203,
+        214
+      ],
+      "summary": "只有 InitTask 置位 IMU_READY 后才进入真实采样。",
+      "tags": [
+        "imu",
+        "status"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:produce-latest-attitude:read-physical-data",
+      "type": "step",
+      "name": "读取物理量",
+      "filePath": "User/Src/imu_service.c",
+      "lineRange": [
+        67,
+        85
+      ],
+      "summary": "ImuService_ReadPhys 读取六轴物理量，并尽量读取 AK8963 磁场数据。",
+      "tags": [
+        "imu",
+        "sensor"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:produce-latest-attitude:select-fusion-path",
+      "type": "step",
+      "name": "选择九轴或六轴融合",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        229,
+        237
+      ],
+      "summary": "磁力计有效时调用 MPU9250_MahonyUpdate；否则调用 MPU9250_MahonyUpdateIMU。",
+      "tags": [
+        "mahony",
+        "fallback"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:produce-latest-attitude:read-euler-angles",
+      "type": "step",
+      "name": "读取融合欧拉角",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        239,
+        246
+      ],
+      "summary": "从融合四元数读取 roll、pitch、yaw 和时间戳。",
+      "tags": [
+        "attitude",
+        "euler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:produce-latest-attitude:overwrite-attitude-queue",
+      "type": "step",
+      "name": "覆盖发布最新姿态",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        247,
+        254
+      ],
+      "summary": "xQueueOverwrite 写入长度为 1 的 qAttitude，只保留最新姿态。",
+      "tags": [
+        "queue",
+        "latest-value"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "flow:update-gnss-fix",
+      "type": "flow",
+      "name": "更新 GNSS 定位",
+      "summary": "ModemTask 按周期维护真实 GNSS 电源状态、查询定位并覆盖 qGnss。模拟定位分支仍保留用于联调切换。",
+      "tags": [
+        "gnss",
+        "location",
+        "queue"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entryPoint": "ModemTask periodic GNSS update",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:update-gnss-fix:retry-power-on",
+      "type": "step",
+      "name": "重试 GNSS 上电",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        291,
+        317
+      ],
+      "summary": "真实 GNSS 未就绪时，ModemTask 按间隔调用 ModemService_GnssInit。",
+      "tags": [
+        "gnss",
+        "retry"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:update-gnss-fix:confirm-ready",
+      "type": "step",
+      "name": "确认 GNSS READY",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        725,
+        795
+      ],
+      "summary": "先查询 CGNSSPWR 状态，必要时上电并等待 READY；单独 OK 不视为就绪。",
+      "tags": [
+        "gnss",
+        "at-command"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:update-gnss-fix:query-position",
+      "type": "step",
+      "name": "查询 CGPSINFO",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        797,
+        834
+      ],
+      "summary": "GNSS 就绪后，周期发送 AT+CGPSINFO 并等待完整响应。",
+      "tags": [
+        "gnss",
+        "at-command"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:update-gnss-fix:parse-nmea",
+      "type": "step",
+      "name": "解析经纬度",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        835,
+        948
+      ],
+      "summary": "解析 CGPSINFO 字段，将 NMEA 经纬度转换为十进制度。",
+      "tags": [
+        "gnss",
+        "parser"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:update-gnss-fix:overwrite-gnss-queue",
+      "type": "step",
+      "name": "覆盖发布最新定位",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        367,
+        387
+      ],
+      "summary": "有效定位写入长度为 1 的 qGnss，并置位 GNSS_FIX。",
+      "tags": [
+        "queue",
+        "latest-value"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "flow:at-response-transaction",
+      "type": "flow",
+      "name": "执行 AT 指令事务",
+      "summary": "USART1 中断负责写环形缓冲区，ModemService 在任务上下文中串行发送指令并读取响应。",
+      "tags": [
+        "uart",
+        "at-command",
+        "ring-buffer"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "A7670E AT command",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:at-response-transaction:init-uart",
+      "type": "step",
+      "name": "初始化 USART1",
+      "filePath": "User/Src/bsp_a7670e_uart.c",
+      "lineRange": [
+        30,
+        64
+      ],
+      "summary": "配置 PA9/PA10、115200 波特率、RXNE 中断和接收缓冲区。",
+      "tags": [
+        "uart",
+        "initialization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:at-response-transaction:irq-push-byte",
+      "type": "step",
+      "name": "中断写入接收字节",
+      "filePath": "User/Src/bsp_a7670e_uart.c",
+      "lineRange": [
+        176,
+        197
+      ],
+      "summary": "USART1 RXNE 中断把字节写入环形缓冲区；写满时标记 overflow。",
+      "tags": [
+        "uart",
+        "interrupt"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:at-response-transaction:send-command",
+      "type": "step",
+      "name": "发送 AT 指令",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        154,
+        185
+      ],
+      "summary": "任务侧清理旧响应后，通过 BSP_A7670E_Uart_SendString 发送指令。",
+      "tags": [
+        "uart",
+        "at-command"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:at-response-transaction:consume-response",
+      "type": "step",
+      "name": "串行消费响应",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        17,
+        143
+      ],
+      "summary": "ModemService_ReadResponse 或 ReadResponseUntil 从环形缓冲区逐字节收集响应。",
+      "tags": [
+        "uart",
+        "ring-buffer"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:at-response-transaction:match-expected-token",
+      "type": "step",
+      "name": "匹配预期响应",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        197,
+        220
+      ],
+      "summary": "根据 OK、READY 或异步结果关键字判定当前 AT 阶段是否完成。",
+      "tags": [
+        "parser",
+        "at-command"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "flow:bring-up-lte-network",
+      "type": "flow",
+      "name": "建立 4G 数据网络",
+      "summary": "ModemTask 周期重试网络初始化，依次确认模块、SIM、信号、LTE 注册、APN 和 NETOPEN。",
+      "tags": [
+        "lte",
+        "a7670e",
+        "retry"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entryPoint": "ModemTask network retry",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:bring-up-lte-network:schedule-retry",
+      "type": "step",
+      "name": "按周期触发网络重试",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        319,
+        338
+      ],
+      "summary": "NET_READY 未置位时，ModemTask 按 APP_NET_INIT_RETRY_PERIOD_MS 调用网络初始化。",
+      "tags": [
+        "lte",
+        "retry"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:bring-up-lte-network:check-at-channel",
+      "type": "step",
+      "name": "检查模块通信",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        280,
+        300
+      ],
+      "summary": "发送 AT 和 AT+CMEE=2，确认模块响应并开启详细错误。",
+      "tags": [
+        "lte",
+        "at-command"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:bring-up-lte-network:check-sim-signal",
+      "type": "step",
+      "name": "检查 SIM 与信号",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        301,
+        317
+      ],
+      "summary": "查询 CPIN 和 CSQ，确认 SIM 就绪并获取信号质量。",
+      "tags": [
+        "lte",
+        "sim"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:bring-up-lte-network:wait-registration",
+      "type": "step",
+      "name": "等待 LTE 注册",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        227,
+        250
+      ],
+      "summary": "轮询 CEREG，接受本地注册或漫游注册状态。",
+      "tags": [
+        "lte",
+        "registration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:bring-up-lte-network:configure-apn",
+      "type": "step",
+      "name": "配置 APN",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        318,
+        334
+      ],
+      "summary": "按 APP_A7670E_APN 构造 CGDCONT 指令，当前配置为 ctnet。",
+      "tags": [
+        "lte",
+        "apn"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:bring-up-lte-network:open-network",
+      "type": "step",
+      "name": "打开数据网络",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        256,
+        273
+      ],
+      "summary": "发送 AT+NETOPEN，接受已打开或打开成功响应。",
+      "tags": [
+        "lte",
+        "netopen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:bring-up-lte-network:mark-net-ready",
+      "type": "step",
+      "name": "置位 NET_READY",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        325,
+        335
+      ],
+      "summary": "网络初始化成功后，ModemTask 设置 APP_STATUS_NET_READY。",
+      "tags": [
+        "lte",
+        "status"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "flow:connect-mqtt-client",
+      "type": "flow",
+      "name": "连接 MQTT Broker",
+      "summary": "网络就绪后，启动 A7670E MQTT 服务、申请客户端并连接 broker.emqx.io。",
+      "tags": [
+        "mqtt",
+        "a7670e",
+        "broker"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entryPoint": "NET_READY and MQTT not ready",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:connect-mqtt-client:schedule-retry",
+      "type": "step",
+      "name": "按周期触发 MQTT 重试",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        340,
+        361
+      ],
+      "summary": "仅在网络就绪且 MQTT 未连接时按周期调用 ModemService_MqttInit。",
+      "tags": [
+        "mqtt",
+        "retry"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:connect-mqtt-client:start-service",
+      "type": "step",
+      "name": "启动 MQTT 服务",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        353,
+        392
+      ],
+      "summary": "通过 AT+CMQTTSTART 启动模块内置 MQTT 服务。",
+      "tags": [
+        "mqtt",
+        "at-command"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:connect-mqtt-client:acquire-client",
+      "type": "step",
+      "name": "申请 MQTT 客户端",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        398,
+        421
+      ],
+      "summary": "通过 AT+CMQTTACCQ 使用 aeropush_client 申请客户端 0。",
+      "tags": [
+        "mqtt",
+        "client"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:connect-mqtt-client:connect-broker",
+      "type": "step",
+      "name": "连接 MQTT Broker",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        427,
+        524
+      ],
+      "summary": "发送 AT+CMQTTCONNECT，并等待异步 +CMQTTCONNECT: 0,0 成功结果。",
+      "tags": [
+        "mqtt",
+        "broker",
+        "async"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:connect-mqtt-client:mark-mqtt-ready",
+      "type": "step",
+      "name": "置位 MQTT_READY",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        348,
+        358
+      ],
+      "summary": "MQTT 初始化成功后，ModemTask 设置 APP_STATUS_MQTT_READY。",
+      "tags": [
+        "mqtt",
+        "status"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "flow:publish-queued-telemetry",
+      "type": "flow",
+      "name": "发布排队遥测消息",
+      "summary": "ModemTask 消费 qMqttPublish 后，通过 A7670E MQTT 指令按 topic、payload、publish 三阶段发布消息。",
+      "tags": [
+        "mqtt",
+        "telemetry",
+        "queue"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entryPoint": "qMqttPublish message available",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:publish-queued-telemetry:dequeue-message",
+      "type": "step",
+      "name": "取出待发布消息",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        405,
+        412
+      ],
+      "summary": "ModemTask 非阻塞读取 qMqttPublish，并调用 ModemService_Publish。",
+      "tags": [
+        "mqtt",
+        "queue"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:publish-queued-telemetry:validate-lengths",
+      "type": "step",
+      "name": "校验 topic 与 payload 长度",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        567,
+        586
+      ],
+      "summary": "校验结构体记录长度与字符串实际长度，避免模块等待错误字节数。",
+      "tags": [
+        "mqtt",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:publish-queued-telemetry:write-topic",
+      "type": "step",
+      "name": "写入 MQTT Topic",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        588,
+        620
+      ],
+      "summary": "发送 CMQTTTOPIC 长度命令，等待提示符后写入 aeropush/telemetry。",
+      "tags": [
+        "mqtt",
+        "topic"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:publish-queued-telemetry:write-payload",
+      "type": "step",
+      "name": "写入 JSON Payload",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        622,
+        650
+      ],
+      "summary": "发送 CMQTTPAYLOAD 长度命令，等待提示符后写入遥测 JSON。",
+      "tags": [
+        "mqtt",
+        "payload"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:publish-queued-telemetry:publish-message",
+      "type": "step",
+      "name": "确认发布结果",
+      "filePath": "User/Src/modem_service.c",
+      "lineRange": [
+        652,
+        685
+      ],
+      "summary": "发送 CMQTTPUB，并等待 +CMQTTPUB: 0,0 作为成功条件。",
+      "tags": [
+        "mqtt",
+        "publish"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "flow:build-telemetry-message",
+      "type": "flow",
+      "name": "构造遥测消息",
+      "summary": "TelemetryTask 读取最新姿态和定位，只要至少一种数据有效就构造 JSON 并排队。",
+      "tags": [
+        "telemetry",
+        "json",
+        "queue"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "TelemetryTask every 500 ms",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:build-telemetry-message:peek-attitude",
+      "type": "step",
+      "name": "读取最新姿态",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        439,
+        452
+      ],
+      "summary": "IMU_READY 且 qAttitude 中数据有效时，保留最新姿态。",
+      "tags": [
+        "telemetry",
+        "attitude"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:build-telemetry-message:peek-gnss",
+      "type": "step",
+      "name": "读取最新 GNSS",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        454,
+        462
+      ],
+      "summary": "qGnss 中定位有效时，保留最新经纬度。",
+      "tags": [
+        "telemetry",
+        "gnss"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:build-telemetry-message:skip-empty",
+      "type": "step",
+      "name": "跳过空遥测",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        464,
+        468
+      ],
+      "summary": "姿态和 GNSS 都无效时直接等待下一周期，不组装空消息。",
+      "tags": [
+        "telemetry",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:build-telemetry-message:build-json",
+      "type": "step",
+      "name": "组装 JSON Payload",
+      "filePath": "User/Src/telemetry_service.c",
+      "lineRange": [
+        11,
+        34
+      ],
+      "summary": "Telemetry_BuildMqttMsg 写入有效标志、姿态角和经纬度。",
+      "tags": [
+        "telemetry",
+        "json"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:build-telemetry-message:enqueue-publish",
+      "type": "step",
+      "name": "写入发布队列",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        470,
+        472
+      ],
+      "summary": "将 MqttPublishMsg_t 非阻塞发送到 qMqttPublish，交给 ModemTask。",
+      "tags": [
+        "telemetry",
+        "queue"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "flow:maintain-runtime-status",
+      "type": "flow",
+      "name": "维护运行状态位",
+      "summary": "通过 FreeRTOS 事件组集中维护 IMU、GNSS、NET 和 MQTT 等状态，供各任务共享。",
+      "tags": [
+        "status",
+        "freertos",
+        "event-group"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "Subsystem readiness changed",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:maintain-runtime-status:set-bit",
+      "type": "step",
+      "name": "置位就绪状态",
+      "filePath": "User/Src/app_status.c",
+      "lineRange": [
+        7,
+        14
+      ],
+      "summary": "子系统准备完成后调用 AppStatus_Set 设置事件组状态位。",
+      "tags": [
+        "status",
+        "event-group"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:maintain-runtime-status:clear-bit",
+      "type": "step",
+      "name": "清除异常状态",
+      "filePath": "User/Src/app_status.c",
+      "lineRange": [
+        19,
+        26
+      ],
+      "summary": "初始化失败或定位失效时调用 AppStatus_Clear 清除对应状态位。",
+      "tags": [
+        "status",
+        "event-group"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:maintain-runtime-status:query-bit",
+      "type": "step",
+      "name": "查询运行条件",
+      "filePath": "User/Src/app_status.c",
+      "lineRange": [
+        30,
+        45
+      ],
+      "summary": "任务通过 AppStatus_IsSet 判断某个数据源或服务是否可用。",
+      "tags": [
+        "status",
+        "event-group"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "flow:indicate-calibration-state",
+      "type": "flow",
+      "name": "显示 LED 灯语",
+      "summary": "LedTask 根据校准状态切换红绿 LED 模式，区分自检、静态校准、磁力计校准、成功、失败和正常运行。",
+      "tags": [
+        "led",
+        "calibration",
+        "status"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "LedTask loop",
+        "entryType": "event"
+      }
+    },
+    {
+      "id": "step:indicate-calibration-state:read-cal-state",
+      "type": "step",
+      "name": "读取校准状态",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        507,
+        514
+      ],
+      "summary": "LedTask 调用 AppStatus_GetCalState 获取当前灯语状态。",
+      "tags": [
+        "led",
+        "status"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:indicate-calibration-state:select-pattern",
+      "type": "step",
+      "name": "选择灯语模式",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        516,
+        560
+      ],
+      "summary": "switch 分支选择自检闪烁、校准闪烁、成功常亮、失败红闪或正常心跳。",
+      "tags": [
+        "led",
+        "calibration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:indicate-calibration-state:drive-led",
+      "type": "step",
+      "name": "驱动红绿 LED",
+      "filePath": "User/Src/led_service.c",
+      "lineRange": [
+        36,
+        39
+      ],
+      "summary": "LedService_Set 下沉到 BSP_LED_Set，分别控制红灯和绿灯。",
+      "tags": [
+        "led",
+        "bsp"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "step:indicate-calibration-state:return-idle",
+      "type": "step",
+      "name": "成功后回到正常状态",
+      "filePath": "User/Src/app_tasks.c",
+      "lineRange": [
+        541,
+        545
+      ],
+      "summary": "成功提示保持 3 秒后，将校准状态恢复为 IDLE。",
+      "tags": [
+        "led",
+        "status"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "domain:firmware-runtime",
+      "target": "flow:firmware-boot",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:firmware-boot",
+      "target": "step:firmware-boot:enter-main",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:firmware-boot",
+      "target": "step:firmware-boot:enter-app-main",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:firmware-boot",
+      "target": "step:firmware-boot:create-tasks",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:firmware-boot",
+      "target": "step:firmware-boot:create-rtos-objects",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:firmware-boot",
+      "target": "step:firmware-boot:start-scheduler",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:firmware-runtime",
+      "target": "flow:service-initialization",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:service-initialization",
+      "target": "step:service-initialization:init-led-debug",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:service-initialization",
+      "target": "step:service-initialization:init-modem-uart",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:service-initialization",
+      "target": "step:service-initialization:prepare-gnss-state",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:service-initialization",
+      "target": "step:service-initialization:init-real-imu",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "flow:service-initialization",
+      "target": "step:service-initialization:reset-network-state",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:service-initialization",
+      "target": "step:service-initialization:delete-init-task",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:attitude-sensing",
+      "target": "flow:produce-latest-attitude",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:produce-latest-attitude",
+      "target": "step:produce-latest-attitude:wait-ready",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:produce-latest-attitude",
+      "target": "step:produce-latest-attitude:read-physical-data",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:produce-latest-attitude",
+      "target": "step:produce-latest-attitude:select-fusion-path",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:produce-latest-attitude",
+      "target": "step:produce-latest-attitude:read-euler-angles",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:produce-latest-attitude",
+      "target": "step:produce-latest-attitude:overwrite-attitude-queue",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:positioning",
+      "target": "flow:update-gnss-fix",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:update-gnss-fix",
+      "target": "step:update-gnss-fix:retry-power-on",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:update-gnss-fix",
+      "target": "step:update-gnss-fix:confirm-ready",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:update-gnss-fix",
+      "target": "step:update-gnss-fix:query-position",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:update-gnss-fix",
+      "target": "step:update-gnss-fix:parse-nmea",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:update-gnss-fix",
+      "target": "step:update-gnss-fix:overwrite-gnss-queue",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:modem-transport",
+      "target": "flow:at-response-transaction",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:at-response-transaction",
+      "target": "step:at-response-transaction:init-uart",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:at-response-transaction",
+      "target": "step:at-response-transaction:irq-push-byte",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:at-response-transaction",
+      "target": "step:at-response-transaction:send-command",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:at-response-transaction",
+      "target": "step:at-response-transaction:consume-response",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:at-response-transaction",
+      "target": "step:at-response-transaction:match-expected-token",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:cellular-mqtt",
+      "target": "flow:bring-up-lte-network",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:bring-up-lte-network",
+      "target": "step:bring-up-lte-network:schedule-retry",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.1
+    },
+    {
+      "source": "flow:bring-up-lte-network",
+      "target": "step:bring-up-lte-network:check-at-channel",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:bring-up-lte-network",
+      "target": "step:bring-up-lte-network:check-sim-signal",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:bring-up-lte-network",
+      "target": "step:bring-up-lte-network:wait-registration",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:bring-up-lte-network",
+      "target": "step:bring-up-lte-network:configure-apn",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "flow:bring-up-lte-network",
+      "target": "step:bring-up-lte-network:open-network",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "flow:bring-up-lte-network",
+      "target": "step:bring-up-lte-network:mark-net-ready",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:cellular-mqtt",
+      "target": "flow:connect-mqtt-client",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:connect-mqtt-client",
+      "target": "step:connect-mqtt-client:schedule-retry",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:connect-mqtt-client",
+      "target": "step:connect-mqtt-client:start-service",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:connect-mqtt-client",
+      "target": "step:connect-mqtt-client:acquire-client",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:connect-mqtt-client",
+      "target": "step:connect-mqtt-client:connect-broker",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:connect-mqtt-client",
+      "target": "step:connect-mqtt-client:mark-mqtt-ready",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:cellular-mqtt",
+      "target": "flow:publish-queued-telemetry",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:publish-queued-telemetry",
+      "target": "step:publish-queued-telemetry:dequeue-message",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:publish-queued-telemetry",
+      "target": "step:publish-queued-telemetry:validate-lengths",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:publish-queued-telemetry",
+      "target": "step:publish-queued-telemetry:write-topic",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:publish-queued-telemetry",
+      "target": "step:publish-queued-telemetry:write-payload",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:publish-queued-telemetry",
+      "target": "step:publish-queued-telemetry:publish-message",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:telemetry-status",
+      "target": "flow:build-telemetry-message",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:build-telemetry-message",
+      "target": "step:build-telemetry-message:peek-attitude",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:build-telemetry-message",
+      "target": "step:build-telemetry-message:peek-gnss",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:build-telemetry-message",
+      "target": "step:build-telemetry-message:skip-empty",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:build-telemetry-message",
+      "target": "step:build-telemetry-message:build-json",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:build-telemetry-message",
+      "target": "step:build-telemetry-message:enqueue-publish",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:telemetry-status",
+      "target": "flow:maintain-runtime-status",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:maintain-runtime-status",
+      "target": "step:maintain-runtime-status:set-bit",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:maintain-runtime-status",
+      "target": "step:maintain-runtime-status:clear-bit",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "flow:maintain-runtime-status",
+      "target": "step:maintain-runtime-status:query-bit",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:telemetry-status",
+      "target": "flow:indicate-calibration-state",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "flow:indicate-calibration-state",
+      "target": "step:indicate-calibration-state:read-cal-state",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:indicate-calibration-state",
+      "target": "step:indicate-calibration-state:select-pattern",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:indicate-calibration-state",
+      "target": "step:indicate-calibration-state:drive-led",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:indicate-calibration-state",
+      "target": "step:indicate-calibration-state:return-idle",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "domain:firmware-runtime",
+      "target": "domain:attitude-sensing",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "InitTask 初始化真实 MPU9250，并允许 ImuTask 开始周期采样。",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:firmware-runtime",
+      "target": "domain:modem-transport",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "InitTask 初始化 A7670E 所用 USART1 和接收中断。",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:modem-transport",
+      "target": "domain:cellular-mqtt",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "LTE 和 MQTT 流程通过同一个串口事务通道发送 AT 指令并读取响应。",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:modem-transport",
+      "target": "domain:positioning",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "GNSS 上电和 CGPSINFO 查询复用 A7670E 串口事务通道。",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:attitude-sensing",
+      "target": "domain:telemetry-status",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "ImuTask 通过 qAttitude 向 TelemetryTask 提供最新姿态。",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:positioning",
+      "target": "domain:telemetry-status",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "ModemTask 通过 qGnss 向 TelemetryTask 提供最新定位。",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:telemetry-status",
+      "target": "domain:cellular-mqtt",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "TelemetryTask 通过 qMqttPublish 交付待发布 JSON 消息。",
+      "weight": 0.6
+    }
+  ],
+  "layers": [],
+  "tour": []
+}
